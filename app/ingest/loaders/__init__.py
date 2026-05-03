@@ -6,11 +6,12 @@ from app.ingest.loaders.html import normalize_html
 from app.ingest.loaders.image import normalize_image
 from app.ingest.loaders.models import NormalizedSource
 from app.ingest.loaders.pdf import normalize_pdf
+from app.ingest.loaders.text import normalize_text
 from app.ingest.loaders.xlsx import normalize_xlsx
 
 
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg"}
-SUPPORTED_SUFFIXES = {".pdf", ".html", ".htm", ".xlsx", *IMAGE_SUFFIXES}
+SUPPORTED_SUFFIXES = {".pdf", ".html", ".htm", ".xlsx", ".txt", *IMAGE_SUFFIXES}
 
 
 def infer_doc_type(suffix: str) -> str:
@@ -20,6 +21,8 @@ def infer_doc_type(suffix: str) -> str:
         return "html"
     if suffix == ".xlsx":
         return "xlsx"
+    if suffix == ".txt":
+        return "text"
     if suffix in IMAGE_SUFFIXES:
         return "image"
     return "unknown"
@@ -33,6 +36,8 @@ def normalize_by_file_type(source_path: Path) -> NormalizedSource:
         return normalize_xlsx(source_path)
     if suffix == ".pdf":
         return normalize_pdf(source_path)
+    if suffix == ".txt":
+        return normalize_text(source_path)
     if suffix in IMAGE_SUFFIXES:
         return normalize_image(source_path)
     return NormalizedSource(
