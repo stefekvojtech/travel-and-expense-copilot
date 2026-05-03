@@ -3,6 +3,7 @@
 - doc_id: `expense-policy-aead3745bd`
 - source_path: `data/raw/expense_policy.html`
 - doc_type: `html`
+- content_hash: `602c2c1a44ad2386c6b4059881d14bcdab9bb5d6e3e73bad41c0b62895afc25e`
 - extraction_method: `beautifulsoup4`
 
 ## Content

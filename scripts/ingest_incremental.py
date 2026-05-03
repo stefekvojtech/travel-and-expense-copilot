@@ -1,0 +1,20 @@
+import _bootstrap  # noqa: F401
+
+from app.core.config import get_settings
+from app.ingest.pipeline import ingest_sources
+
+
+def main() -> None:
+    settings = get_settings()
+    # Incremental mode keeps previous Markdown when the raw file hash did not change.
+    result = ingest_sources(settings)
+    print(
+        f"Ingested {len(result.ingested_documents)} documents; "
+        f"skipped {len(result.skipped_documents)} unchanged documents."
+    )
+    if result.warnings:
+        print(f"Warning: skipped {len(result.warnings)} unsupported files.")
+
+
+if __name__ == "__main__":
+    main()
