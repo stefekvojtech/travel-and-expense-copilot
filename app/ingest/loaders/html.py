@@ -5,17 +5,24 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from app.ingest.loaders.common import clean_text
+from app.ingest.loaders.models import NormalizedSource, SourceBlock
 
 
-def normalize_html(source_path: Path) -> tuple[str, str, str | None]:
+def normalize_html(source_path: Path) -> NormalizedSource:
     html_text = source_path.read_text(encoding="utf-8")
     soup = BeautifulSoup(html_text, "html.parser")
+    # Scripts/styles are not policy evidence and would pollute embeddings.
     for tag_name in ("script", "style"):
         for tag in soup.find_all(tag_name):
             tag.decompose()
 
     # Generic HTML strategy: preserve headings, lists, and tables as Markdown.
-    return (_html_soup_to_markdown(soup), "beautifulsoup4", None)
+    markdown_text = _html_soup_to_markdown(soup)
+    return NormalizedSource(
+        markdown_text=markdown_text,
+        blocks=_markdown_to_blocks(markdown_text),
+        extraction_method="beautifulsoup4",
+    )
 
 
 def _html_soup_to_markdown(soup: BeautifulSoup) -> str:
@@ -26,6 +33,7 @@ def _html_soup_to_markdown(soup: BeautifulSoup) -> str:
 
 
 def _render_block_nodes(node) -> list[str]:
+    # Walk common semantic HTML tags and flatten layout-only containers.
     blocks: list[str] = []
     for child in getattr(node, "children", []):
         name = getattr(child, "name", None)
@@ -113,3 +121,29 @@ def _collect_inline_text(node) -> str:
         text_parts.append(clean_text(str(part)))
     return " ".join(part for part in text_parts if part)
 
+
+def _markdown_to_blocks(markdown_text: str) -> list[SourceBlock]:
+    # HTML has no page numbers, so the useful lineage here is mainly section_path.
+    blocks: list[SourceBlock] = []
+    current_section: str | None = None
+    for block in markdown_text.split("\n\n"):
+        text = block.strip()
+        if not text:
+            continue
+        if text.startswith("#"):
+            current_section = text.lstrip("#").strip()
+            block_type = "heading"
+        elif text.startswith("|"):
+            block_type = "table"
+        elif text.startswith(("- ", "1. ")):
+            block_type = "list"
+        else:
+            block_type = "paragraph"
+        blocks.append(
+            SourceBlock(
+                text=text,
+                block_type=block_type,
+                section_path=current_section,
+            )
+        )
+    return blocks

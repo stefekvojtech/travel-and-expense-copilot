@@ -7,6 +7,7 @@ import pdfplumber
 from pypdf import PdfReader
 
 from app.ingest.loaders.common import clean_text
+from app.ingest.loaders.models import NormalizedSource, SourceBlock
 
 
 PAGE_LABEL_RE = re.compile(r"^page\s+\d+$", re.IGNORECASE)
@@ -14,34 +15,48 @@ NUMBERED_HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*\.?)\s+(.+)$")
 BULLET_PREFIXES = ("\u007f", "\u2022", "-", "*")
 
 
-def normalize_pdf(source_path: Path) -> tuple[str, str, str | None]:
+def normalize_pdf(source_path: Path) -> NormalizedSource:
     reader = PdfReader(str(source_path))
     pages = [_extract_page_lines(page.extract_text() or "") for page in reader.pages]
     repeated_lines = _find_repeated_page_lines(pages)
     tables_by_page, table_lines_by_page = _extract_tables_by_page(source_path)
 
-    blocks: list[str] = []
+    markdown_blocks: list[str] = []
+    source_blocks: list[SourceBlock] = []
+    current_section: str | None = None
     for index, page in enumerate(reader.pages, start=1):
         page_lines = _extract_page_lines(page.extract_text() or "")
         page_tables = tables_by_page.get(index, [])
         table_lines = table_lines_by_page.get(index, set())
         content_lines = _remove_page_noise(page_lines, repeated_lines)
         if not content_lines:
-            blocks.append(f"<!-- source_page: {index} -->")
-            blocks.append("[No text extracted from this page]")
-        else:
-            blocks.append(f"<!-- source_page: {index} -->")
-            blocks.extend(
-                _lines_to_markdown_blocks(
-                    content_lines,
-                    page_tables=page_tables,
-                    table_lines=table_lines,
-                    page_number=index,
+            markdown_blocks.append(f"<!-- source_page: {index} -->")
+            markdown_blocks.append("[No text extracted from this page]")
+            source_blocks.append(
+                SourceBlock(
+                    text="[No text extracted from this page]",
+                    block_type="empty_page",
+                    page=index,
                 )
             )
+        else:
+            markdown_blocks.append(f"<!-- source_page: {index} -->")
+            page_blocks, current_section = _lines_to_source_blocks(
+                content_lines,
+                page_tables=page_tables,
+                table_lines=table_lines,
+                page_number=index,
+                current_section=current_section,
+            )
+            source_blocks.extend(page_blocks)
+            markdown_blocks.extend(block.text for block in page_blocks)
 
     # Future: add quality checks and escalate to layout/OCR parsers when needed.
-    return ("\n\n".join(block for block in blocks if block).strip(), "pypdf+pdfplumber", None)
+    return NormalizedSource(
+        markdown_text="\n\n".join(block for block in markdown_blocks if block).strip(),
+        blocks=source_blocks,
+        extraction_method="pypdf+pdfplumber",
+    )
 
 
 def _extract_page_lines(page_text: str) -> list[str]:
@@ -150,52 +165,99 @@ def _escape_table_cell(cell: str) -> str:
     return clean_text(cell).replace("|", "\\|")
 
 
-def _lines_to_markdown_blocks(
+def _lines_to_source_blocks(
     lines: list[str],
     *,
     page_tables: list[list[list[str]]],
     table_lines: set[str],
     page_number: int,
-) -> list[str]:
-    blocks: list[str] = []
+    current_section: str | None,
+) -> tuple[list[SourceBlock], str | None]:
+    blocks: list[SourceBlock] = []
     paragraph_lines: list[str] = []
     next_table_index = 0
 
     for line in lines:
         if _is_table_line(line, table_lines):
             if next_table_index < len(page_tables):
-                _flush_paragraph(paragraph_lines, blocks)
+                _flush_paragraph(paragraph_lines, blocks, current_section, page_number)
                 table_index = next_table_index + 1
                 table_markdown = _table_to_markdown(page_tables[next_table_index])
                 if table_markdown:
-                    blocks.append(f"#### Extracted Table {table_index} (Page {page_number})")
-                    blocks.append(table_markdown)
+                    heading = f"#### Extracted Table {table_index} (Page {page_number})"
+                    blocks.append(
+                        SourceBlock(
+                            text=heading,
+                            block_type="heading",
+                            section_path=current_section,
+                            page=page_number,
+                        )
+                    )
+                    blocks.append(
+                        SourceBlock(
+                            text=table_markdown,
+                            block_type="table",
+                            section_path=current_section,
+                            page=page_number,
+                            metadata={"table_index_on_page": table_index},
+                        )
+                    )
                 next_table_index += 1
             continue
 
         heading = _format_numbered_heading(line)
         if heading:
-            _flush_paragraph(paragraph_lines, blocks)
-            blocks.append(heading)
+            _flush_paragraph(paragraph_lines, blocks, current_section, page_number)
+            current_section = heading.lstrip("#").strip()
+            blocks.append(
+                SourceBlock(
+                    text=heading,
+                    block_type="heading",
+                    section_path=current_section,
+                    page=page_number,
+                )
+            )
             continue
 
         bullet = _format_bullet(line)
         if bullet:
-            _flush_paragraph(paragraph_lines, blocks)
-            blocks.append(bullet)
+            _flush_paragraph(paragraph_lines, blocks, current_section, page_number)
+            blocks.append(
+                SourceBlock(
+                    text=bullet,
+                    block_type="list_item",
+                    section_path=current_section,
+                    page=page_number,
+                )
+            )
             continue
 
         paragraph_lines.append(line)
 
-    _flush_paragraph(paragraph_lines, blocks)
+    _flush_paragraph(paragraph_lines, blocks, current_section, page_number)
     for table in page_tables[next_table_index:]:
         table_index = next_table_index + 1
         table_markdown = _table_to_markdown(table)
         if table_markdown:
-            blocks.append(f"#### Extracted Table {table_index} (Page {page_number})")
-            blocks.append(table_markdown)
+            blocks.append(
+                SourceBlock(
+                    text=f"#### Extracted Table {table_index} (Page {page_number})",
+                    block_type="heading",
+                    section_path=current_section,
+                    page=page_number,
+                )
+            )
+            blocks.append(
+                SourceBlock(
+                    text=table_markdown,
+                    block_type="table",
+                    section_path=current_section,
+                    page=page_number,
+                    metadata={"table_index_on_page": table_index},
+                )
+            )
         next_table_index += 1
-    return blocks
+    return blocks, current_section
 
 
 def _format_numbered_heading(line: str) -> str | None:
@@ -219,7 +281,19 @@ def _format_bullet(line: str) -> str | None:
     return f"- {line.lstrip(''.join(BULLET_PREFIXES)).strip()}"
 
 
-def _flush_paragraph(paragraph_lines: list[str], blocks: list[str]) -> None:
+def _flush_paragraph(
+    paragraph_lines: list[str],
+    blocks: list[SourceBlock],
+    section_path: str | None,
+    page_number: int,
+) -> None:
     if paragraph_lines:
-        blocks.append(" ".join(paragraph_lines))
+        blocks.append(
+            SourceBlock(
+                text=" ".join(paragraph_lines),
+                block_type="paragraph",
+                section_path=section_path,
+                page=page_number,
+            )
+        )
         paragraph_lines.clear()

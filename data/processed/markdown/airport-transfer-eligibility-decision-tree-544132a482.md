@@ -5,6 +5,7 @@
 - doc_type: `image`
 - content_hash: `e94cb293250911c0805b42b79cc59a2b66889cb7c29f83031e3ecb6dbe9ec695`
 - extraction_method: `image_placeholder`
+- blocks_path: `data/processed/blocks/airport-transfer-eligibility-decision-tree-544132a482.jsonl`
 - extraction_warning: `image_extraction_not_implemented`
 
 ## Content

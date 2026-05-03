@@ -5,6 +5,7 @@
 - doc_type: `pdf`
 - content_hash: `8e959f6e30b46466a8c0931a717fb6e1db403fff7d8c89aeed1429f8c130926f`
 - extraction_method: `pypdf+pdfplumber`
+- blocks_path: `data/processed/blocks/travel-policy-2c55f3d095.jsonl`
 
 ## Content
 
