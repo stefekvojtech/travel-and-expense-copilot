@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Atlas Mobility Group - Expense Policy 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --card: #ffffff;
+      --ink: #17212b;
+      --muted: #607080;
+      --line: #d7e0e8;
+      --accent: #1e6f9f;
+      --accent-soft: #e8f3fa;
+      --warn: #8a5a00;
+      --warn-soft: #fff3cf;
+      --bad: #a63232;
+      --bad-soft: #ffe8e8;
+      --good: #236f42;
+      --good-soft: #e7f5ec;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    header {
+      background: #0f3045;
+      color: white;
+      padding: 32px 48px;
+    }
+    header h1 { margin: 0 0 8px 0; font-size: 32px; }
+    header p { margin: 4px 0; color: #d8e9f3; }
+    nav {
+      background: white;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 48px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    nav a {
+      margin-right: 18px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    main {
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 24px 60px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 26px 30px;
+      margin-bottom: 22px;
+      box-shadow: 0 1px 3px rgba(20, 40, 60, 0.05);
+    }
+    h2 {
+      margin-top: 0;
+      color: #12384f;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+    h3 { color: #194e6e; margin-bottom: 4px; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 14px 0 20px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+    th {
+      background: var(--accent-soft);
+      text-align: left;
+      color: #12384f;
+    }
+    .note, .warning, .deny, .ok {
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin: 14px 0;
+    }
+    .note { background: var(--accent-soft); border-left: 4px solid var(--accent); }
+    .warning { background: var(--warn-soft); border-left: 4px solid var(--warn); }
+    .deny { background: var(--bad-soft); border-left: 4px solid var(--bad); }
+    .ok { background: var(--good-soft); border-left: 4px solid var(--good); }
+    code {
+      background: #edf2f7;
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+    footer {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 24px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Atlas Mobility Group - Expense Policy 2026</h1>
+  <p><strong>Document type:</strong> Internal HTML policy snapshot</p>
+  <p><strong>Effective:</strong> 2026-01-01 | <strong>Owner:</strong> Finance Operations | <strong>Version:</strong> EXP-2026.2</p>
+  <p>This HTML policy governs reimbursement evidence, meal limits, receipts, entertainment, and expense audit behavior.</p>
+</header>
+
+<nav>
+  <a href="#purpose">Purpose</a>
+  <a href="#receipts">Receipts</a>
+  <a href="#meals">Meals</a>
+  <a href="#entertainment">Entertainment</a>
+  <a href="#transport">Transport</a>
+  <a href="#mileage">Mileage</a>
+  <a href="#digital">Digital tools</a>
+  <a href="#nonreimbursable">Non-reimbursable</a>
+  <a href="#faq">FAQ</a>
+</nav>
+
+<main>
+<section id="purpose">
+  <h2>1. Purpose and Scope</h2>
+  <p>
+    This policy explains which expenses may be reimbursed by Atlas Mobility Group when an employee incurs
+    reasonable business costs. The policy applies to employees, contractors with explicit written expense terms,
+    and temporary workers travelling on behalf of the company.
+  </p>
+  <p>
+    This HTML policy is intended to be read together with the Travel Policy PDF and the Per Diem Caps spreadsheet.
+    If two sources conflict, use the following priority order:
+  </p>
+  <ol>
+    <li>Country-specific legal rules and tax requirements.</li>
+    <li>Written pre-approval from Finance Operations or the employee's cost center owner.</li>
+    <li>The Travel Policy PDF for travel logistics and approval requirements.</li>
+    <li>This Expense Policy HTML page for evidence and reimbursement rules.</li>
+    <li>The Per Diem Caps spreadsheet for numeric country, city, lodging, meal, and taxi thresholds.</li>
+  </ol>
+  <div class="note">
+    <strong>Evidence principle:</strong> Atlas reimburses business expenses only when the business purpose, date,
+    amount, currency, vendor, and employee connection are reasonably clear.
+  </div>
+</section>
+
+<section id="receipts">
+  <h2>2. Receipt and Evidence Requirements</h2>
+  <p>Receipts are required for all expense claims above EUR 10.00. A card transaction alone is not sufficient evidence.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Evidence item</th>
+        <th>Required when</th>
+        <th>Minimum content</th>
+        <th>Fallback if missing</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Itemized receipt</td>
+        <td>Meals, hotels, taxis, client entertainment, parking, supplies</td>
+        <td>Vendor, date, line items or description, tax if available, total amount, currency</td>
+        <td>Employee must submit missing receipt declaration and manager approval if over EUR 25</td>
+      </tr>
+      <tr>
+        <td>Boarding pass</td>
+        <td>Flights</td>
+        <td>Passenger name, route, date, flight number or carrier</td>
+        <td>Airline travel certificate may replace boarding pass</td>
+      </tr>
+      <tr>
+        <td>Hotel folio</td>
+        <td>Hotel stays</td>
+        <td>Guest name, room nights, taxes, breakfast indication, city, total</td>
+        <td>Booking confirmation alone is not enough if it does not prove payment</td>
+      </tr>
+      <tr>
+        <td>Attendee list</td>
+        <td>Client entertainment or group meals above EUR 120</td>
+        <td>Names, company, business purpose, host employee, relationship to project</td>
+        <td>Claim is held until attendee list is provided</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="warning">
+    Missing evidence does not automatically make an expense non-reimbursable, but it lowers confidence and may trigger
+    manual review. Repeat missing evidence can lead to reimbursement refusal.
+  </div>
+</section>
+
+<section id="meals">
+  <h2>3. Meals and Daily Subsistence</h2>
+  <p>
+    Meal reimbursement must be reasonable for the travel location. The numeric cap is maintained in the Per Diem Caps
+    spreadsheet. The meal cap applies to the reimbursable food portion before non-reimbursable alcohol is removed.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Meal type</th>
+        <th>Default rule</th>
+        <th>Receipt required?</th>
+        <th>Important limitation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Breakfast</td>
+        <td>Reimbursable only if not included in hotel rate or event package</td>
+        <td>Yes if above EUR 10</td>
+        <td>Do not claim separate breakfast when hotel folio shows breakfast included</td>
+      </tr>
+      <tr>
+        <td>Lunch</td>
+        <td>Reimbursable during business travel or approved offsite meetings</td>
+        <td>Yes if above EUR 10</td>
+        <td>Office cafeteria lunch at home location is not reimbursable</td>
+      </tr>
+      <tr>
+        <td>Dinner</td>
+        <td>Reimbursable during overnight business travel or late return after 20:00</td>
+        <td>Yes if above EUR 10</td>
+        <td>Alcohol must be removed unless client entertainment was pre-approved</td>
+      </tr>
+      <tr>
+        <td>Snacks and coffee</td>
+        <td>Allowed only when part of a documented meeting or travel day</td>
+        <td>Yes if above EUR 10</td>
+        <td>Daily personal coffee is not reimbursable</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="deny">
+    <strong>Alcohol rule:</strong> Alcohol is not reimbursable for ordinary employee meals. It may be reimbursed only for
+    pre-approved client entertainment with attendee list and business purpose.
+  </div>
+  <p>
+    Tips are reimbursable up to 10% of the pre-tax meal amount where tipping is customary. Tips above 10% require manager
+    approval and a short explanation.
+  </p>
+</section>
+
+<section id="entertainment">
+  <h2>4. Client Entertainment and Hospitality</h2>
+  <p>
+    Client entertainment is a stricter category than meals. It requires evidence of a real business purpose and cannot be
+    used to bypass meal caps for ordinary team dinners.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Approval required before expense?</th>
+        <th>Required evidence</th>
+        <th>Default treatment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Client dinner below EUR 120 total</td>
+        <td>No, unless alcohol is included</td>
+        <td>Receipt, attendee names, business purpose</td>
+        <td>Reimbursable if reasonable</td>
+      </tr>
+      <tr>
+        <td>Client dinner above EUR 120 total</td>
+        <td>Yes</td>
+        <td>Receipt, attendee list, agenda or opportunity reference</td>
+        <td>Manual review</td>
+      </tr>
+      <tr>
+        <td>Alcohol with client meal</td>
+        <td>Yes</td>
+        <td>Pre-approval, attendee list, business purpose</td>
+        <td>Not reimbursable without pre-approval</td>
+      </tr>
+      <tr>
+        <td>Team celebration</td>
+        <td>Yes if above EUR 50 per person</td>
+        <td>Manager approval, attendee count, cost center</td>
+        <td>Employee morale budget, not travel expense</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="transport">
+  <h2>5. Local Transport, Taxi, Parking, and Public Transit</h2>
+  <p>
+    Employees should prefer public transport when safe and practical. Taxi rules depend on city and time threshold in the
+    Per Diem Caps spreadsheet. Taxi claims must include origin, destination, date, and business purpose.
+  </p>
+  <ul>
+    <li>Taxi from airport to hotel is reimbursable if public transport is unavailable, impractical due to luggage, or travel occurs after the city-specific after-hours threshold.</li>
+    <li>Taxi between office and home is normally not reimbursable unless there is approved overtime ending after 22:00 or a safety concern.</li>
+    <li>Ride-hailing receipts are accepted if they show route or pickup/dropoff information.</li>
+    <li>Parking is reimbursable only during approved business travel or client meetings.</li>
+    <li>Traffic fines, speeding tickets, and private parking violations are never reimbursable.</li>
+  </ul>
+</section>
+
+<section id="mileage">
+  <h2>6. Private Car and Mileage</h2>
+  <p>
+    Private car use should be pre-approved when the one-way distance exceeds 150 km. Mileage rates are maintained in the
+    spreadsheet because they may change with local tax rules.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Vehicle type</th>
+        <th>Evidence</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Private car</td>
+        <td>Route, distance, business purpose, approval if above 150 km one way</td>
+        <td>Fuel receipts cannot be claimed separately when mileage is claimed</td>
+      </tr>
+      <tr>
+        <td>Rental car</td>
+        <td>Rental agreement, fuel receipt, approval if above compact class</td>
+        <td>Insurance upgrades require business justification</td>
+      </tr>
+      <tr>
+        <td>Company car</td>
+        <td>Trip log where required</td>
+        <td>Do not claim private mileage reimbursement for company car trips</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="digital">
+  <h2>7. Digital Tools and Submission Rules</h2>
+  <p>
+    Expense claims must be submitted within 30 calendar days after the trip end date. The preferred submission format is
+    the company expense portal. Each claim should include category, cost center, trip purpose, source currency, and
+    supporting evidence.
+  </p>
+  <ul>
+    <li>Use the exchange rate from the Finance monthly table, not a random card statement rate, unless Finance explicitly asks for the card statement.</li>
+    <li>Split mixed receipts into reimbursable and non-reimbursable portions.</li>
+    <li>Submit hotel, meal, taxi, and flight evidence as separate line items when possible.</li>
+    <li>Do not upload full passport scans unless explicitly requested by Travel Security.</li>
+  </ul>
+</section>
+
+<section id="nonreimbursable">
+  <h2>8. Non-Reimbursable Expenses</h2>
+  <p>The following are normally not reimbursable:</p>
+  <ul>
+    <li>Alcohol without pre-approved client entertainment classification.</li>
+    <li>Mini-bar, movies, spa, gym day passes, and personal hotel services.</li>
+    <li>Traffic fines, penalties, private parking violations, and lost ticket fees.</li>
+    <li>Personal clothing, luggage, headphones, chargers, toiletries, and travel accessories.</li>
+    <li>Airline seat upgrades, priority boarding, lounge access, and extra legroom unless approved for medical or business reasons.</li>
+    <li>Expenses submitted more than 90 days late without Finance exception approval.</li>
+  </ul>
+</section>
+
+<section id="faq">
+  <h2>9. FAQ</h2>
+  <h3>Can I claim dinner in Vienna if the receipt includes wine?</h3>
+  <p>
+    You may claim the reimbursable food portion up to the applicable meal cap, but the wine must be removed unless the
+    dinner was approved as client entertainment before the expense occurred.
+  </p>
+  <h3>Can I use my credit card statement instead of a receipt?</h3>
+  <p>
+    No. A card statement proves payment but does not prove business purpose or item-level eligibility.
+  </p>
+  <h3>What if the local cap is lower than the actual hotel price during a conference?</h3>
+  <p>
+    The claim may be reimbursed above cap only if the employee obtained pre-approval or documented that no reasonable
+    alternatives were available.
+  </p>
+  <h3>What if the spreadsheet and HTML policy disagree?</h3>
+  <p>
+    Use the spreadsheet for numeric caps and this HTML policy for evidence requirements. If the conflict concerns approval
+    authority, use the Travel Policy PDF first.
+  </p>
+</section>
+</main>
+
+<footer>
+  Atlas Mobility Group synthetic policy corpus for local RAG demo. Generated for learning and evaluation only.
+</footer>
+</body>
+</html>
