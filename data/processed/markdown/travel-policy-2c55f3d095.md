@@ -4,7 +4,7 @@
 - source_path: `data/raw/travel_policy.pdf`
 - doc_type: `pdf`
 - content_hash: `8e959f6e30b46466a8c0931a717fb6e1db403fff7d8c89aeed1429f8c130926f`
-- extraction_method: `pypdf`
+- extraction_method: `pypdf+pdfplumber`
 
 ## Content
 
@@ -18,7 +18,15 @@ This policy defines how employees and eligible contractors book business travel,
 
 ### 1.1 Source Priority
 
-Priority Source Use it for Example 1 Local law and tax rule Mandatory legal requirements VAT invoice rules, tax deductibility 2 Written pre-approval Approved exceptions Hotel above cap due to conference shortage 3 Travel Policy PDF Travel logistics, approval authority, booking class, travel evidence Business class approval 4 Expense Policy HTML Evidence requirements, submission rules, reimbursable categories Receipt over EUR 10 5 Per Diem Caps XLSX Numeric city and country caps and thresholds Berlin hotel cap
+#### Extracted Table 1 (Page 1)
+
+| Priority | Source | Use it for | Example |
+| --- | --- | --- | --- |
+| 1 | Local law and tax rule | Mandatory legal requirements | VAT invoice rules, tax deductibility |
+| 2 | Written pre-approval | Approved exceptions | Hotel above cap due to conference shortage |
+| 3 | Travel Policy PDF | Travel logistics, approval authority, booking class, travel evidence | Business class approval |
+| 4 | Expense Policy HTML | Evidence requirements, submission rules, reimbursable categories | Receipt over EUR 10 |
+| 5 | Per Diem Caps XLSX | Numeric city and country caps and thresholds | Berlin hotel cap |
 
 ## 2. Roles and Responsibilities
 
@@ -58,7 +66,19 @@ evidence that reasonable alternatives were unavailable.
 
 ## 4. Approval Matrix
 
-The table below is intentionally included so the PDF is not just plain paragraphs. A good RAG pipeline should keep row context and section metadata. Travel or expense scenario Default approval before booking Approver Required evidence Domestic trip under EUR 500 total No, if within policy Line manager can audit afterwards Trip purpose, receipt or booking evidence International trip Yes Line manager Trip purpose, destination, dates, estimated cost Hotel above city cap Yes Cost center owner Hotel comparison, reason for above-cap stay Business class intercontinental flight above 6 hours Yes Cost center owner Flight duration, business reason, cost comparison Client entertainment above EUR 120 Yes Cost center owner or Sales VP Attendee list, business purpose, receipt Taxi before after-hours threshold Only if exception applies Line manager Origin, destination, reason public transport was not practical Travel to high-risk destination Yes Travel Security + line manager Security approval, itinerary, emergency contact
+The table below is intentionally included so the PDF is not just plain paragraphs. A good RAG pipeline should keep row context and section metadata.
+
+#### Extracted Table 1 (Page 2)
+
+| Travel or expense scenario | Default approval before booking | Approver | Required evidence |
+| --- | --- | --- | --- |
+| Domestic trip under EUR 500 total | No, if within policy | Line manager can audit afterwards | Trip purpose, receipt or booking evidence |
+| International trip | Yes | Line manager | Trip purpose, destination, dates, estimated cost |
+| Hotel above city cap | Yes | Cost center owner | Hotel comparison, reason for above-cap stay |
+| Business class intercontinental flight above 6 hours | Yes | Cost center owner | Flight duration, business reason, cost comparison |
+| Client entertainment above EUR 120 | Yes | Cost center owner or Sales VP | Attendee list, business purpose, receipt |
+| Taxi before after-hours threshold | Only if exception applies | Line manager | Origin, destination, reason public transport was not practical |
+| Travel to high-risk destination | Yes | Travel Security + line manager | Security approval, itinerary, emergency contact |
 
 ## 5. Flights
 
@@ -150,11 +170,22 @@ the receipt is unavailable.
 
 ## 11. Worked Examples
 
-Case Likely result Reason Vienna dinner: food EUR 32, wine EUR 8, ordinary travel meal Food reimbursable, wine removed Food is below Vienna cap; alcohol is not reimbursable without entertainment pre-approval Berlin hotel EUR 175 per night Within cap Berlin hotel cap is maintained in XLSX and is EUR 180 Prague taxi at 20:30 without safety issue Usually not reimbursable Prague after-hours threshold is 21:00 in XLSX
+#### Extracted Table 1 (Page 3)
+
+| Case | Likely result | Reason |
+| --- | --- | --- |
+| Vienna dinner: food EUR 32, wine EUR 8, ordinary travel meal | Food reimbursable, wine removed | Food is below Vienna cap; alcohol is not reimbursable without entertainment pre-approval |
+| Berlin hotel EUR 175 per night | Within cap | Berlin hotel cap is maintained in XLSX and is EUR 180 |
+| Prague taxi at 20:30 without safety issue | Usually not reimbursable | Prague after-hours threshold is 21:00 in XLSX |
 
 <!-- source_page: 4 -->
 
-Case Likely result Reason Business class flight Vienna to New York, 9 hours, no approval Manual review or rejection Business class requires pre-approval Hotel breakfast included, separate cafe breakfast claimed Not reimbursable Duplicate breakfast claim
+#### Extracted Table 1 (Page 4)
+
+| Case | Likely result | Reason |
+| --- | --- | --- |
+| Business class flight Vienna to New York, 9 hours, no approval | Manual review or rejection | Business class requires pre-approval |
+| Hotel breakfast included, separate cafe breakfast claimed | Not reimbursable | Duplicate breakfast claim |
 
 ## 12. RAG Notes for Builders
 
