@@ -36,6 +36,7 @@ class IngestedDocument:
 class IngestResult:
     ingested_documents: list[IngestedDocument]
     skipped_documents: list[IngestedDocument]
+    removed_documents: list[IngestedDocument]
     warnings: list[IngestWarning]
 
 
@@ -76,7 +77,13 @@ def ingest_sources(settings: Settings, *, force: bool = False) -> IngestResult:
     source_paths, unsupported_paths = split_supported_files(
         discover_raw_files(settings.raw_data_dir)
     )
+    current_source_keys = {source_path.as_posix() for source_path in source_paths}
     warnings = [_build_unsupported_warning(path) for path in unsupported_paths]
+    removed_documents = _remove_orphaned_markdown(
+        previous_documents,
+        current_source_keys,
+        settings.markdown_dir,
+    )
 
     ingested_documents: list[IngestedDocument] = []
     skipped_documents: list[IngestedDocument] = []
@@ -106,6 +113,7 @@ def ingest_sources(settings: Settings, *, force: bool = False) -> IngestResult:
     return IngestResult(
         ingested_documents=ingested_documents,
         skipped_documents=skipped_documents,
+        removed_documents=removed_documents,
         warnings=warnings,
     )
 
@@ -173,6 +181,27 @@ def write_manifest(output_path: Path, documents: Iterable[IngestedDocument]) -> 
 def write_warnings(output_path: Path, warnings: Iterable[IngestWarning]) -> None:
     rows = [json.dumps(asdict(warning), ensure_ascii=True) for warning in warnings]
     output_path.write_text("\n".join(rows) + ("\n" if rows else ""), encoding="utf-8")
+
+
+def _remove_orphaned_markdown(
+    previous_documents: Iterable[IngestedDocument],
+    current_source_keys: set[str],
+    markdown_dir: Path,
+) -> list[IngestedDocument]:
+    removed_documents: list[IngestedDocument] = []
+    for document in previous_documents:
+        if document.source_path in current_source_keys:
+            continue
+
+        output_path = Path(document.output_markdown_path)
+        # Only remove files inside the configured markdown output directory.
+        if output_path.exists() and output_path.resolve().is_relative_to(
+            markdown_dir.resolve()
+        ):
+            output_path.unlink()
+        removed_documents.append(document)
+
+    return removed_documents
 
 
 def _read_manifest(manifest_path: Path) -> list[IngestedDocument]:

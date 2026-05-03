@@ -10,7 +10,8 @@ def main() -> None:
     result = ingest_sources(settings)
     print(
         f"Ingested {len(result.ingested_documents)} documents; "
-        f"skipped {len(result.skipped_documents)} unchanged documents."
+        f"skipped {len(result.skipped_documents)} unchanged documents; "
+        f"removed {len(result.removed_documents)} orphaned Markdown files."
     )
     if result.warnings:
         print(f"Warning: skipped {len(result.warnings)} unsupported files.")
