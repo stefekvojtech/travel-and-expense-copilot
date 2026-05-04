@@ -1,7 +1,7 @@
 import _bootstrap  # noqa: F401
 
 from app.core.config import get_settings
-from app.ingest.chunking import chunk_all_blocks
+from app.ingest.pipeline_chunk import chunk_all_blocks
 
 
 def main() -> None:
