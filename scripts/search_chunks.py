@@ -50,7 +50,10 @@ def main() -> None:
         preview = result.text.replace("\n", " ").strip()
         if len(preview) > 280:
             preview = f"{preview[:277]}..."
-        print(f"\n[{index}] distance={result.distance_score:.4f}")
+        print(
+            f"\n[{index}] cosine_distance={result.cosine_distance:.4f} "
+            f"approx_similarity={result.approximate_cosine_similarity:.4f}"
+        )
         print(f"chunk_id: {result.chunk_id}")
         print(f"source: {result.source_path}")
         print(f"section: {result.section_path}")

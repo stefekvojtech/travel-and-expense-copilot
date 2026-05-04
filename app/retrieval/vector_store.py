@@ -5,6 +5,8 @@ from typing import Any
 
 from app.core.config import Settings
 
+CHROMA_COLLECTION_METADATA = {"hnsw:space": "cosine"}
+
 
 @dataclass(frozen=True)
 class RetrievalFilters:
@@ -21,7 +23,7 @@ class RetrievedChunk:
 
     text: str
     metadata: dict[str, Any]
-    distance_score: float
+    cosine_distance: float
 
     @property
     def chunk_id(self) -> str | None:
@@ -34,6 +36,10 @@ class RetrievedChunk:
     @property
     def section_path(self) -> str | None:
         return _optional_str(self.metadata.get("section_path"))
+
+    @property
+    def approximate_cosine_similarity(self) -> float:
+        return 1 - self.cosine_distance
 
 
 @dataclass(frozen=True)
@@ -68,7 +74,7 @@ def search_chunks(
         RetrievedChunk(
             text=document.page_content,
             metadata=dict(document.metadata),
-            distance_score=float(score),
+            cosine_distance=float(score),
         )
         for document, score in results
     ]
@@ -108,6 +114,7 @@ def _open_chroma_vector_store(settings: Settings):
         collection_name=settings.vector_collection_name,
         embedding_function=embeddings,
         persist_directory=settings.vector_store_dir.as_posix(),
+        collection_metadata=CHROMA_COLLECTION_METADATA,
     )
 
 

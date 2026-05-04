@@ -10,6 +10,8 @@ from typing import Any, Iterable
 
 from app.core.config import Settings
 
+CHROMA_COLLECTION_METADATA = {"hnsw:space": "cosine"}
+
 
 @dataclass(frozen=True)
 class ChunkRecord:
@@ -85,6 +87,7 @@ def _build_chroma_vector_store(settings: Settings):
         collection_name=settings.vector_collection_name,
         embedding_function=embeddings,
         persist_directory=settings.vector_store_dir.as_posix(),
+        collection_metadata=CHROMA_COLLECTION_METADATA,
     )
 
 
