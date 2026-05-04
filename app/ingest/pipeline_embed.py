@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import re
+import shutil
+import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -46,16 +49,18 @@ def embed_all_chunks(settings: Settings, *, dry_run: bool = False) -> EmbedResul
         )
 
     settings.vector_store_dir.mkdir(parents=True, exist_ok=True)
+    _reset_chroma_collection(settings)
     vector_store = _build_chroma_vector_store(settings)
 
     if chunks:
-        # Chroma stores one embedding document per chunk. UiPath parallel: each
-        # queue item keeps its transaction data plus references back to the source.
+        # Rebuild the collection from the chunk artifacts so reruns cannot leave
+        # duplicate or stale vectors behind.
         vector_store.add_texts(
             texts=[chunk.text for chunk in chunks],
             metadatas=[_chunk_metadata(chunk) for chunk in chunks],
             ids=[chunk.chunk_id for chunk in chunks],
         )
+    _remove_orphaned_chroma_vector_dirs(settings)
 
     return EmbedResult(
         chunk_count=len(chunks),
@@ -72,7 +77,7 @@ def _build_chroma_vector_store(settings: Settings):
     except ImportError as exc:
         raise RuntimeError(
             "Embedding requires langchain-chroma and langchain-openai. "
-            "Run `uv sync` after updating pyproject.toml."
+            "Run `python -m pip install -e .` from the project root."
         ) from exc
 
     embeddings = OpenAIEmbeddings(model=settings.embedding_model)
@@ -81,6 +86,55 @@ def _build_chroma_vector_store(settings: Settings):
         embedding_function=embeddings,
         persist_directory=settings.vector_store_dir.as_posix(),
     )
+
+
+def _reset_chroma_collection(settings: Settings) -> None:
+    try:
+        import chromadb
+    except ImportError as exc:
+        raise RuntimeError(
+            "Embedding requires chromadb. Run `python -m pip install -e .` "
+            "from the project root."
+        ) from exc
+
+    client = chromadb.PersistentClient(path=settings.vector_store_dir.as_posix())
+    try:
+        client.delete_collection(settings.vector_collection_name)
+    except Exception as exc:
+        message = str(exc).lower()
+        if "does not exist" not in message and "not found" not in message:
+            raise
+
+
+def _remove_orphaned_chroma_vector_dirs(settings: Settings) -> None:
+    sqlite_path = settings.vector_store_dir / "chroma.sqlite3"
+    if not sqlite_path.exists():
+        return
+
+    active_vector_segment_ids = _read_active_vector_segment_ids(sqlite_path)
+    uuid_dir_pattern = re.compile(
+        r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    )
+    vector_store_root = settings.vector_store_dir.resolve()
+    for path in settings.vector_store_dir.iterdir():
+        if not path.is_dir() or not uuid_dir_pattern.match(path.name):
+            continue
+        if path.name in active_vector_segment_ids:
+            continue
+        if not path.resolve().is_relative_to(vector_store_root):
+            continue
+        shutil.rmtree(path)
+
+
+def _read_active_vector_segment_ids(sqlite_path: Path) -> set[str]:
+    connection = sqlite3.connect(sqlite_path)
+    try:
+        rows = connection.execute(
+            "SELECT id FROM segments WHERE scope = 'VECTOR'"
+        ).fetchall()
+    finally:
+        connection.close()
+    return {str(row[0]) for row in rows}
 
 
 def _read_all_chunks(chunks_dir: Path) -> list[ChunkRecord]:

@@ -4,13 +4,13 @@
 - source_path: `data/raw/per_diem_caps.xlsx`
 - doc_type: `xlsx`
 - content_hash: `78d8b7ee41c61f190e0838f7f6bf86998b330de2eef4be54a2c6a5ef9d1cd4a0`
-- extraction_method: `openpyxl`
+- extraction_method: `openpyxl_row_level`
 - blocks_path: `data/processed/blocks/per-diem-caps-1639db42ae.jsonl`
 
 ## Content
 
 ## Sheet: README
-| Atlas Mobility Group - Per Diem Caps Workbook 2026 |  |
+| Atlas Mobility Group - Per Diem Caps Workbook 2026 | column_2 |
 | Purpose | Synthetic data source for local RAG and agentic reimbursement demo. |
 | Version | PDC-2026.2 |
 | Effective date | 2026-01-01 |

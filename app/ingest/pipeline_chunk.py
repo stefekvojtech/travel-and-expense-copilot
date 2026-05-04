@@ -130,6 +130,13 @@ def chunk_blocks(
     chunk_overlap: int,
 ) -> list[ChunkArtifact]:
     """Split blocks with LangChain Markdown and token-aware recursive splitters."""
+    if blocks and all(block.doc_type == "xlsx" for block in blocks):
+        return _chunk_xlsx_rows(
+            blocks,
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+        )
+
     assembly = _assemble_markdown_with_spans(blocks)
     section_context = _build_section_context(blocks)
     header_splitter = MarkdownHeaderTextSplitter(
@@ -223,6 +230,51 @@ def chunk_blocks(
                         recursive_splitter,
                     )
                 )
+
+    return chunks
+
+
+def _chunk_xlsx_rows(
+    blocks: list[SourceBlockRecord],
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+) -> list[ChunkArtifact]:
+    """Create retrieval chunks from spreadsheet rows rather than whole sheets."""
+    recursive_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+        encoding_name="cl100k_base",
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+    )
+    row_blocks = [block for block in blocks if block.block_type == "table_row"]
+    chunks: list[ChunkArtifact] = []
+    for row_block in row_blocks:
+        row_token_count = recursive_splitter._length_function(row_block.text)
+        if row_token_count <= chunk_size:
+            chunks.append(
+                _build_chunk(
+                    [row_block],
+                    row_block.text,
+                    "xlsx_row_as_chunk",
+                    len(chunks) + 1,
+                    recursive_splitter,
+                )
+            )
+            continue
+
+        for split_document in recursive_splitter.create_documents([row_block.text]):
+            split_text = split_document.page_content.strip()
+            if not split_text:
+                continue
+            chunks.append(
+                _build_chunk(
+                    [row_block],
+                    split_text,
+                    "xlsx_row+recursive_tiktoken",
+                    len(chunks) + 1,
+                    recursive_splitter,
+                )
+            )
 
     return chunks
 
@@ -351,7 +403,7 @@ def _build_section_context(blocks: list[SourceBlockRecord]) -> dict[str, str]:
     for block in blocks:
         if block.section_path is None:
             continue
-        if block.block_type == "table_row" and block.section_path not in context:
+        if block.block_type == "table_header" and block.section_path not in context:
             # Spreadsheet continuation chunks need the header row to stay meaningful.
             context[block.section_path] = block.text
     return context
@@ -566,7 +618,7 @@ def _context_block(
     if section_path is None:
         return None
     for block in blocks:
-        if block.section_path == section_path and block.block_type == "table_row":
+        if block.section_path == section_path and block.block_type == "table_header":
             return block
     return None
 
@@ -616,4 +668,22 @@ def _merge_metadata(blocks: list[SourceBlockRecord]) -> dict:
     ]
     if table_indexes:
         metadata["table_indexes_on_page"] = table_indexes
+    for key in (
+        "row_number",
+        "country_code",
+        "country",
+        "city",
+        "expense_category",
+        "currency",
+    ):
+        values = [
+            block.metadata.get(key)
+            for block in blocks
+            if block.metadata.get(key) is not None
+        ]
+        unique_values = list(dict.fromkeys(values))
+        if len(unique_values) == 1:
+            metadata[key] = unique_values[0]
+        elif unique_values:
+            metadata[f"{key}s"] = unique_values
     return metadata
