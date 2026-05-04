@@ -2,6 +2,7 @@ import argparse
 import sys
 
 from app.core.config import get_settings
+from app.retrieval.context import assemble_context
 from app.retrieval.vector_store import RetrievalFilters, get_vector_store_info, search_chunks
 
 
@@ -58,6 +59,13 @@ def main() -> None:
         print(f"source: {result.source_path}")
         print(f"section: {result.section_path}")
         print(f"text: {preview}")
+
+    assembled_context = assemble_context(
+        results,
+        max_blocks=settings.retrieval_context_k,
+    )
+    print("\n\n=== Assembled Context ===\n")
+    print(assembled_context.context_text)
 
 
 if __name__ == "__main__":
