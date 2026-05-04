@@ -34,6 +34,13 @@ def _get_float(name: str, default: float) -> float:
     return float(value) if value is not None else default
 
 
+def _get_path(name: str) -> Path:
+    path = Path(os.environ[name])
+    if path.is_absolute():
+        return path
+    return ROOT_DIR / path
+
+
 @dataclass(frozen=True)
 class Settings:
     app_name: str
@@ -49,6 +56,7 @@ class Settings:
     markdown_dir: Path
     chunks_dir: Path
     vector_store_dir: Path
+    vector_collection_name: str
     retrieval_top_k: int
     retrieval_rerank_k: int
     retrieval_context_k: int
@@ -70,11 +78,12 @@ def get_settings() -> Settings:
         embedding_model=os.environ["EMBEDDING_MODEL"],
         vision_model=os.environ["VISION_MODEL"],
         temperature=_get_float("MODEL_TEMPERATURE", 0.0),
-        raw_data_dir=Path(os.environ["RAW_DATA_DIR"]),
-        processed_data_dir=Path(os.environ["PROCESSED_DATA_DIR"]),
-        markdown_dir=Path(os.environ["MARKDOWN_DIR"]),
-        chunks_dir=Path(os.environ["CHUNKS_DIR"]),
-        vector_store_dir=Path(os.environ["VECTOR_STORE_DIR"]),
+        raw_data_dir=_get_path("RAW_DATA_DIR"),
+        processed_data_dir=_get_path("PROCESSED_DATA_DIR"),
+        markdown_dir=_get_path("MARKDOWN_DIR"),
+        chunks_dir=_get_path("CHUNKS_DIR"),
+        vector_store_dir=_get_path("VECTOR_STORE_DIR"),
+        vector_collection_name=os.environ["VECTOR_COLLECTION_NAME"],
         retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 12),
         retrieval_rerank_k=_get_int("RETRIEVAL_RERANK_K", 5),
         retrieval_context_k=_get_int("RETRIEVAL_CONTEXT_K", 4),

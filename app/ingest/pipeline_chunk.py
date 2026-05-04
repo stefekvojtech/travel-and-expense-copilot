@@ -589,7 +589,10 @@ def _read_blocks(blocks_path: Path) -> list[SourceBlockRecord]:
 
 def _write_chunks(output_path: Path, chunks: Iterable[ChunkArtifact]) -> None:
     rows = [json.dumps(asdict(chunk), ensure_ascii=True) for chunk in chunks]
-    output_path.write_text("\n".join(rows) + ("\n" if rows else ""), encoding="utf-8")
+    text = "\n".join(rows) + ("\n" if rows else "")
+    if output_path.exists() and output_path.read_text(encoding="utf-8") == text:
+        return
+    output_path.write_text(text, encoding="utf-8")
 
 
 def _remove_orphaned_chunk_files(

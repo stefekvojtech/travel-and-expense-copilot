@@ -1,5 +1,3 @@
-import _bootstrap  # noqa: F401
-
 from app.core.config import get_settings
 from app.ingest.pipeline_raw import ingest_sources
 
