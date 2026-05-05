@@ -4,8 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.core.config import Settings
-
-CHROMA_COLLECTION_METADATA = {"hnsw:space": "cosine"}
+from app.retrieval.chroma_config import CHROMA_COLLECTION_METADATA
 
 
 @dataclass(frozen=True)
