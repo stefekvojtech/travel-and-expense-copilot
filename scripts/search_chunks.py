@@ -57,6 +57,8 @@ def main() -> None:
     assembled_context = assemble_context(
         reranked_results,
         max_blocks=settings.retrieval_context_k,
+        max_total_tokens=settings.retrieval_context_max_tokens,
+        max_block_tokens=settings.retrieval_context_max_block_tokens,
     )
     print("=== Assembled Context ===\n")
     print(assembled_context.context_text)
