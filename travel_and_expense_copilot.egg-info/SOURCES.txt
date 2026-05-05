@@ -14,6 +14,10 @@ app/ingest/loaders/models.py
 app/ingest/loaders/pdf.py
 app/ingest/loaders/text.py
 app/ingest/loaders/xlsx.py
+app/retrieval/__init__.py
+app/retrieval/context.py
+app/retrieval/rerank.py
+app/retrieval/vector_store.py
 travel_and_expense_copilot.egg-info/PKG-INFO
 travel_and_expense_copilot.egg-info/SOURCES.txt
 travel_and_expense_copilot.egg-info/dependency_links.txt

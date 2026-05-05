@@ -3,6 +3,7 @@ import sys
 
 from app.core.config import get_settings
 from app.retrieval.context import assemble_context
+from app.retrieval.rerank import rerank_chunks
 from app.retrieval.vector_store import RetrievalFilters, get_vector_store_info, search_chunks
 
 
@@ -46,25 +47,18 @@ def main() -> None:
     if not results:
         print("No chunks found.")
         return
-
-    for index, result in enumerate(results, start=1):
-        preview = result.text.replace("\n", " ").strip()
-        if len(preview) > 280:
-            preview = f"{preview[:277]}..."
-        print(
-            f"\n[{index}] cosine_distance={result.cosine_distance:.4f} "
-            f"approx_similarity={result.approximate_cosine_similarity:.4f}"
-        )
-        print(f"chunk_id: {result.chunk_id}")
-        print(f"source: {result.source_path}")
-        print(f"section: {result.section_path}")
-        print(f"text: {preview}")
+    reranked_results = rerank_chunks(
+        args.query,
+        results,
+        model_name=settings.rerank_model,
+        top_k=len(results),
+    )
 
     assembled_context = assemble_context(
-        results,
+        reranked_results,
         max_blocks=settings.retrieval_context_k,
     )
-    print("\n\n=== Assembled Context ===\n")
+    print("=== Assembled Context ===\n")
     print(assembled_context.context_text)
 
 

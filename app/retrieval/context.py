@@ -4,7 +4,10 @@ import json
 from dataclasses import dataclass
 from typing import Any, Iterable
 
+from app.retrieval.rerank import RerankedChunk
 from app.retrieval.vector_store import RetrievedChunk
+
+ContextCandidate = RetrievedChunk | RerankedChunk
 
 
 @dataclass(frozen=True)
@@ -20,6 +23,7 @@ class EvidenceBlock:
     row_number: int | None
     cosine_distance: float
     approximate_cosine_similarity: float
+    rerank_score: float | None
     text: str
 
 
@@ -30,7 +34,7 @@ class AssembledContext:
 
 
 def assemble_context(
-    retrieved_chunks: Iterable[RetrievedChunk],
+    retrieved_chunks: Iterable[ContextCandidate],
     *,
     max_blocks: int,
     max_blocks_per_section: int = 1,
@@ -52,13 +56,13 @@ def assemble_context(
 
 
 def _select_diverse_chunks(
-    retrieved_chunks: Iterable[RetrievedChunk],
+    retrieved_chunks: Iterable[ContextCandidate],
     *,
     max_blocks: int,
     max_blocks_per_section: int,
-) -> list[RetrievedChunk]:
-    selected: list[RetrievedChunk] = []
-    overflow: list[RetrievedChunk] = []
+) -> list[ContextCandidate]:
+    selected: list[ContextCandidate] = []
+    overflow: list[ContextCandidate] = []
     seen_chunk_ids: set[str] = set()
     section_counts: dict[tuple[str | None, str | None], int] = {}
 
@@ -88,7 +92,10 @@ def _select_diverse_chunks(
     return selected[:max_blocks]
 
 
-def _build_evidence_block(chunk: RetrievedChunk, citation_number: int) -> EvidenceBlock:
+def _build_evidence_block(
+    chunk: ContextCandidate,
+    citation_number: int,
+) -> EvidenceBlock:
     return EvidenceBlock(
         citation_id=f"[{citation_number}]",
         chunk_id=chunk.chunk_id,
@@ -101,6 +108,7 @@ def _build_evidence_block(chunk: RetrievedChunk, citation_number: int) -> Eviden
         row_number=_optional_int(chunk.metadata.get("metadata_row_number")),
         cosine_distance=chunk.cosine_distance,
         approximate_cosine_similarity=chunk.approximate_cosine_similarity,
+        rerank_score=chunk.rerank_score if isinstance(chunk, RerankedChunk) else None,
         text=chunk.text.strip(),
     )
 
@@ -127,6 +135,9 @@ def _format_context_text(evidence_blocks: list[EvidenceBlock]) -> str:
                         f"cosine_distance={block.cosine_distance:.4f}, "
                         f"approx_similarity={block.approximate_cosine_similarity:.4f}"
                     ),
+                    f"rerank_score: {block.rerank_score:.4f}"
+                    if block.rerank_score is not None
+                    else None,
                     "content:",
                     block.text,
                 ]

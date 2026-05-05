@@ -60,6 +60,7 @@ class Settings:
     retrieval_top_k: int
     retrieval_rerank_k: int
     retrieval_context_k: int
+    rerank_model: str
     chunk_size: int
     chunk_overlap: int
     max_chunk_tokens: int
@@ -87,6 +88,7 @@ def get_settings() -> Settings:
         retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 12),
         retrieval_rerank_k=_get_int("RETRIEVAL_RERANK_K", 5),
         retrieval_context_k=_get_int("RETRIEVAL_CONTEXT_K", 4),
+        rerank_model=os.environ["RERANK_MODEL"],
         chunk_size=_get_int("CHUNK_SIZE", 800),
         chunk_overlap=_get_int("CHUNK_OVERLAP", 120),
         max_chunk_tokens=_get_int("MAX_CHUNK_TOKENS", 1200),
