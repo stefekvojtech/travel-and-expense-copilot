@@ -7,6 +7,7 @@ import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
+from uuid import uuid4
 
 from app.core.config import Settings
 
@@ -51,17 +52,30 @@ def embed_all_chunks(settings: Settings, *, dry_run: bool = False) -> EmbedResul
         )
 
     settings.vector_store_dir.mkdir(parents=True, exist_ok=True)
-    _reset_chroma_collection(settings)
-    vector_store = _build_chroma_vector_store(settings)
-
-    if chunks:
-        # Rebuild the collection from the chunk artifacts so reruns cannot leave
-        # duplicate or stale vectors behind.
-        vector_store.add_texts(
-            texts=[chunk.text for chunk in chunks],
-            metadatas=[_chunk_metadata(chunk) for chunk in chunks],
-            ids=[chunk.chunk_id for chunk in chunks],
+    temp_collection_name = _temporary_collection_name(settings.vector_collection_name)
+    try:
+        vector_store = _build_chroma_vector_store(
+            settings,
+            collection_name=temp_collection_name,
         )
+
+        if chunks:
+            # Build replacement vectors in a temporary collection first. The
+            # existing production collection remains usable if embedding fails.
+            vector_store.add_texts(
+                texts=[chunk.text for chunk in chunks],
+                metadatas=[_chunk_metadata(chunk) for chunk in chunks],
+                ids=[chunk.chunk_id for chunk in chunks],
+            )
+        _verify_collection_count(settings, temp_collection_name, expected_count=len(chunks))
+        _promote_temporary_collection(
+            settings,
+            temp_collection_name=temp_collection_name,
+        )
+    except Exception:
+        _delete_collection_if_exists(settings, temp_collection_name)
+        raise
+
     _remove_orphaned_chroma_vector_dirs(settings)
 
     return EmbedResult(
@@ -72,7 +86,7 @@ def embed_all_chunks(settings: Settings, *, dry_run: bool = False) -> EmbedResul
     )
 
 
-def _build_chroma_vector_store(settings: Settings):
+def _build_chroma_vector_store(settings: Settings, *, collection_name: str):
     try:
         from langchain_chroma import Chroma
         from langchain_openai import OpenAIEmbeddings
@@ -84,14 +98,82 @@ def _build_chroma_vector_store(settings: Settings):
 
     embeddings = OpenAIEmbeddings(model=settings.embedding_model)
     return Chroma(
-        collection_name=settings.vector_collection_name,
+        collection_name=collection_name,
         embedding_function=embeddings,
         persist_directory=settings.vector_store_dir.as_posix(),
         collection_metadata=CHROMA_COLLECTION_METADATA,
     )
 
 
-def _reset_chroma_collection(settings: Settings) -> None:
+def _temporary_collection_name(collection_name: str) -> str:
+    return f"{collection_name}__tmp__{uuid4().hex}"
+
+
+def _promote_temporary_collection(
+    settings: Settings,
+    *,
+    temp_collection_name: str,
+) -> None:
+    client = _chroma_client(settings)
+    backup_collection_name = _temporary_collection_name(
+        f"{settings.vector_collection_name}__backup"
+    )
+    backup_created = False
+    if _collection_exists(settings, settings.vector_collection_name):
+        current_collection = client.get_collection(settings.vector_collection_name)
+        current_collection.modify(name=backup_collection_name)
+        backup_created = True
+
+    temp_collection = client.get_collection(temp_collection_name)
+    try:
+        temp_collection.modify(name=settings.vector_collection_name)
+    except Exception:
+        if backup_created:
+            backup_collection = client.get_collection(backup_collection_name)
+            backup_collection.modify(name=settings.vector_collection_name)
+        raise
+
+    if backup_created:
+        _delete_collection_if_exists(settings, backup_collection_name)
+
+
+def _verify_collection_count(
+    settings: Settings,
+    collection_name: str,
+    *,
+    expected_count: int,
+) -> None:
+    collection = _chroma_client(settings).get_collection(collection_name)
+    actual_count = collection.count()
+    if actual_count != expected_count:
+        raise RuntimeError(
+            "Temporary Chroma collection count mismatch: "
+            f"expected {expected_count}, got {actual_count}."
+        )
+
+
+def _delete_collection_if_exists(settings: Settings, collection_name: str) -> None:
+    client = _chroma_client(settings)
+    try:
+        client.delete_collection(collection_name)
+    except Exception as exc:
+        message = str(exc).lower()
+        if "does not exist" not in message and "not found" not in message:
+            raise
+
+
+def _collection_exists(settings: Settings, collection_name: str) -> bool:
+    try:
+        _chroma_client(settings).get_collection(collection_name)
+    except Exception as exc:
+        message = str(exc).lower()
+        if "does not exist" in message or "not found" in message:
+            return False
+        raise
+    return True
+
+
+def _chroma_client(settings: Settings):
     try:
         import chromadb
     except ImportError as exc:
@@ -100,13 +182,7 @@ def _reset_chroma_collection(settings: Settings) -> None:
             "from the project root."
         ) from exc
 
-    client = chromadb.PersistentClient(path=settings.vector_store_dir.as_posix())
-    try:
-        client.delete_collection(settings.vector_collection_name)
-    except Exception as exc:
-        message = str(exc).lower()
-        if "does not exist" not in message and "not found" not in message:
-            raise
+    return chromadb.PersistentClient(path=settings.vector_store_dir.as_posix())
 
 
 def _remove_orphaned_chroma_vector_dirs(settings: Settings) -> None:
