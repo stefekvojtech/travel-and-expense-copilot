@@ -42,8 +42,13 @@ def _get_float(name: str, default: float) -> float:
     return float(value) if value is not None else default
 
 
-def _get_path(name: str) -> Path:
-    path = Path(os.environ[name])
+def _get_path(name: str, *, fallback_name: str | None = None) -> Path:
+    value = os.getenv(name)
+    if value is None and fallback_name is not None:
+        value = os.getenv(fallback_name)
+    if value is None:
+        raise KeyError(name)
+    path = Path(value)
     if path.is_absolute():
         return path
     return ROOT_DIR / path
@@ -61,7 +66,7 @@ class Settings:
     temperature: float
     raw_data_dir: Path
     processed_data_dir: Path
-    markdown_dir: Path
+    previews_dir: Path
     chunks_dir: Path
     vector_store_dir: Path
     vector_collection_name: str
@@ -89,7 +94,7 @@ def get_settings() -> Settings:
         temperature=_get_float("MODEL_TEMPERATURE", 0.0),
         raw_data_dir=_get_path("RAW_DATA_DIR"),
         processed_data_dir=_get_path("PROCESSED_DATA_DIR"),
-        markdown_dir=_get_path("MARKDOWN_DIR"),
+        previews_dir=_get_path("PREVIEWS_DIR", fallback_name="MARKDOWN_DIR"),
         chunks_dir=_get_path("CHUNKS_DIR"),
         vector_store_dir=_get_path("VECTOR_STORE_DIR"),
         vector_collection_name=os.environ["VECTOR_COLLECTION_NAME"],

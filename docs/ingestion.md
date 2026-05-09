@@ -2,7 +2,7 @@
 
 Ingestion turns raw source files into two artifacts:
 
-- Markdown previews for humans
+- preview Markdown files for humans
 - Block JSONL files for canonical lineage and downstream chunking
 
 The current entrypoints are:
@@ -30,6 +30,9 @@ python scripts/embed_chunks.py
 `app/ingest/pipeline_raw.py` discovers every file under `RAW_DATA_DIR`, currently
 `data/raw/`.
 
+Local `AGENTS.md` instruction files are excluded from raw discovery because they
+are agent guidance, not source corpus documents.
+
 Supported suffixes:
 
 - `.pdf`
@@ -51,7 +54,7 @@ reuse existing artifacts when:
 
 - the source path is still present
 - the raw file hash has not changed
-- the previous Markdown output exists
+- the previous preview Markdown output exists
 - the previous block JSONL output exists
 
 `python scripts/pipeline.py ingest --force` and `python scripts/ingest_force.py`
@@ -117,7 +120,7 @@ Each block has:
 - `order`
 - `metadata`
 
-Blocks are the canonical input for chunking. Markdown previews are not used for
+Blocks are the canonical input for chunking. Preview Markdown files are not used for
 chunk lineage.
 
 ## Loader Behavior
@@ -232,7 +235,7 @@ Important ingestion and embedding settings in `.env.example`:
 ```text
 RAW_DATA_DIR=data/raw
 PROCESSED_DATA_DIR=data/processed
-MARKDOWN_DIR=data/processed/markdown
+PREVIEWS_DIR=data/processed/previews
 CHUNKS_DIR=data/processed/chunks
 VECTOR_STORE_DIR=data/processed/vectorstore
 VECTOR_COLLECTION_NAME=travel_expense_policy_chunks

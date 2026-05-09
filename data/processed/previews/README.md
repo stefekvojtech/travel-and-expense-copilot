@@ -1,6 +1,6 @@
-# Markdown Previews
+# Preview Markdown
 
-This folder contains human-readable Markdown previews generated during ingestion.
+This folder contains human-readable Markdown preview files generated during ingestion.
 
 These files are useful for quickly checking whether extraction produced sensible content, headings, tables, and general document flow.
 

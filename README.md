@@ -13,7 +13,7 @@ and the full evaluation runner are not yet developed.
 Implemented:
 
 - Raw document ingestion from `data/raw/`
-- Normalization into human-readable Markdown previews and canonical block JSONL
+- Normalization into human-readable preview Markdown and canonical block JSONL
 - Chunk generation from block JSONL artifacts
 - OpenAI embedding into a local Chroma vector store
 - Chroma vector retrieval
@@ -60,7 +60,7 @@ app/
   ui/                   Empty scaffold for future plain HTML/CSS/JS UI
 data/
   raw/                  Demo source documents
-  processed/            Generated markdown, blocks, chunks, and Chroma store
+  processed/            Generated previews, blocks, chunks, and Chroma store
   eval/                 Golden evaluation examples
 scripts/                Command-line entrypoints and unified pipeline CLI
 docs/                   Human documentation
@@ -90,7 +90,7 @@ terminal working directory.
 The current local pipeline is:
 
 1. Put raw files in `data/raw/`.
-2. Run ingestion to create Markdown previews, block JSONL, manifest, and warnings.
+2. Run ingestion to create preview Markdown, block JSONL, manifest, and warnings.
 3. Run chunking to create embedding-ready chunk JSONL.
 4. Run embedding to write vectors into local Chroma.
 5. Run search to retrieve chunks, rerank them, and print assembled evidence context.
@@ -136,7 +136,7 @@ Unsupported files are written to `data/processed/ingest_warnings.jsonl`.
 
 ## Important Concepts
 
-Markdown previews are for human inspection. They are not the canonical source for
+Preview Markdown files are for human inspection. They are not the canonical source for
 chunk lineage.
 
 Block JSONL files in `data/processed/blocks/` are the canonical normalized

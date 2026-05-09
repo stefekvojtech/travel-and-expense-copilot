@@ -1,7 +1,7 @@
-"""Normalize raw source files into Markdown previews and block JSONL artifacts.
+"""Normalize raw source files into preview Markdown and block JSONL artifacts.
 
 This pipeline discovers supported and unsupported files under the raw data
-directory, runs the appropriate source loader, writes human-readable Markdown,
+directory, runs the appropriate source loader, writes human-readable previews,
 and records canonical block artifacts plus manifest and warning JSONL files.
 It does not chunk text or call embedding models.
 """
@@ -24,6 +24,9 @@ from app.ingest.loaders import (
 )
 from app.ingest.artifacts import BlockArtifact
 from app.ingest.loaders.models import SourceBlock
+
+
+LOCAL_AGENT_INSTRUCTION_FILENAME = "AGENTS.md"
 
 
 @dataclass(frozen=True)
@@ -63,7 +66,11 @@ class IngestWarning:
 
 def discover_raw_files(raw_data_dir: Path) -> list[Path]:
     # Discover every file under raw_data_dir so unsupported types are reported.
-    return sorted(path for path in raw_data_dir.rglob("*") if path.is_file())
+    return sorted(
+        path
+        for path in raw_data_dir.rglob("*")
+        if path.is_file() and path.name != LOCAL_AGENT_INSTRUCTION_FILENAME
+    )
 
 
 def split_supported_files(source_paths: Iterable[Path]) -> tuple[list[Path], list[Path]]:
@@ -78,7 +85,7 @@ def split_supported_files(source_paths: Iterable[Path]) -> tuple[list[Path], lis
 
 
 def ingest_sources(settings: Settings, *, force: bool = False) -> IngestResult:
-    settings.markdown_dir.mkdir(parents=True, exist_ok=True)
+    settings.previews_dir.mkdir(parents=True, exist_ok=True)
     settings.processed_data_dir.mkdir(parents=True, exist_ok=True)
     blocks_dir = settings.processed_data_dir / "blocks"
     blocks_dir.mkdir(parents=True, exist_ok=True)
@@ -95,10 +102,10 @@ def ingest_sources(settings: Settings, *, force: bool = False) -> IngestResult:
     )
     current_source_keys = {_project_relative_path(source_path) for source_path in source_paths}
     warnings = [_build_unsupported_warning(path) for path in unsupported_paths]
-    removed_documents = _remove_orphaned_markdown(
+    removed_documents = _remove_orphaned_previews(
         previous_documents,
         current_source_keys,
-        settings.markdown_dir,
+        settings.previews_dir,
         blocks_dir,
     )
 
@@ -127,7 +134,7 @@ def ingest_sources(settings: Settings, *, force: bool = False) -> IngestResult:
             blocks_dir,
             content_hash=content_hash,
         )
-        write_markdown(document)
+        write_preview(document)
         write_blocks(_resolve_project_path(document.output_blocks_path), blocks)
         ingested_documents.append(document)
         latest_documents.append(document)
@@ -156,7 +163,7 @@ def normalize_source(
     doc_id = _build_doc_id(source_path)
     doc_type = infer_doc_type(suffix)
     title = source_path.stem.replace("_", " ").replace("-", " ").title()
-    output_path = settings.markdown_dir / f"{doc_id}.md"
+    output_path = settings.previews_dir / f"{doc_id}.md"
     blocks_path = blocks_dir / f"{doc_id}.jsonl"
     output_reference = _project_relative_path(output_path)
     blocks_reference = _project_relative_path(blocks_path)
@@ -211,7 +218,7 @@ def normalize_source(
     )
 
 
-def write_markdown(document: IngestedDocument) -> None:
+def write_preview(document: IngestedDocument) -> None:
     output_path = _resolve_project_path(document.output_markdown_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     _write_text_if_changed(output_path, document.markdown_text + "\n")
@@ -241,10 +248,10 @@ def _write_text_if_changed(output_path: Path, text: str) -> None:
     output_path.write_text(text, encoding="utf-8")
 
 
-def _remove_orphaned_markdown(
+def _remove_orphaned_previews(
     previous_documents: Iterable[IngestedDocument],
     current_source_keys: set[str],
-    markdown_dir: Path,
+    previews_dir: Path,
     blocks_dir: Path,
 ) -> list[IngestedDocument]:
     removed_documents: list[IngestedDocument] = []
@@ -253,9 +260,9 @@ def _remove_orphaned_markdown(
             continue
 
         output_path = _resolve_project_path(document.output_markdown_path)
-        # Only remove files inside the configured markdown output directory.
+        # Only remove files inside the configured preview output directory.
         if output_path.exists() and output_path.resolve().is_relative_to(
-            markdown_dir.resolve()
+            previews_dir.resolve()
         ):
             output_path.unlink()
         blocks_path = _resolve_project_path(document.output_blocks_path)

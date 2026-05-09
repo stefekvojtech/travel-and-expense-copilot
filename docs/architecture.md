@@ -9,7 +9,7 @@ final natural-language answer for users.
 ```text
 data/raw/*
   -> app/ingest/pipeline_raw.py
-  -> data/processed/markdown/*.md
+  -> data/processed/previews/*.md
   -> data/processed/blocks/*.jsonl
   -> data/processed/ingest_manifest.jsonl
   -> data/processed/ingest_warnings.jsonl
@@ -53,7 +53,7 @@ should stay thin.
 Required settings come from environment variables, usually via `.env`.
 
 `app/ingest/pipeline_raw.py` discovers raw files, splits supported and unsupported
-files, runs file-type loaders, writes Markdown previews, writes block JSONL, writes
+files, runs file-type loaders, writes preview Markdown, writes block JSONL, writes
 the manifest, and writes warnings.
 
 `app/ingest/artifacts.py` defines the shared block and chunk artifact schemas used
@@ -114,7 +114,7 @@ the code already says.
 
 `data/raw/` contains source documents.
 
-`data/processed/markdown/` contains human-readable previews. These are useful for
+`data/processed/previews/` contains human-readable Markdown previews. These are useful for
 inspection, but they are not canonical lineage artifacts.
 
 `data/processed/blocks/` contains canonical normalized block JSONL. Blocks carry

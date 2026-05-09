@@ -28,7 +28,7 @@ def main() -> None:
 
     ingest_parser = subparsers.add_parser(
         "ingest",
-        help="Normalize raw sources into Markdown previews and block JSONL.",
+        help="Normalize raw sources into preview Markdown and block JSONL.",
     )
     ingest_parser.add_argument(
         "--force",
@@ -95,7 +95,7 @@ def _run_ingest(settings: Settings, *, force: bool) -> None:
     print(
         f"{action} {len(result.ingested_documents)} documents; "
         f"skipped {len(result.skipped_documents)} unchanged documents; "
-        f"removed {len(result.removed_documents)} orphaned Markdown/block files."
+        f"removed {len(result.removed_documents)} orphaned preview/block files."
     )
     if result.warnings:
         print(f"Warning: skipped {len(result.warnings)} unsupported files.")
