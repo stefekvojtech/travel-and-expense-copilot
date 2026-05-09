@@ -62,7 +62,7 @@ data/
   raw/                  Demo source documents
   processed/            Generated markdown, blocks, chunks, and Chroma store
   eval/                 Golden evaluation examples
-scripts/                Command-line entrypoints for the current pipeline
+scripts/                Command-line entrypoints and unified pipeline CLI
 docs/                   Human documentation
 AGENTS.md               Agent-facing project instructions
 pyproject.toml          Package metadata and dependencies
@@ -98,6 +98,16 @@ The current local pipeline is:
 Commands:
 
 ```powershell
+python scripts/pipeline.py ingest
+python scripts/pipeline.py chunk
+python scripts/pipeline.py embed --dry-run
+python scripts/pipeline.py embed
+python scripts/pipeline.py search "Can I take a taxi from Prague airport after 21:00?"
+```
+
+The older focused script entrypoints are still available:
+
+```powershell
 python scripts/ingest_incremental.py
 python scripts/chunk_blocks.py
 python scripts/embed_chunks.py --dry-run
@@ -105,9 +115,9 @@ python scripts/embed_chunks.py
 python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
-Use `python scripts/ingest_force.py` only when you intentionally want to rebuild
-all ingestion artifacts. Image ingestion can call OpenAI vision and consume paid
-credits when an API key is configured.
+Use `python scripts/pipeline.py ingest --force` or `python scripts/ingest_force.py`
+only when you intentionally want to rebuild all ingestion artifacts. Image ingestion
+can call OpenAI vision and consume paid credits when an API key is configured.
 
 Use `python scripts/embed_chunks.py --dry-run` before a real embedding run. A real
 embedding run calls OpenAI embeddings and consumes paid credits.

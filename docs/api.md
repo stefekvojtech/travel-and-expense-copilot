@@ -24,7 +24,9 @@ There is no answer-generation route.
 `app/agents/`, `app/prompts/`, `app/tools/`, `app/ui/`, and `app/streaming/`
 also exist as empty scaffolds.
 
-The current way to use the project is through scripts in `scripts/`.
+The current way to use the project is through scripts in `scripts/`. The unified
+entrypoint is `python scripts/pipeline.py`, with subcommands for `ingest`,
+`chunk`, `embed`, and `search`.
 
 ## Expected Future API Shape
 

@@ -8,6 +8,16 @@ Ingestion turns raw source files into two artifacts:
 The current entrypoints are:
 
 ```powershell
+python scripts/pipeline.py ingest
+python scripts/pipeline.py ingest --force
+python scripts/pipeline.py chunk
+python scripts/pipeline.py embed --dry-run
+python scripts/pipeline.py embed
+```
+
+The focused legacy script entrypoints remain available:
+
+```powershell
 python scripts/ingest_incremental.py
 python scripts/ingest_force.py
 python scripts/chunk_blocks.py
@@ -36,15 +46,16 @@ Unsupported files are not silently ignored. They are written to
 
 ## Incremental vs Force Ingestion
 
-`python scripts/ingest_incremental.py` reuses existing artifacts when:
+`python scripts/pipeline.py ingest` and `python scripts/ingest_incremental.py`
+reuse existing artifacts when:
 
 - the source path is still present
 - the raw file hash has not changed
 - the previous Markdown output exists
 - the previous block JSONL output exists
 
-`python scripts/ingest_force.py` rebuilds all supported raw sources even when
-hashes match.
+`python scripts/pipeline.py ingest --force` and `python scripts/ingest_force.py`
+rebuild all supported raw sources even when hashes match.
 
 Force ingestion can trigger OpenAI vision calls for image files when
 `OPENAI_API_KEY` is configured. Treat that as a paid model operation.
@@ -173,10 +184,22 @@ local Chroma collection.
 Dry run:
 
 ```powershell
+python scripts/pipeline.py embed --dry-run
+```
+
+Legacy equivalent:
+
+```powershell
 python scripts/embed_chunks.py --dry-run
 ```
 
 Real embedding:
+
+```powershell
+python scripts/pipeline.py embed
+```
+
+Legacy equivalent:
 
 ```powershell
 python scripts/embed_chunks.py
@@ -218,5 +241,7 @@ CHUNK_OVERLAP=120
 MAX_CHUNK_TOKENS=1200
 ```
 
-`MAX_CHUNK_TOKENS` is currently loaded into settings but not actively enforced by
-the chunking pipeline.
+`MAX_CHUNK_TOKENS` is enforced as a hard upper bound. The chunking pipeline uses
+the smaller of `CHUNK_SIZE` and `MAX_CHUNK_TOKENS` as the effective splitter size,
+then validates that every produced chunk is within the configured maximum before
+writing chunk artifacts.

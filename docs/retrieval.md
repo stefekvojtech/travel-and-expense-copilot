@@ -6,6 +6,12 @@ context assembly.
 The current user-facing entrypoint is:
 
 ```powershell
+python scripts/pipeline.py search "Can I take a taxi from Prague airport after 21:00?"
+```
+
+Legacy equivalent:
+
+```powershell
 python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
@@ -46,6 +52,12 @@ That means normal search is a paid model call.
 To inspect Chroma without embedding a query:
 
 ```powershell
+python scripts/pipeline.py search --dry-run
+```
+
+Legacy equivalent:
+
+```powershell
 python scripts/search_chunks.py --dry-run
 ```
 
@@ -58,6 +70,14 @@ The first retrieval pass supports exact-match metadata filters:
 - `section_path`
 
 CLI examples:
+
+```powershell
+python scripts/pipeline.py search "meal cap Vienna" --doc-type xlsx
+python scripts/pipeline.py search "flight evidence" --source-path data/raw/travel_policy.pdf
+python scripts/pipeline.py search "receipt required" --section-path "2. Receipt and Evidence Requirements"
+```
+
+Legacy equivalents:
 
 ```powershell
 python scripts/search_chunks.py "meal cap Vienna" --doc-type xlsx

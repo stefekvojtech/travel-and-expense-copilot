@@ -66,8 +66,6 @@ class Settings:
     chunk_size: int
     chunk_overlap: int
     max_chunk_tokens: int
-    enable_pii_redaction: bool
-    enable_html_sanitization: bool
 
 
 @lru_cache(maxsize=1)
@@ -99,6 +97,4 @@ def get_settings() -> Settings:
         chunk_size=_get_int("CHUNK_SIZE", 800),
         chunk_overlap=_get_int("CHUNK_OVERLAP", 120),
         max_chunk_tokens=_get_int("MAX_CHUNK_TOKENS", 1200),
-        enable_pii_redaction=_get_bool("ENABLE_PII_REDACTION", True),
-        enable_html_sanitization=_get_bool("ENABLE_HTML_SANITIZATION", True),
     )

@@ -11,6 +11,7 @@ from langchain_text_splitters import (
 )
 
 from app.core.config import Settings
+from app.ingest.artifacts import BlockArtifact, ChunkArtifact
 
 
 HEADERS_TO_SPLIT_ON = [
@@ -24,24 +25,8 @@ HEADERS_TO_SPLIT_ON = [
 
 
 @dataclass(frozen=True)
-class SourceBlockRecord:
-    doc_id: str
-    block_id: str
-    source_path: str
-    doc_type: str
-    title: str
-    block_type: str
-    text: str
-    section_path: str | None
-    page: int | None
-    sheet: str | None
-    order: int
-    metadata: dict
-
-
-@dataclass(frozen=True)
 class BlockSpan:
-    block: SourceBlockRecord
+    block: BlockArtifact
     start: int
     end: int
 
@@ -57,24 +42,6 @@ class PreparedChunkText:
     text: str
     mapped_text: str
     added_context: bool
-
-
-@dataclass(frozen=True)
-class ChunkArtifact:
-    chunk_id: str
-    doc_id: str
-    source_path: str
-    doc_type: str
-    title: str
-    text: str
-    source_block_ids: list[str]
-    section_path: str | None
-    pages: list[int]
-    sheets: list[str]
-    chunk_strategy: str
-    token_count: int
-    order: int
-    metadata: dict
 
 
 @dataclass(frozen=True)
@@ -105,6 +72,7 @@ def chunk_all_blocks(settings: Settings) -> ChunkResult:
             blocks,
             chunk_size=settings.chunk_size,
             chunk_overlap=settings.chunk_overlap,
+            max_chunk_tokens=settings.max_chunk_tokens,
         )
         output_path = settings.chunks_dir / blocks_path.name
         _write_chunks(output_path, chunks)
@@ -124,18 +92,26 @@ def chunk_all_blocks(settings: Settings) -> ChunkResult:
 
 
 def chunk_blocks(
-    blocks: list[SourceBlockRecord],
+    blocks: list[BlockArtifact],
     *,
     chunk_size: int,
     chunk_overlap: int,
+    max_chunk_tokens: int,
 ) -> list[ChunkArtifact]:
     """Split blocks with LangChain Markdown and token-aware recursive splitters."""
+    effective_chunk_size = _effective_chunk_size(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        max_chunk_tokens=max_chunk_tokens,
+    )
     if blocks and all(block.doc_type == "xlsx" for block in blocks):
-        return _chunk_xlsx_rows(
+        chunks = _chunk_xlsx_rows(
             blocks,
-            chunk_size=chunk_size,
+            chunk_size=effective_chunk_size,
             chunk_overlap=chunk_overlap,
         )
+        _validate_chunks_within_max_tokens(chunks, max_chunk_tokens=max_chunk_tokens)
+        return chunks
 
     assembly = _assemble_markdown_with_spans(blocks)
     section_context = _build_section_context(blocks)
@@ -145,7 +121,7 @@ def chunk_blocks(
     )
     recursive_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         encoding_name="cl100k_base",
-        chunk_size=chunk_size,
+        chunk_size=effective_chunk_size,
         chunk_overlap=chunk_overlap,
     )
 
@@ -158,7 +134,7 @@ def chunk_blocks(
 
         section_path = _section_path_from_metadata(header_document.metadata)
         section_token_count = recursive_splitter._length_function(section_text)
-        section_was_recursively_split = section_token_count > chunk_size
+        section_was_recursively_split = section_token_count > effective_chunk_size
         section_start, section_end = _locate_text_span(
             assembly.text,
             section_text,
@@ -187,7 +163,7 @@ def chunk_blocks(
                 original_chunk_text,
                 section_path=section_path,
                 section_context=section_context,
-                chunk_size=chunk_size,
+                chunk_size=effective_chunk_size,
                 chunk_overlap=chunk_overlap,
             )
 
@@ -231,11 +207,49 @@ def chunk_blocks(
                     )
                 )
 
+    _validate_chunks_within_max_tokens(chunks, max_chunk_tokens=max_chunk_tokens)
     return chunks
 
 
+def _effective_chunk_size(
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+    max_chunk_tokens: int,
+) -> int:
+    if max_chunk_tokens < 1:
+        raise ValueError("MAX_CHUNK_TOKENS must be greater than zero.")
+    if chunk_size < 1:
+        raise ValueError("CHUNK_SIZE must be greater than zero.")
+
+    effective_chunk_size = min(chunk_size, max_chunk_tokens)
+    if chunk_overlap >= effective_chunk_size:
+        raise ValueError(
+            "CHUNK_OVERLAP must be smaller than the effective chunk size "
+            f"({effective_chunk_size})."
+        )
+    return effective_chunk_size
+
+
+def _validate_chunks_within_max_tokens(
+    chunks: Iterable[ChunkArtifact],
+    *,
+    max_chunk_tokens: int,
+) -> None:
+    oversized_chunks = [
+        f"{chunk.chunk_id} ({chunk.token_count} tokens)"
+        for chunk in chunks
+        if chunk.token_count > max_chunk_tokens
+    ]
+    if oversized_chunks:
+        raise ValueError(
+            "Chunking produced chunks above MAX_CHUNK_TOKENS="
+            f"{max_chunk_tokens}: {', '.join(oversized_chunks)}"
+        )
+
+
 def _chunk_xlsx_rows(
-    blocks: list[SourceBlockRecord],
+    blocks: list[BlockArtifact],
     *,
     chunk_size: int,
     chunk_overlap: int,
@@ -302,7 +316,7 @@ def _chunk_strategy(
     return "+".join(parts)
 
 
-def _assemble_markdown_with_spans(blocks: list[SourceBlockRecord]) -> MarkdownAssembly:
+def _assemble_markdown_with_spans(blocks: list[BlockArtifact]) -> MarkdownAssembly:
     text_parts: list[str] = []
     spans: list[BlockSpan] = []
     section_context = _build_section_context(blocks)
@@ -342,7 +356,7 @@ def _append_text_part(
     text_parts: list[str],
     spans: list[BlockSpan],
     text: str,
-    block: SourceBlockRecord | None,
+    block: BlockArtifact | None,
 ) -> None:
     if not text:
         return
@@ -357,7 +371,7 @@ def _append_text_part(
 
 
 def _build_chunk(
-    blocks: list[SourceBlockRecord],
+    blocks: list[BlockArtifact],
     text: str,
     chunk_strategy: str,
     order: int,
@@ -398,7 +412,7 @@ def _section_path_from_metadata(metadata: dict) -> str | None:
     return str(header_values[-1])
 
 
-def _build_section_context(blocks: list[SourceBlockRecord]) -> dict[str, str]:
+def _build_section_context(blocks: list[BlockArtifact]) -> dict[str, str]:
     context: dict[str, str] = {}
     for block in blocks:
         if block.section_path is None:
@@ -595,7 +609,7 @@ def _blocks_for_span(
     spans: list[BlockSpan],
     start: int,
     end: int,
-) -> list[SourceBlockRecord]:
+) -> list[BlockArtifact]:
     return [
         span.block
         for span in spans
@@ -604,17 +618,17 @@ def _blocks_for_span(
 
 
 def _context_blocks(
-    blocks: list[SourceBlockRecord],
+    blocks: list[BlockArtifact],
     section_path: str | None,
-) -> list[SourceBlockRecord]:
+) -> list[BlockArtifact]:
     block = _context_block(blocks, section_path)
     return [block] if block is not None else []
 
 
 def _context_block(
-    blocks: list[SourceBlockRecord],
+    blocks: list[BlockArtifact],
     section_path: str | None,
-) -> SourceBlockRecord | None:
+) -> BlockArtifact | None:
     if section_path is None:
         return None
     for block in blocks:
@@ -624,18 +638,18 @@ def _context_block(
 
 
 def _merge_blocks_preserving_order(
-    first: list[SourceBlockRecord],
-    second: list[SourceBlockRecord],
-) -> list[SourceBlockRecord]:
+    first: list[BlockArtifact],
+    second: list[BlockArtifact],
+) -> list[BlockArtifact]:
     by_id = {block.block_id: block for block in [*first, *second]}
     return sorted(by_id.values(), key=lambda block: block.order)
 
 
-def _read_blocks(blocks_path: Path) -> list[SourceBlockRecord]:
-    blocks: list[SourceBlockRecord] = []
+def _read_blocks(blocks_path: Path) -> list[BlockArtifact]:
+    blocks: list[BlockArtifact] = []
     for line in blocks_path.read_text(encoding="utf-8").splitlines():
         if line.strip():
-            blocks.append(SourceBlockRecord(**json.loads(line)))
+            blocks.append(BlockArtifact(**json.loads(line)))
     return sorted(blocks, key=lambda block: block.order)
 
 
@@ -659,7 +673,7 @@ def _remove_orphaned_chunk_files(
             chunk_path.unlink()
 
 
-def _merge_metadata(blocks: list[SourceBlockRecord]) -> dict:
+def _merge_metadata(blocks: list[BlockArtifact]) -> dict:
     metadata: dict = {}
     table_indexes = [
         block.metadata.get("table_index_on_page")

@@ -43,7 +43,9 @@ embedding.
 `app/streaming/` currently exist only as empty scaffolds.
 
 `scripts/` contains the command-line entrypoints that call application modules.
-The scripts should stay thin.
+`scripts/pipeline.py` is the unified CLI for `ingest`, `chunk`, `embed`, and
+`search`; the focused scripts remain as compatibility shortcuts. The scripts
+should stay thin.
 
 ## Current Modules
 
@@ -53,6 +55,9 @@ Required settings come from environment variables, usually via `.env`.
 `app/ingest/pipeline_raw.py` discovers raw files, splits supported and unsupported
 files, runs file-type loaders, writes Markdown previews, writes block JSONL, writes
 the manifest, and writes warnings.
+
+`app/ingest/artifacts.py` defines the shared block and chunk artifact schemas used
+by raw ingestion, chunking, and embedding.
 
 `app/ingest/loaders/` contains reusable file-type strategies:
 

@@ -10,25 +10,8 @@ from typing import Any, Iterable
 from uuid import uuid4
 
 from app.core.config import Settings
+from app.ingest.artifacts import ChunkArtifact
 from app.retrieval.chroma_config import CHROMA_COLLECTION_METADATA
-
-
-@dataclass(frozen=True)
-class ChunkRecord:
-    chunk_id: str
-    doc_id: str
-    source_path: str
-    doc_type: str
-    title: str
-    text: str
-    source_block_ids: list[str]
-    section_path: str | None
-    pages: list[int]
-    sheets: list[str]
-    chunk_strategy: str
-    token_count: int
-    order: int
-    metadata: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -215,22 +198,22 @@ def _read_active_vector_segment_ids(sqlite_path: Path) -> set[str]:
     return {str(row[0]) for row in rows}
 
 
-def _read_all_chunks(chunks_dir: Path) -> list[ChunkRecord]:
-    chunks: list[ChunkRecord] = []
+def _read_all_chunks(chunks_dir: Path) -> list[ChunkArtifact]:
+    chunks: list[ChunkArtifact] = []
     for chunks_path in sorted(chunks_dir.glob("*.jsonl")):
         chunks.extend(_read_chunks(chunks_path))
     return chunks
 
 
-def _read_chunks(chunks_path: Path) -> list[ChunkRecord]:
-    chunks: list[ChunkRecord] = []
+def _read_chunks(chunks_path: Path) -> list[ChunkArtifact]:
+    chunks: list[ChunkArtifact] = []
     for line in chunks_path.read_text(encoding="utf-8").splitlines():
         if line.strip():
-            chunks.append(ChunkRecord(**json.loads(line)))
+            chunks.append(ChunkArtifact(**json.loads(line)))
     return chunks
 
 
-def _chunk_metadata(chunk: ChunkRecord) -> dict[str, str | int | float | bool | None]:
+def _chunk_metadata(chunk: ChunkArtifact) -> dict[str, str | int | float | bool | None]:
     metadata: dict[str, str | int | float | bool | None] = {
         "chunk_id": chunk.chunk_id,
         "doc_id": chunk.doc_id,

@@ -1,0 +1,4 @@
+{"source_path": "data/raw/AGENTS.md", "warning_type": "unsupported_suffix", "message": "Skipped .md.", "observed_at": "2026-05-08T19:00:05.464347+00:00"}
+{"source_path": "data/raw/airport_transfer_eligibility_decision_tree.png", "warning_type": "skipped_paid_vision", "message": "Images are skipped because extracting them would require a paid vision call.", "observed_at": "2026-05-08T19:00:05.464746+00:00"}
+{"source_path": "data/raw/corporate_travel_card_rules.png", "warning_type": "skipped_paid_vision", "message": "Images are skipped because extracting them would require a paid vision call.", "observed_at": "2026-05-08T19:00:05.465045+00:00"}
+{"source_path": "data/raw/per_diem_caps.xlsx", "warning_type": "unsupported_in_experiment", "message": "XLSX is intentionally skipped in this first LangChain chunking experiment.", "observed_at": "2026-05-08T19:00:05.768883+00:00"}

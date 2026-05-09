@@ -14,6 +14,7 @@ from app.ingest.loaders import (
     infer_doc_type,
     normalize_by_file_type,
 )
+from app.ingest.artifacts import BlockArtifact
 from app.ingest.loaders.models import SourceBlock
 
 
@@ -34,23 +35,6 @@ class IngestedDocument:
     block_count: int
     extraction_method: str
     extraction_warning: str | None
-
-
-@dataclass(frozen=True)
-class BlockArtifact:
-    # Block-level sidecar row: one extracted content block plus retrieval lineage.
-    doc_id: str
-    block_id: str
-    source_path: str
-    doc_type: str
-    title: str
-    block_type: str
-    text: str
-    section_path: str | None
-    page: int | None
-    sheet: str | None
-    order: int
-    metadata: dict
 
 
 @dataclass(frozen=True)
