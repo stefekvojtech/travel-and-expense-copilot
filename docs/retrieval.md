@@ -31,6 +31,10 @@ question
   -> formatted evidence blocks with citation IDs
 ```
 
+Retrieval modules are documented with top-level module docstrings. These
+docstrings should make it clear whether a module performs paid query embedding,
+local reranking, or citation-ready context assembly.
+
 ## Vector Store
 
 `app/retrieval/vector_store.py` opens the local Chroma collection configured by:

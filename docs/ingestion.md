@@ -145,6 +145,10 @@ Image loading uses OpenAI vision through LangChain/OpenAI when `OPENAI_API_KEY` 
 present. Without an API key, it writes a placeholder Markdown block and sets
 `extraction_warning` to `missing_openai_api_key`.
 
+Loader modules are documented with top-level module docstrings. Those docstrings
+should summarize the supported source type, the extraction approach, and the
+lineage metadata preserved for chunking and citations.
+
 ## Chunking
 
 `app/ingest/pipeline_chunk.py` reads block JSONL files and writes chunk JSONL to

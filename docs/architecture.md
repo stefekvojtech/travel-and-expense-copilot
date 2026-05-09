@@ -85,6 +85,31 @@ and supports exact-match filters for `doc_type`, `source_path`, and
 `app/retrieval/context.py` selects diverse chunks, applies token budgets, and
 formats evidence blocks with citation IDs and retrieval metadata.
 
+## Code Documentation Conventions
+
+Every Python module should start with a short top-level module docstring. In this
+project, a module means a single `.py` file, such as
+`app/ingest/pipeline_raw.py` or `scripts/search_chunks.py`.
+
+Module docstrings should make the file understandable at a glance. They should
+describe the module's role in the pipeline, the artifacts it reads or writes, and
+important boundaries such as paid OpenAI calls, dry-run behavior, or planned-only
+scaffolds.
+
+Examples of the current convention:
+
+- pipeline modules state which pipeline stage they own and what they do not do
+- loader modules state the source type, extraction strategy, and metadata they
+  preserve
+- retrieval modules state whether they perform query embedding, local reranking,
+  or citation-ready context assembly
+- scripts state the command purpose and whether normal execution may call a paid
+  model
+
+Inline comments should explain non-obvious decisions, edge cases, lineage
+assumptions, or temporary demo shortcuts. Avoid comments that simply repeat what
+the code already says.
+
 ## Artifact Roles
 
 `data/raw/` contains source documents.
