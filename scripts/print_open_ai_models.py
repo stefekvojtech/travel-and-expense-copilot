@@ -1,3 +1,9 @@
+"""Print OpenAI model IDs sorted by creation date.
+
+This debugging helper calls the OpenAI models API and requires valid OpenAI
+credentials.
+"""
+
 from datetime import datetime, timezone
 from openai import OpenAI
 

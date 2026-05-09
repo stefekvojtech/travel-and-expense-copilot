@@ -1,3 +1,10 @@
+"""Open the local Chroma vector store and search embedded policy chunks.
+
+Vector search embeds the incoming query through the configured embedding model,
+applies optional exact metadata filters, and returns chunks with their stored
+lineage metadata and cosine distance scores.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

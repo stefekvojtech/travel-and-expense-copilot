@@ -1,3 +1,5 @@
+"""Normalize plain text files into a single recursive-splitting source block."""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,10 @@
+"""Assemble retrieved chunks into citation-ready evidence context.
+
+This module selects diverse retrieved or reranked chunks, trims evidence to a
+token budget, formats source metadata, and produces the context text that a
+future grounded answer generator can cite.
+"""
+
 from __future__ import annotations
 
 import json

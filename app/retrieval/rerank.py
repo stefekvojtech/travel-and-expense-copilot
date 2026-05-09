@@ -1,3 +1,5 @@
+"""Rerank vector-search candidates with local FlashRank models."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

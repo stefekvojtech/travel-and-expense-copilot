@@ -1,3 +1,9 @@
+"""File-type dispatch for raw source normalization loaders.
+
+The loader package maps supported suffixes to reusable normalization strategies
+that return Markdown plus source blocks for the ingestion pipeline.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -1,3 +1,5 @@
+"""Build embedding-ready chunk JSONL files from processed block artifacts."""
+
 from app.core.config import get_settings
 from app.ingest.pipeline_chunk import chunk_all_blocks
 

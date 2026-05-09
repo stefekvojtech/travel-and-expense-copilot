@@ -1,3 +1,9 @@
+"""Run incremental raw ingestion for changed source files.
+
+This updates Markdown previews and block JSONL artifacts for new or changed
+sources while reusing previous artifacts for unchanged files.
+"""
+
 from app.core.config import get_settings
 from app.ingest.pipeline_raw import ingest_sources
 

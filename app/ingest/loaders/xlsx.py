@@ -1,3 +1,10 @@
+"""Normalize spreadsheets into sheet-aware Markdown and row-level source blocks.
+
+The XLSX loader reads cached cell values, creates one section per worksheet,
+keeps header context, and emits row blocks with common policy metadata fields
+for filtering during retrieval.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

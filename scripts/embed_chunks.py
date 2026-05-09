@@ -1,3 +1,9 @@
+"""Embed processed chunk JSONL files into the local Chroma vector store.
+
+Use `--dry-run` to inspect chunk counts and target paths without making paid
+embedding calls.
+"""
+
 import argparse
 
 from app.core.config import get_settings

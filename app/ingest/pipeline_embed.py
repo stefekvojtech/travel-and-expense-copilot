@@ -1,3 +1,11 @@
+"""Embed chunk artifacts into the local Chroma vector store.
+
+This module reads processed chunk JSONL files, builds OpenAI embeddings for the
+chunk text, stores flattened metadata in Chroma, and promotes replacement
+collections only after count verification. Non-dry runs make paid embedding
+calls through the configured provider.
+"""
+
 from __future__ import annotations
 
 import json

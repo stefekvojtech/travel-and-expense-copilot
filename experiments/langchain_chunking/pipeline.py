@@ -1,3 +1,11 @@
+"""Compare LangChain loaders and splitters against the production ingestion path.
+
+This experiment loads raw demo sources with LangChain community loaders, chunks
+the resulting documents with LangChain splitters, and writes isolated preview,
+report, warning, and chunk artifacts under `data/processed_langchain_experiment`.
+It intentionally skips XLSX and image vision extraction in this first pass.
+"""
+
 from __future__ import annotations
 
 import json
@@ -14,6 +22,7 @@ from langchain_text_splitters import (
 )
 
 from app.core.config import get_settings
+from app.ingest.artifacts import ChunkArtifact
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DATA_DIR = ROOT_DIR / "data" / "raw"
@@ -39,22 +48,6 @@ class LoadedDocumentRecord:
     loader_name: str
     document_index: int
     text: str
-    metadata: dict[str, Any]
-
-
-@dataclass(frozen=True)
-class ExperimentChunk:
-    chunk_id: str
-    doc_id: str
-    source_path: str
-    doc_type: str
-    text: str
-    document_indexes: list[int]
-    pages: list[int]
-    section_path: str | None
-    chunk_strategy: str
-    token_count: int
-    order: int
     metadata: dict[str, Any]
 
 
@@ -241,7 +234,7 @@ def chunk_loaded_documents(
     chunk_size: int,
     chunk_overlap: int,
     max_chunk_tokens: int,
-) -> list[ExperimentChunk]:
+) -> list[ChunkArtifact]:
     """Chunk LangChain-loaded documents with LangChain splitter primitives."""
     effective_chunk_size = _effective_chunk_size(
         chunk_size=chunk_size,
@@ -258,7 +251,7 @@ def chunk_loaded_documents(
         strip_headers=False,
     )
 
-    chunks: list[ExperimentChunk] = []
+    chunks: list[ChunkArtifact] = []
     for record in records:
         split_inputs = _split_markdown_sections(record.text, header_splitter)
         for section_text, section_path in split_inputs:
@@ -275,14 +268,18 @@ def chunk_loaded_documents(
                 if not chunk_text:
                     continue
                 chunks.append(
-                    ExperimentChunk(
+                    ChunkArtifact(
                         chunk_id=f"{record.doc_id}:lc-chunk:{len(chunks) + 1:05d}",
                         doc_id=record.doc_id,
                         source_path=record.source_path,
                         doc_type=record.doc_type,
+                        title=_title_from_source_path(record.source_path),
                         text=chunk_text,
-                        document_indexes=[record.document_index],
+                        source_block_ids=[
+                            f"{record.doc_id}:lc-document:{record.document_index:05d}"
+                        ],
                         pages=_pages_from_metadata(record.metadata),
+                        sheets=[],
                         section_path=section_path,
                         chunk_strategy=strategy,
                         token_count=recursive_splitter._length_function(chunk_text),
@@ -318,7 +315,7 @@ def _effective_chunk_size(
 
 
 def _validate_chunks_within_max_tokens(
-    chunks: Iterable[ExperimentChunk],
+    chunks: Iterable[ChunkArtifact],
     *,
     max_chunk_tokens: int,
 ) -> None:
@@ -368,7 +365,7 @@ def _pages_from_metadata(metadata: dict[str, Any]) -> list[int]:
 
 def _preview_markdown(
     records: list[LoadedDocumentRecord],
-    chunks: list[ExperimentChunk],
+    chunks: list[ChunkArtifact],
     *,
     sample_size: int = 8,
 ) -> str:
@@ -485,6 +482,10 @@ def _doc_type(suffix: str) -> str:
     if suffix == ".txt":
         return "text"
     return "unknown"
+
+
+def _title_from_source_path(source_path: str) -> str:
+    return Path(source_path).stem.replace("_", " ").replace("-", " ").title()
 
 
 def _clean_text(text: str) -> str:

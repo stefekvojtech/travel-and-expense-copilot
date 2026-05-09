@@ -1,3 +1,10 @@
+"""Convert normalized block artifacts into embedding-ready chunk artifacts.
+
+The chunking pipeline reads block JSONL files, preserves block lineage in chunk
+metadata, uses Markdown header-aware splitting where possible, and applies
+token-aware recursive splitting when sections are too large.
+"""
+
 from __future__ import annotations
 
 import json

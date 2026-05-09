@@ -1,3 +1,11 @@
+"""Normalize raw source files into Markdown previews and block JSONL artifacts.
+
+This pipeline discovers supported and unsupported files under the raw data
+directory, runs the appropriate source loader, writes human-readable Markdown,
+and records canonical block artifacts plus manifest and warning JSONL files.
+It does not chunk text or call embedding models.
+"""
+
 from __future__ import annotations
 
 import json

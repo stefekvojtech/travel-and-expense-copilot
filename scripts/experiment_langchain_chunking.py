@@ -1,3 +1,5 @@
+"""Run the isolated LangChain loader and chunking experiment."""
+
 from experiments.langchain_chunking.pipeline import run_experiment
 
 

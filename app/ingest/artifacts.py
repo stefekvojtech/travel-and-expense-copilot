@@ -1,3 +1,9 @@
+"""Shared artifact schemas passed between ingestion, chunking, and retrieval.
+
+Block artifacts preserve source-level lineage from raw extraction. Chunk
+artifacts are embedding-ready records derived from those blocks.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

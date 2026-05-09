@@ -1,3 +1,10 @@
+"""Search local Chroma chunks and print assembled citation-ready context.
+
+Use `--dry-run` to inspect the vector store without embedding a query. Normal
+search embeds the query, reranks candidates locally with FlashRank, and prints
+the evidence context selected for answer generation.
+"""
+
 import argparse
 import sys
 

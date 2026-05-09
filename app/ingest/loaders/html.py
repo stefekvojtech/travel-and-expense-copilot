@@ -1,3 +1,10 @@
+"""Normalize HTML files into Markdown blocks with section lineage.
+
+The HTML loader removes non-content tags, preserves common semantic structures
+such as headings, lists, paragraphs, and tables, and emits source blocks for
+later chunking and citation metadata.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path

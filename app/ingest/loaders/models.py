@@ -1,3 +1,5 @@
+"""Loader-level data models returned before common ingestion metadata is added."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

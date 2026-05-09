@@ -1,3 +1,10 @@
+"""Unified CLI for ingestion, chunking, embedding, and retrieval search.
+
+The subcommands wrap the same application pipelines exposed by the smaller
+scripts. Embedding and non-dry-run search can call configured OpenAI embedding
+models.
+"""
+
 import argparse
 import sys
 

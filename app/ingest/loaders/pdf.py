@@ -1,3 +1,10 @@
+"""Normalize PDF files into Markdown and page-aware source blocks.
+
+The PDF loader extracts page text with pypdf, extracts tables with pdfplumber,
+filters repeated page noise, formats likely headings and bullets, and preserves
+page/table metadata for downstream chunks and citations.
+"""
+
 from __future__ import annotations
 
 import re

@@ -1,3 +1,10 @@
+"""Normalize image files through OpenAI vision extraction.
+
+The image loader converts receipts and other image sources into Markdown text
+and a single image-derived source block. It returns a warning placeholder when
+`OPENAI_API_KEY` is unavailable, and real extraction is a paid model call.
+"""
+
 from __future__ import annotations
 
 import base64

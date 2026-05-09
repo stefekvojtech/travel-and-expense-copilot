@@ -1,3 +1,10 @@
+"""Force raw ingestion for all supported source files.
+
+This rebuilds Markdown previews and block JSONL artifacts even when source
+hashes match previous manifest entries. Image ingestion may call a paid vision
+model when an OpenAI API key is configured.
+"""
+
 from app.core.config import get_settings
 from app.ingest.pipeline_raw import ingest_sources
 

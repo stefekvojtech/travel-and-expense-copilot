@@ -1,3 +1,5 @@
+"""Shared text cleanup helpers used by source loaders."""
+
 from __future__ import annotations
 
 import re
@@ -5,4 +7,3 @@ import re
 
 def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
-

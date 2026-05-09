@@ -1,3 +1,11 @@
+"""Load environment-backed settings and resolve project-local paths.
+
+This module centralizes configuration for ingestion, chunking, embedding,
+retrieval, and local artifact directories. Relative paths from `.env` are
+resolved from the repository root so scripts behave consistently from any
+working directory.
+"""
+
 from __future__ import annotations
 
 import os
