@@ -8,9 +8,9 @@
 
 ## Chunks
 
-### travel-policy-2c55f3d095:chunk:00001
+### travel-policy-2c55f3d095:lc-chunk:00001
 
-- strategy: `plain_text+section_as_chunk`
+- strategy: `langchain_direct+plain_text+section_as_chunk`
 - tokens: `100` pages=[1]
 - source_block_ids: `["travel-policy-2c55f3d095:00001"]`
 
@@ -18,9 +18,9 @@
 Atlas Mobility Group Travel Policy 2026 Document type: Synthetic internal travel policy PDF | Owner: Global Mobility & Finance Operations | Version: TRV-2026.1 | Effective: 2026-01-01 This synthetic policy is designed for a local RAG project. It contains realistic sections, evidence rules, approval thresholds, and tables for testing chunking, table extraction, metadata, retrieval, context assembly, reranking, source priority, groundedness, abstention, and tool use.
 ```
 
-### travel-policy-2c55f3d095:chunk:00002
+### travel-policy-2c55f3d095:lc-chunk:00002
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `149` pages=[1] section='1. Policy Intent and Scope'
 - source_block_ids: `["travel-policy-2c55f3d095:00002", "travel-policy-2c55f3d095:00003"]`
 
@@ -29,10 +29,10 @@ Atlas Mobility Group Travel Policy 2026 Document type: Synthetic internal travel
 This policy defines how employees and eligible contractors book business travel, document trips, select transport, obtain approval, and submit travel-related claims. It applies to domestic and international business travel paid or reimbursed by Atlas Mobility Group. The policy does not replace country-specific tax rules, immigration requirements, security guidance, or written Finance exceptions. If local law imposes stricter evidence or reporting duties, the stricter requirement applies. For numeric reimbursement caps such as meal caps, hotel caps, mileage rates, and taxi after-hours thresholds, use the Per Diem Caps spreadsheet. For receipt evidence and reimbursement submission rules, use the Expense Policy HTML page. For travel logistics and approval authority, this Travel Policy PDF is the governing source.
 ```
 
-### travel-policy-2c55f3d095:chunk:00003
+### travel-policy-2c55f3d095:lc-chunk:00003
 
-- strategy: `markdown_header+section_as_chunk`
-- tokens: `155` pages=[1] section='1.1 Source Priority'
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
+- tokens: `155` pages=[1] section='Extracted Table 1 (Page 1)'
 - source_block_ids: `["travel-policy-2c55f3d095:00004", "travel-policy-2c55f3d095:00005", "travel-policy-2c55f3d095:00006"]`
 
 ```text
@@ -47,9 +47,9 @@ This policy defines how employees and eligible contractors book business travel,
 | 5 | Per Diem Caps XLSX | Numeric city and country caps and thresholds | Berlin hotel cap |
 ```
 
-### travel-policy-2c55f3d095:chunk:00004
+### travel-policy-2c55f3d095:lc-chunk:00004
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `124` pages=[1] section='2. Roles and Responsibilities'
 - source_block_ids: `["travel-policy-2c55f3d095:00007", "travel-policy-2c55f3d095:00008", "travel-policy-2c55f3d095:00009", "travel-policy-2c55f3d095:00010", "travel-policy-2c55f3d095:00011", "travel-policy-2c55f3d095:00012", "travel-policy-2c55f3d095:00013", "travel-policy-2c55f3d095:00014", "travel-policy-2c55f3d095:00015"]`
 
@@ -65,9 +65,9 @@ deviations.
 - Travel Security: advise on security-sensitive destinations, medical risk, and emergency travel changes.
 ```
 
-### travel-policy-2c55f3d095:chunk:00005
+### travel-policy-2c55f3d095:lc-chunk:00005
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `117` pages=[1] section='3. Booking Rules'
 - source_block_ids: `["travel-policy-2c55f3d095:00016", "travel-policy-2c55f3d095:00017"]`
 
@@ -76,9 +76,9 @@ deviations.
 Employees must use the approved travel portal for flights, hotels, and rail bookings unless the portal is unavailable or the traveler receives written approval to book outside the portal. Bookings made outside the portal must still follow policy caps and evidence requirements. The employee should normally select the lowest logical fare or rate. Lowest logical means a reasonable balance of price, total travel time, safety, schedule, luggage needs, and meeting commitments. A cheaper option that creates an excessive layover, late-night arrival without safe onward transport, or missed business meeting is not considered logical.
 ```
 
-### travel-policy-2c55f3d095:chunk:00006
+### travel-policy-2c55f3d095:lc-chunk:00006
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `96` pages=[1, 2] section='3.1 Advance Booking'
 - source_block_ids: `["travel-policy-2c55f3d095:00018", "travel-policy-2c55f3d095:00019", "travel-policy-2c55f3d095:00020", "travel-policy-2c55f3d095:00021", "travel-policy-2c55f3d095:00022", "travel-policy-2c55f3d095:00023"]`
 
@@ -91,22 +91,22 @@ evidence that reasonable alternatives were unavailable.
 - Last-minute travel is allowed for urgent business needs but may require manager explanation during audit.
 ```
 
-### travel-policy-2c55f3d095:chunk:00007
+### travel-policy-2c55f3d095:lc-chunk:00007
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `35` pages=[2] section='4. Approval Matrix'
-- source_block_ids: `["travel-policy-2c55f3d095:00024", "travel-policy-2c55f3d095:00025"]`
+- source_block_ids: `["travel-policy-2c55f3d095:00024", "travel-policy-2c55f3d095:00025", "travel-policy-2c55f3d095:00026"]`
 
 ```text
 ## 4. Approval Matrix  
 The table below is intentionally included so the PDF is not just plain paragraphs. A good RAG pipeline should keep row context and section metadata.
 ```
 
-### travel-policy-2c55f3d095:chunk:00008
+### travel-policy-2c55f3d095:lc-chunk:00008
 
-- strategy: `markdown_header+section_as_chunk`
-- tokens: `208` pages=[2] section='4. Approval Matrix'
-- source_block_ids: `["travel-policy-2c55f3d095:00026", "travel-policy-2c55f3d095:00027"]`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
+- tokens: `208` pages=[2] section='Extracted Table 1 (Page 2)'
+- source_block_ids: `["travel-policy-2c55f3d095:00026", "travel-policy-2c55f3d095:00027", "travel-policy-2c55f3d095:00028"]`
 
 ```text
 #### Extracted Table 1 (Page 2)  
@@ -121,9 +121,9 @@ The table below is intentionally included so the PDF is not just plain paragraph
 | Travel to high-risk destination | Yes | Travel Security + line manager | Security approval, itinerary, emergency contact |
 ```
 
-### travel-policy-2c55f3d095:chunk:00009
+### travel-policy-2c55f3d095:lc-chunk:00009
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `111` pages=[2] section='5. Flights'
 - source_block_ids: `["travel-policy-2c55f3d095:00028", "travel-policy-2c55f3d095:00029"]`
 
@@ -132,9 +132,9 @@ The table below is intentionally included so the PDF is not just plain paragraph
 Economy class is the default cabin for all flights. Premium economy may be selected when the flight duration exceeds 4 hours and the price difference is reasonable. Business class requires pre-approval and is limited to intercontinental trips above 6 hours or documented medical, security, or critical business need. Travelers must keep a boarding pass or equivalent proof of travel. A booking confirmation alone is not enough to prove that the passenger travelled. If the airline does not provide a boarding pass, an airline travel certificate may be used.
 ```
 
-### travel-policy-2c55f3d095:chunk:00010
+### travel-policy-2c55f3d095:lc-chunk:00010
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `121` pages=[2] section='5.1 Flight Reimbursement Restrictions'
 - source_block_ids: `["travel-policy-2c55f3d095:00030", "travel-policy-2c55f3d095:00031", "travel-policy-2c55f3d095:00032", "travel-policy-2c55f3d095:00033", "travel-policy-2c55f3d095:00034", "travel-policy-2c55f3d095:00035", "travel-policy-2c55f3d095:00036"]`
 
@@ -148,9 +148,9 @@ Economy class is the default cabin for all flights. Premium economy may be selec
 control.
 ```
 
-### travel-policy-2c55f3d095:chunk:00011
+### travel-policy-2c55f3d095:lc-chunk:00011
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `143` pages=[2] section='6. Rail, Public Transport, Taxi, and Rental Car'
 - source_block_ids: `["travel-policy-2c55f3d095:00037", "travel-policy-2c55f3d095:00038"]`
 
@@ -159,9 +159,9 @@ control.
 Rail is preferred over short-haul flights when total travel time is reasonable and the destination is reachable with reliable service. Public transport is preferred over taxi when safe and practical. Taxi or ride-hailing services are reimbursable only when public transport is unavailable, impractical due to luggage, unsafe, or when travel occurs after the city-specific after-hours threshold in the Per Diem Caps spreadsheet. Rental cars require pre-approval unless they are part of a customer visit, plant visit, field operation, or location without reliable public transport. Compact or mid-size category is the default. Luxury, SUV, or premium class requires cost center owner approval.
 ```
 
-### travel-policy-2c55f3d095:chunk:00012
+### travel-policy-2c55f3d095:lc-chunk:00012
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `91` pages=[2] section='6.1 Taxi Evidence'
 - source_block_ids: `["travel-policy-2c55f3d095:00039", "travel-policy-2c55f3d095:00040", "travel-policy-2c55f3d095:00041", "travel-policy-2c55f3d095:00042", "travel-policy-2c55f3d095:00043"]`
 
@@ -173,9 +173,9 @@ Rail is preferred over short-haul flights when total travel time is reasonable a
 unsafe, or Travel Security approves.
 ```
 
-### travel-policy-2c55f3d095:chunk:00013
+### travel-policy-2c55f3d095:lc-chunk:00013
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `100` pages=[2, 3] section='7. Hotels and Accommodation'
 - source_block_ids: `["travel-policy-2c55f3d095:00044", "travel-policy-2c55f3d095:00045"]`
 
@@ -184,9 +184,9 @@ unsafe, or Travel Security approves.
 Hotels must be booked through the approved portal when available. The traveler should choose a hotel near the business location when total cost is reasonable. The lodging cap for each city is maintained in the Per Diem Caps spreadsheet. If the hotel price exceeds the cap, reimbursement is allowed only when there is pre-approval or when the employee documents that no reasonable alternative was available. Examples include conference hotels, sold-out city events, weather disruption, or safety constraints.
 ```
 
-### travel-policy-2c55f3d095:chunk:00014
+### travel-policy-2c55f3d095:lc-chunk:00014
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `97` pages=[3] section='7.1 Hotel Evidence'
 - source_block_ids: `["travel-policy-2c55f3d095:00046", "travel-policy-2c55f3d095:00047", "travel-policy-2c55f3d095:00048", "travel-policy-2c55f3d095:00049", "travel-policy-2c55f3d095:00050"]`
 
@@ -198,9 +198,9 @@ Hotels must be booked through the approved portal when available. The traveler s
 - Breakfast cannot be claimed separately when the hotel folio shows breakfast included in the rate.
 ```
 
-### travel-policy-2c55f3d095:chunk:00015
+### travel-policy-2c55f3d095:lc-chunk:00015
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `103` pages=[3] section='8. Meals, Subsistence, and Entertainment'
 - source_block_ids: `["travel-policy-2c55f3d095:00051", "travel-policy-2c55f3d095:00052"]`
 
@@ -209,9 +209,9 @@ Hotels must be booked through the approved portal when available. The traveler s
 Meal reimbursement is governed by the Expense Policy HTML page and numeric caps in the Per Diem Caps spreadsheet. The travel policy defines when a meal is connected to travel. Meals are normally reimbursable during overnight business travel, approved offsite meetings, customer visits, or late return after 20:00. Alcohol is not reimbursable for ordinary employee meals. Alcohol may be reimbursed only as pre-approved client entertainment with attendee list and business purpose.
 ```
 
-### travel-policy-2c55f3d095:chunk:00016
+### travel-policy-2c55f3d095:lc-chunk:00016
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `71` pages=[3] section='8.1 Client Entertainment'
 - source_block_ids: `["travel-policy-2c55f3d095:00053", "travel-policy-2c55f3d095:00054", "travel-policy-2c55f3d095:00055", "travel-policy-2c55f3d095:00056", "travel-policy-2c55f3d095:00057"]`
 
@@ -223,9 +223,9 @@ Meal reimbursement is governed by the Expense Policy HTML page and numeric caps 
 - Alcohol with client meals requires pre-approval even when total cost is below EUR 120.
 ```
 
-### travel-policy-2c55f3d095:chunk:00017
+### travel-policy-2c55f3d095:lc-chunk:00017
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `100` pages=[3] section='9. Expense Submission and Audit'
 - source_block_ids: `["travel-policy-2c55f3d095:00058", "travel-policy-2c55f3d095:00059"]`
 
@@ -234,9 +234,9 @@ Meal reimbursement is governed by the Expense Policy HTML page and numeric caps 
 Claims should be submitted within 30 calendar days after the trip end date. Finance may reject claims older than 90 days unless an exception is approved. Claims must include business purpose, category, date, vendor, currency, amount, and supporting evidence. Finance may audit any claim before or after reimbursement. Audit checks may include duplicate detection, cap validation, date consistency, route reasonableness, alcohol removal, missing receipt declarations, and source-currency verification.
 ```
 
-### travel-policy-2c55f3d095:chunk:00018
+### travel-policy-2c55f3d095:lc-chunk:00018
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `64` pages=[3] section='9.1 Missing Evidence'
 - source_block_ids: `["travel-policy-2c55f3d095:00060", "travel-policy-2c55f3d095:00061", "travel-policy-2c55f3d095:00062", "travel-policy-2c55f3d095:00063", "travel-policy-2c55f3d095:00064"]`
 
@@ -248,9 +248,9 @@ the receipt is unavailable.
 - Repeated missing evidence may lead to reimbursement refusal or mandatory manual review for future claims.
 ```
 
-### travel-policy-2c55f3d095:chunk:00019
+### travel-policy-2c55f3d095:lc-chunk:00019
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `119` pages=[3] section='10. Non-Reimbursable Travel Items'
 - source_block_ids: `["travel-policy-2c55f3d095:00065", "travel-policy-2c55f3d095:00066", "travel-policy-2c55f3d095:00067", "travel-policy-2c55f3d095:00068", "travel-policy-2c55f3d095:00069", "travel-policy-2c55f3d095:00070"]`
 
@@ -263,11 +263,11 @@ the receipt is unavailable.
 - Expenses that are primarily private, family-related, recreational, or unrelated to the business purpose.
 ```
 
-### travel-policy-2c55f3d095:chunk:00020
+### travel-policy-2c55f3d095:lc-chunk:00020
 
-- strategy: `markdown_header+section_as_chunk`
-- tokens: `138` pages=[3] section='11. Worked Examples'
-- source_block_ids: `["travel-policy-2c55f3d095:00071", "travel-policy-2c55f3d095:00072", "travel-policy-2c55f3d095:00073"]`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
+- tokens: `138` pages=[3, 4] section='Extracted Table 1 (Page 3)'
+- source_block_ids: `["travel-policy-2c55f3d095:00071", "travel-policy-2c55f3d095:00072", "travel-policy-2c55f3d095:00073", "travel-policy-2c55f3d095:00074"]`
 
 ```text
 ## 11. Worked Examples  
@@ -279,11 +279,11 @@ the receipt is unavailable.
 | Prague taxi at 20:30 without safety issue | Usually not reimbursable | Prague after-hours threshold is 21:00 in XLSX |
 ```
 
-### travel-policy-2c55f3d095:chunk:00021
+### travel-policy-2c55f3d095:lc-chunk:00021
 
-- strategy: `markdown_header+section_as_chunk`
-- tokens: `74` pages=[4] section='11. Worked Examples'
-- source_block_ids: `["travel-policy-2c55f3d095:00074", "travel-policy-2c55f3d095:00075"]`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
+- tokens: `74` pages=[4] section='Extracted Table 1 (Page 4)'
+- source_block_ids: `["travel-policy-2c55f3d095:00074", "travel-policy-2c55f3d095:00075", "travel-policy-2c55f3d095:00076"]`
 
 ```text
 #### Extracted Table 1 (Page 4)  
@@ -293,9 +293,9 @@ the receipt is unavailable.
 | Hotel breakfast included, separate cafe breakfast claimed | Not reimbursable | Duplicate breakfast claim |
 ```
 
-### travel-policy-2c55f3d095:chunk:00022
+### travel-policy-2c55f3d095:lc-chunk:00022
 
-- strategy: `markdown_header+section_as_chunk`
+- strategy: `langchain_direct+markdown_header+section_as_chunk`
 - tokens: `99` pages=[4] section='12. RAG Notes for Builders'
 - source_block_ids: `["travel-policy-2c55f3d095:00076", "travel-policy-2c55f3d095:00077"]`
 

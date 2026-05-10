@@ -4,7 +4,8 @@ This folder is intentionally separate from the production ingestion pipeline.
 
 The experiment loads raw files with LangChain community document loaders where
 possible, normalizes the same sources with the project's existing ingestion
-loaders, chunks the normalized blocks, and writes all outputs under:
+loaders, chunks the normalized blocks with a direct LangChain splitter path, and
+writes all outputs under:
 
 ```text
 data/processed_langchain_experiment/
@@ -20,9 +21,16 @@ before writing them.
 
 The loaded-document stage keeps LangChain `Document` objects for inspection. PDF
 files are loaded page by page, then merged into one source-level document so the
-raw LangChain loader output is easier to inspect. The chunking stage uses the
-project's normalized block artifacts as input, so chunks receive Markdown
-headings, table Markdown, page metadata, and block lineage before splitting.
+raw LangChain loader output is easier to inspect. The chunking stage assembles
+the project's normalized block artifacts into Markdown, applies
+`MarkdownHeaderTextSplitter`, then applies
+`RecursiveCharacterTextSplitter.from_tiktoken_encoder(...)`. The experiment maps
+split text back to source blocks so generated chunks still carry block IDs,
+pages, sheets, and section metadata.
+
+`run_experiment(...)` defaults to `chunking_mode="langchain_direct"`. For quick
+fallback comparison, callers can pass `chunking_mode="production_wrapped"` to use
+the production chunking wrapper against the same normalized block artifacts.
 
 Run from the repository root:
 

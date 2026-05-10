@@ -17,11 +17,15 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from langchain_core.documents import Document
+from langchain_text_splitters import (
+    MarkdownHeaderTextSplitter,
+    RecursiveCharacterTextSplitter,
+)
 
 from app.core.config import get_settings
 from app.ingest.artifacts import BlockArtifact, ChunkArtifact
 from app.ingest.loaders import normalize_by_file_type
-from app.ingest.pipeline_chunk import chunk_blocks as chunk_block_artifacts
+from app.ingest.pipeline_chunk import chunk_blocks as production_chunk_blocks
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DATA_DIR = ROOT_DIR / "data" / "raw"
@@ -33,6 +37,8 @@ NORMALIZED_BLOCKS_DIR_NAME = "02_normalized_blocks"
 NORMALIZED_BLOCK_PREVIEWS_DIR_NAME = "02_normalized_blocks_preview"
 CHUNKS_DIR_NAME = "03_chunks"
 CHUNK_PREVIEWS_DIR_NAME = "03_chunks_preview"
+CHUNKING_MODE_LANGCHAIN_DIRECT = "langchain_direct"
+CHUNKING_MODE_PRODUCTION_WRAPPED = "production_wrapped"
 
 HEADERS_TO_SPLIT_ON = [
     ("#", "Header 1"),
@@ -53,6 +59,19 @@ class LoadedDocumentRecord:
     document_index: int
     text: str
     metadata: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class BlockSpan:
+    block: BlockArtifact
+    start: int
+    end: int
+
+
+@dataclass(frozen=True)
+class MarkdownAssembly:
+    text: str
+    spans: list[BlockSpan]
 
 
 @dataclass(frozen=True)
@@ -95,6 +114,7 @@ def run_experiment(
     chunk_size: int | None = None,
     chunk_overlap: int | None = None,
     max_chunk_tokens: int | None = None,
+    chunking_mode: str = CHUNKING_MODE_LANGCHAIN_DIRECT,
 ) -> ExperimentResult:
     """Load and chunk raw files with LangChain libraries in an isolated output dir."""
     settings = get_settings()
@@ -150,11 +170,12 @@ def run_experiment(
         records = _loaded_records_from_documents(documents)
         doc_id = str(documents[0].metadata["experiment_doc_id"])
         blocks = normalize_to_blocks(source_path)
-        chunks = chunk_block_artifacts(
+        chunks = chunk_normalized_blocks(
             blocks,
             chunk_size=resolved_chunk_size,
             chunk_overlap=resolved_chunk_overlap,
             max_chunk_tokens=resolved_max_chunk_tokens,
+            chunking_mode=chunking_mode,
         )
         loaded_documents_path = loaded_documents_dir / f"{doc_id}.jsonl"
         loaded_document_preview_path = loaded_document_previews_dir / f"{doc_id}.md"
@@ -199,7 +220,10 @@ def run_experiment(
             )
         )
 
-    _write_text_if_changed(output_dir / "report.md", _report_markdown(document_results, warnings))
+    _write_text_if_changed(
+        output_dir / "report.md",
+        _report_markdown(document_results, warnings, chunking_mode=chunking_mode),
+    )
     _remove_orphaned_files(
         loaded_documents_dir,
         [Path(result.output_loaded_documents_path) for result in document_results],
@@ -325,6 +349,344 @@ def normalize_to_blocks(source_path: Path) -> list[BlockArtifact]:
         )
         for index, source_block in enumerate(normalized_source.blocks, start=1)
     ]
+
+
+def chunk_normalized_blocks(
+    blocks: list[BlockArtifact],
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+    max_chunk_tokens: int,
+    chunking_mode: str,
+) -> list[ChunkArtifact]:
+    """Chunk normalized blocks with the selected experiment strategy."""
+    if chunking_mode == CHUNKING_MODE_PRODUCTION_WRAPPED:
+        return production_chunk_blocks(
+            blocks,
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            max_chunk_tokens=max_chunk_tokens,
+        )
+    if chunking_mode != CHUNKING_MODE_LANGCHAIN_DIRECT:
+        raise ValueError(f"Unsupported chunking mode: {chunking_mode}")
+    return chunk_blocks_with_langchain_splitters(
+        blocks,
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        max_chunk_tokens=max_chunk_tokens,
+    )
+
+
+def chunk_blocks_with_langchain_splitters(
+    blocks: list[BlockArtifact],
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+    max_chunk_tokens: int,
+) -> list[ChunkArtifact]:
+    """Chunk normalized blocks with LangChain splitters and light lineage mapping."""
+    if not blocks:
+        return []
+
+    effective_chunk_size = _effective_chunk_size(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        max_chunk_tokens=max_chunk_tokens,
+    )
+    assembly = _assemble_blocks_as_markdown(blocks)
+    header_splitter = MarkdownHeaderTextSplitter(
+        headers_to_split_on=HEADERS_TO_SPLIT_ON,
+        strip_headers=False,
+    )
+    recursive_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+        encoding_name="cl100k_base",
+        chunk_size=effective_chunk_size,
+        chunk_overlap=chunk_overlap,
+        add_start_index=True,
+    )
+
+    section_documents = _section_documents_from_assembly(
+        assembly,
+        header_splitter=header_splitter,
+        length_function=recursive_splitter._length_function,
+        effective_chunk_size=effective_chunk_size,
+    )
+
+    chunks: list[ChunkArtifact] = []
+    for split_document in recursive_splitter.split_documents(section_documents):
+        chunk_text = split_document.page_content.strip()
+        if not chunk_text:
+            continue
+
+        section_start = int(split_document.metadata.get("experiment_section_start", 0))
+        relative_start = split_document.metadata.get("start_index")
+        chunk_start = (
+            _locate_text_start(assembly.text, chunk_text, start=section_start)
+            if isinstance(relative_start, int)
+            else section_start
+        )
+        chunk_end = chunk_start + len(chunk_text)
+        chunk_blocks = _blocks_for_span(assembly.spans, chunk_start, chunk_end)
+        if not chunk_blocks:
+            chunk_blocks = blocks
+
+        first_block = chunk_blocks[0]
+        section_path = _chunk_section_path(split_document.metadata, chunk_blocks)
+        chunk_blocks = _filter_blocks_to_section(chunk_blocks, section_path)
+        chunks.append(
+            ChunkArtifact(
+                chunk_id=f"{first_block.doc_id}:lc-chunk:{len(chunks) + 1:05d}",
+                doc_id=first_block.doc_id,
+                source_path=first_block.source_path,
+                doc_type=first_block.doc_type,
+                title=first_block.title,
+                text=chunk_text,
+                source_block_ids=[block.block_id for block in chunk_blocks],
+                section_path=section_path,
+                pages=sorted({block.page for block in chunk_blocks if block.page is not None}),
+                sheets=sorted({block.sheet for block in chunk_blocks if block.sheet is not None}),
+                chunk_strategy=str(split_document.metadata["experiment_chunk_strategy"]),
+                token_count=recursive_splitter._length_function(chunk_text),
+                order=len(chunks) + 1,
+                metadata=_merge_block_metadata(chunk_blocks),
+            )
+        )
+
+    _validate_chunks_within_max_tokens(chunks, max_chunk_tokens=max_chunk_tokens)
+    return chunks
+
+
+def _assemble_blocks_as_markdown(blocks: list[BlockArtifact]) -> MarkdownAssembly:
+    text_parts: list[str] = []
+    spans: list[BlockSpan] = []
+    for block in blocks:
+        text = block.text.strip()
+        if not text:
+            continue
+        start = sum(len(part) for part in text_parts)
+        if text_parts:
+            start += 2 * len(text_parts)
+        text_parts.append(text)
+        spans.append(BlockSpan(block=block, start=start, end=start + len(text)))
+    return MarkdownAssembly(text="\n\n".join(text_parts), spans=spans)
+
+
+def _section_documents_from_assembly(
+    assembly: MarkdownAssembly,
+    *,
+    header_splitter: MarkdownHeaderTextSplitter,
+    length_function: Any,
+    effective_chunk_size: int,
+) -> list[Document]:
+    if not _looks_like_markdown_with_headers(assembly.text):
+        return [
+            Document(
+                page_content=assembly.text,
+                metadata={
+                    "experiment_section_start": 0,
+                    "experiment_section_path": None,
+                    "experiment_chunk_strategy": _chunk_strategy(
+                        has_markdown_header=False,
+                        token_count=length_function(assembly.text),
+                        effective_chunk_size=effective_chunk_size,
+                    ),
+                },
+            )
+        ]
+
+    documents: list[Document] = []
+    search_start = 0
+    for section_document in header_splitter.split_text(assembly.text):
+        section_text = section_document.page_content.strip()
+        if not section_text:
+            continue
+        section_start = _locate_text_start(
+            assembly.text,
+            section_text,
+            start=search_start,
+        )
+        search_start = section_start + len(section_text)
+        section_path = _section_path_from_metadata(section_document.metadata)
+        documents.append(
+            Document(
+                page_content=section_text,
+                metadata={
+                    **section_document.metadata,
+                    "experiment_section_start": section_start,
+                    "experiment_section_path": section_path,
+                    "experiment_chunk_strategy": _chunk_strategy(
+                        has_markdown_header=section_path is not None,
+                        token_count=length_function(section_text),
+                        effective_chunk_size=effective_chunk_size,
+                    ),
+                },
+            )
+        )
+    return documents or [
+        Document(
+            page_content=assembly.text,
+            metadata={
+                "experiment_section_start": 0,
+                "experiment_section_path": None,
+                "experiment_chunk_strategy": "plain_text+section_as_chunk",
+            },
+        )
+    ]
+
+
+def _locate_text_start(full_text: str, target_text: str, *, start: int) -> int:
+    index = full_text.find(target_text, start)
+    if index >= 0:
+        return index
+
+    index = full_text.find(target_text)
+    if index >= 0:
+        return index
+
+    normalized = _locate_normalized_text_start(full_text, target_text, start=start)
+    if normalized is not None:
+        return normalized
+    return start
+
+
+def _locate_normalized_text_start(
+    full_text: str,
+    target_text: str,
+    *,
+    start: int,
+) -> int | None:
+    full_indexes: list[int] = []
+    full_chars: list[str] = []
+    target_chars: list[str] = []
+
+    for index, char in enumerate(full_text):
+        if char.isspace():
+            continue
+        full_indexes.append(index)
+        full_chars.append(char)
+    for char in target_text:
+        if not char.isspace():
+            target_chars.append(char)
+
+    normalized_full = "".join(full_chars)
+    normalized_target = "".join(target_chars)
+    normalized_start = next(
+        (idx for idx, original in enumerate(full_indexes) if original >= start),
+        0,
+    )
+    match_index = normalized_full.find(normalized_target, normalized_start)
+    if match_index < 0:
+        return None
+    return full_indexes[match_index]
+
+
+def _effective_chunk_size(
+    *,
+    chunk_size: int,
+    chunk_overlap: int,
+    max_chunk_tokens: int,
+) -> int:
+    if max_chunk_tokens < 1:
+        raise ValueError("MAX_CHUNK_TOKENS must be greater than zero.")
+    if chunk_size < 1:
+        raise ValueError("CHUNK_SIZE must be greater than zero.")
+
+    effective_chunk_size = min(chunk_size, max_chunk_tokens)
+    if chunk_overlap >= effective_chunk_size:
+        raise ValueError(
+            "CHUNK_OVERLAP must be smaller than the effective chunk size "
+            f"({effective_chunk_size})."
+        )
+    return effective_chunk_size
+
+
+def _validate_chunks_within_max_tokens(
+    chunks: Iterable[ChunkArtifact],
+    *,
+    max_chunk_tokens: int,
+) -> None:
+    oversized_chunks = [
+        f"{chunk.chunk_id} ({chunk.token_count} tokens)"
+        for chunk in chunks
+        if chunk.token_count > max_chunk_tokens
+    ]
+    if oversized_chunks:
+        raise ValueError(
+            "Experimental chunking produced chunks above MAX_CHUNK_TOKENS="
+            f"{max_chunk_tokens}: {', '.join(oversized_chunks)}"
+        )
+
+
+def _looks_like_markdown_with_headers(text: str) -> bool:
+    return any(line.startswith("#") for line in text.splitlines())
+
+
+def _chunk_strategy(
+    *,
+    has_markdown_header: bool,
+    token_count: int,
+    effective_chunk_size: int,
+) -> str:
+    prefix = "markdown_header" if has_markdown_header else "plain_text"
+    suffix = "recursive_tiktoken" if token_count > effective_chunk_size else "section_as_chunk"
+    return f"langchain_direct+{prefix}+{suffix}"
+
+
+def _section_path_from_metadata(metadata: dict[str, Any]) -> str | None:
+    if "experiment_section_path" in metadata:
+        section_path = metadata["experiment_section_path"]
+        return str(section_path) if section_path else None
+    values = [metadata[key] for _, key in HEADERS_TO_SPLIT_ON if metadata.get(key)]
+    return str(values[-1]) if values else None
+
+
+def _chunk_section_path(
+    metadata: dict[str, Any],
+    blocks: list[BlockArtifact],
+) -> str | None:
+    section_path = _section_path_from_metadata(metadata)
+    if section_path:
+        return section_path
+    block_section_paths = [block.section_path for block in blocks if block.section_path]
+    return block_section_paths[0] if block_section_paths else None
+
+
+def _filter_blocks_to_section(
+    blocks: list[BlockArtifact],
+    section_path: str | None,
+) -> list[BlockArtifact]:
+    if section_path is None:
+        return blocks
+
+    matching_blocks = [block for block in blocks if block.section_path == section_path]
+    return matching_blocks or blocks
+
+
+def _blocks_for_span(
+    spans: list[BlockSpan],
+    start: int,
+    end: int,
+) -> list[BlockArtifact]:
+    return [
+        span.block
+        for span in spans
+        if span.start < end and span.end > start
+    ]
+
+
+def _merge_block_metadata(blocks: list[BlockArtifact]) -> dict[str, Any]:
+    metadata: dict[str, Any] = {
+        "chunker": CHUNKING_MODE_LANGCHAIN_DIRECT,
+        "source_block_count": len(blocks),
+    }
+    table_indexes = [
+        block.metadata.get("table_index_on_page")
+        for block in blocks
+        if block.metadata.get("table_index_on_page") is not None
+    ]
+    if table_indexes:
+        metadata["table_indexes_on_page"] = table_indexes
+    return metadata
 
 
 def _merge_pdf_page_documents(documents: list[Document]) -> list[Document]:
@@ -574,12 +936,15 @@ def _source_document_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
 def _report_markdown(
     documents: list[ExperimentDocumentResult],
     warnings: list[ExperimentWarning],
+    *,
+    chunking_mode: str,
 ) -> str:
     lines = [
         "# LangChain Chunking Experiment Report",
         "",
         f"- generated_at: `{_now_iso()}`",
         f"- output_dir: `{_project_relative_path(EXPERIMENT_OUTPUT_DIR)}`",
+        f"- chunking_mode: `{chunking_mode}`",
         f"- documents_chunked: `{len(documents)}`",
         f"- chunks_generated: `{sum(document.chunk_count for document in documents)}`",
         f"- warnings: `{len(warnings)}`",

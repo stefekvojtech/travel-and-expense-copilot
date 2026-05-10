@@ -1,7 +1,8 @@
 # LangChain Chunking Experiment Report
 
-- generated_at: `2026-05-10T15:27:55.041306+00:00`
+- generated_at: `2026-05-10T15:54:19.002919+00:00`
 - output_dir: `data/processed_langchain_experiment`
+- chunking_mode: `langchain_direct`
 - documents_chunked: `3`
 - chunks_generated: `43`
 - warnings: `3`
@@ -18,6 +19,6 @@
 
 | Source | Type | Message | Observed at |
 | --- | --- | --- | --- |
-| `data/raw/airport_transfer_eligibility_decision_tree.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:27:51.206094+00:00` |
-| `data/raw/corporate_travel_card_rules.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:27:51.208912+00:00` |
-| `data/raw/per_diem_caps.xlsx` | `unsupported_in_experiment` | XLSX is intentionally skipped in this first LangChain chunking experiment. | `2026-05-10T15:27:52.278957+00:00` |
+| `data/raw/airport_transfer_eligibility_decision_tree.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:54:15.768146+00:00` |
+| `data/raw/corporate_travel_card_rules.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:54:15.770408+00:00` |
+| `data/raw/per_diem_caps.xlsx` | `unsupported_in_experiment` | XLSX is intentionally skipped in this first LangChain chunking experiment. | `2026-05-10T15:54:16.440550+00:00` |
