@@ -29,14 +29,14 @@ python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:
 ```text
 data/raw/*
   -> 01_loaded_documents/
-  -> 01_loaded_documents_preview/
   -> 02_normalized_blocks/
-  -> 02_normalized_blocks_preview/
   -> 03_chunks/
-  -> 03_chunks_preview/
   -> 04_vectorstore/
   -> report.md
 ```
+
+Each numbered machine-readable stage writes its matching `_preview` folder beside
+it for inspection.
 
 The numbered stages always rebuild their own output folders. There is no
 incremental/force mode and no manifest file. Warnings are written into

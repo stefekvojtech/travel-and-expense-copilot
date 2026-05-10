@@ -63,7 +63,7 @@ data/
   raw/                  Demo source documents
   processed/            Numbered generated artifacts and Chroma store
   eval/                 Golden evaluation examples
-scripts/                Command-line entrypoints and unified pipeline CLI
+scripts/                Numbered stage scripts, full pipeline, and search CLI
 docs/                   Human documentation
 AGENTS.md               Agent-facing project instructions
 pyproject.toml          Package metadata and dependencies
@@ -113,9 +113,10 @@ Search stays outside the corpus-build pipeline:
 python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
-The numbered stages always rebuild their own output folders. There is no
-incremental/force split and no dry-run embedding command. Stage 01 image loading
-can call OpenAI vision, and stage 04 embedding calls OpenAI embeddings.
+The numbered stages always rebuild their own output folders. The full pipeline
+does the same, then embeds into Chroma. There is no incremental/force split and
+no dry-run embedding command. Stage 01 image loading can call OpenAI vision, and
+stage 04 embedding calls OpenAI embeddings.
 
 ## Supported Source Types
 

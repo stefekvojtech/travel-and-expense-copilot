@@ -21,11 +21,14 @@ data/processed/02_normalized_blocks/*.jsonl
   -> app/ingest/step03_chunk_blocks.py
   -> data/processed/03_chunks/*.jsonl
   -> data/processed/03_chunks_preview/*.md
-  -> data/processed/report.md
 
 data/processed/03_chunks/*.jsonl
   -> app/ingest/step04_embed_chunks.py
   -> data/processed/04_vectorstore/
+
+numbered stage outputs
+  -> app/ingest/pipeline_report.py
+  -> data/processed/report.md
 
 query
   -> app/retrieval/vector_store.py
