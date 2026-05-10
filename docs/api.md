@@ -25,8 +25,8 @@ There is no answer-generation route.
 also exist as empty scaffolds.
 
 The current way to use the project is through scripts in `scripts/`.
-`python scripts/pipeline.py` rebuilds the corpus from raw files through Chroma
-embedding. Retrieval is run separately with `python scripts/search_chunks.py`.
+`python scripts/00_run_ingestion.py` rebuilds the corpus from raw files through
+Chroma embedding. Retrieval is run separately with `python scripts/search_chunks.py`.
 
 ## Expected Future API Shape
 

@@ -104,7 +104,7 @@ python scripts/01_load_documents.py
 python scripts/02_normalize_blocks.py
 python scripts/03_chunk_blocks.py
 python scripts/04_embed_chunks.py
-python scripts/pipeline.py
+python scripts/00_run_ingestion.py
 ```
 
 Search stays outside the corpus-build pipeline:

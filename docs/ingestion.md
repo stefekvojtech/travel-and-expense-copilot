@@ -15,7 +15,7 @@ python scripts/04_embed_chunks.py
 To run the full raw-to-vector-store build:
 
 ```powershell
-python scripts/pipeline.py
+python scripts/00_run_ingestion.py
 ```
 
 Search is separate from the build pipeline:

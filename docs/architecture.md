@@ -52,8 +52,9 @@ embedding.
 
 `scripts/` contains the command-line entrypoints that call application modules.
 `scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
-build stages individually. `scripts/pipeline.py` runs the corpus build from raw
-files through vector-store embedding. Search remains a separate retrieval script.
+build stages individually. `scripts/00_run_ingestion.py` runs the numbered
+ingestion flow from raw files through vector-store embedding. Search remains a
+separate retrieval script.
 The scripts should stay thin.
 
 ## Current Modules

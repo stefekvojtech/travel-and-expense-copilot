@@ -1,4 +1,4 @@
-"""Run the full raw-source to vector-store corpus build.
+"""Run the complete numbered ingestion flow.
 
 This command runs stages 01 through 04: load documents, normalize blocks, chunk
 blocks, and embed chunks into Chroma. Image loading and embedding may call paid
