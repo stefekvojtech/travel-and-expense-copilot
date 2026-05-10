@@ -42,10 +42,8 @@ def _get_float(name: str, default: float) -> float:
     return float(value) if value is not None else default
 
 
-def _get_path(name: str, *, fallback_name: str | None = None) -> Path:
+def _get_path(name: str) -> Path:
     value = os.getenv(name)
-    if value is None and fallback_name is not None:
-        value = os.getenv(fallback_name)
     if value is None:
         raise KeyError(name)
     path = Path(value)

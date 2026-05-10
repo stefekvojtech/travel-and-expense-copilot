@@ -14,7 +14,7 @@ import shutil
 import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 from uuid import uuid4
 
 from app.core.config import Settings
