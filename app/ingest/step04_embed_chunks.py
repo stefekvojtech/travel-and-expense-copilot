@@ -28,19 +28,11 @@ class EmbedResult:
     chunk_count: int
     collection_name: str
     vector_store_path: str
-    embedded: bool
 
 
-def embed_all_chunks(settings: Settings, *, dry_run: bool = False) -> EmbedResult:
+def embed_all_chunks(settings: Settings) -> EmbedResult:
     """Embed chunk JSONL artifacts into the configured local Chroma collection."""
     chunks = _read_all_chunks(chunks_dir(settings))
-    if dry_run:
-        return EmbedResult(
-            chunk_count=len(chunks),
-            collection_name=settings.vector_collection_name,
-            vector_store_path=settings.vector_store_dir.as_posix(),
-            embedded=False,
-        )
 
     settings.vector_store_dir.mkdir(parents=True, exist_ok=True)
     temp_collection_name = _temporary_collection_name(settings.vector_collection_name)
@@ -73,7 +65,6 @@ def embed_all_chunks(settings: Settings, *, dry_run: bool = False) -> EmbedResul
         chunk_count=len(chunks),
         collection_name=settings.vector_collection_name,
         vector_store_path=settings.vector_store_dir.as_posix(),
-        embedded=True,
     )
 
 

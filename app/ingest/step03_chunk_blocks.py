@@ -23,7 +23,6 @@ from app.ingest.artifact_paths import (
     chunk_previews_dir,
     chunks_dir,
     normalized_blocks_dir,
-    project_relative_path,
     reset_artifact_dir,
     write_text_if_changed,
 )
@@ -63,7 +62,6 @@ class PreparedChunkText:
 @dataclass(frozen=True)
 class ChunkedDocument:
     doc_id: str
-    output_chunks_path: str
     chunk_count: int
 
 
@@ -100,7 +98,6 @@ def chunk_all_blocks(settings: Settings) -> ChunkResult:
         chunked_documents.append(
             ChunkedDocument(
                 doc_id=blocks[0].doc_id,
-                output_chunks_path=project_relative_path(output_path),
                 chunk_count=len(chunks),
             )
         )

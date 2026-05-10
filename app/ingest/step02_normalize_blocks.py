@@ -40,8 +40,6 @@ from app.ingest.source_files import (
 class NormalizedBlockDocument:
     doc_id: str
     source_path: str
-    output_blocks_path: str
-    output_blocks_preview_path: str
     doc_type: str
     title: str
     block_count: int
@@ -91,8 +89,6 @@ def normalize_all_blocks(settings: Settings) -> NormalizeBlocksResult:
             NormalizedBlockDocument(
                 doc_id=doc_id,
                 source_path=blocks[0].source_path,
-                output_blocks_path=project_relative_path(output_path),
-                output_blocks_preview_path=project_relative_path(preview_path),
                 doc_type=blocks[0].doc_type,
                 title=blocks[0].title,
                 block_count=len(blocks),

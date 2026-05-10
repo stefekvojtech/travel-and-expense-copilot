@@ -42,8 +42,6 @@ from app.ingest.source_files import (
 class LoadedDocument:
     doc_id: str
     source_path: str
-    output_loaded_documents_path: str
-    output_loaded_documents_preview_path: str
     doc_type: str
     title: str
     loader_name: str
@@ -98,8 +96,6 @@ def load_all_documents(settings: Settings) -> LoadDocumentsResult:
             LoadedDocument(
                 doc_id=doc_id,
                 source_path=records[0].source_path,
-                output_loaded_documents_path=project_relative_path(loaded_path),
-                output_loaded_documents_preview_path=project_relative_path(preview_path),
                 doc_type=records[0].doc_type,
                 title=records[0].title,
                 loader_name=records[0].loader_name,

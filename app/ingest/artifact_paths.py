@@ -13,17 +13,7 @@ NORMALIZED_BLOCKS_DIR_NAME = "02_normalized_blocks"
 NORMALIZED_BLOCK_PREVIEWS_DIR_NAME = "02_normalized_blocks_preview"
 CHUNKS_DIR_NAME = "03_chunks"
 CHUNK_PREVIEWS_DIR_NAME = "03_chunks_preview"
-VECTOR_STORE_DIR_NAME = "04_vectorstore"
 REPORT_FILENAME = "report.md"
-
-ARTIFACT_DIR_NAMES = (
-    LOADED_DOCUMENTS_DIR_NAME,
-    LOADED_DOCUMENT_PREVIEWS_DIR_NAME,
-    NORMALIZED_BLOCKS_DIR_NAME,
-    NORMALIZED_BLOCK_PREVIEWS_DIR_NAME,
-    CHUNKS_DIR_NAME,
-    CHUNK_PREVIEWS_DIR_NAME,
-)
 
 
 def loaded_documents_dir(settings: Settings) -> Path:
@@ -60,13 +50,6 @@ def project_relative_path(path: Path) -> str:
         return resolved_path.resolve().relative_to(ROOT_DIR.resolve()).as_posix()
     except ValueError:
         return resolved_path.as_posix()
-
-
-def resolve_project_path(path: str | Path) -> Path:
-    resolved_path = Path(path)
-    if resolved_path.is_absolute():
-        return resolved_path
-    return ROOT_DIR / resolved_path
 
 
 def reset_artifact_dir(directory: Path, *, pattern: str = "*") -> None:
