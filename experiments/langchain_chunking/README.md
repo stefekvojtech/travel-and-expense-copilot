@@ -35,7 +35,7 @@ Current scope:
 Generated outputs:
 
 - `documents.jsonl`: loaded LangChain document records
-- `chunks/*.jsonl`: chunk records per source file
+- `chunks/*.jsonl`: shared `ChunkArtifact` records per source file
 - `previews/*.md`: readable chunk previews
 - `warnings.jsonl`: skipped files and loader issues
 - `report.md`: summary table and sample chunks
