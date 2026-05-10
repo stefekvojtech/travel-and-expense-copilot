@@ -19,10 +19,13 @@ Chunk sizing uses the shared `.env` settings: `CHUNK_SIZE`, `CHUNK_OVERLAP`, and
 before writing them.
 
 The implementation keeps LangChain `Document` objects through the splitting
-phase. It uses `MarkdownHeaderTextSplitter` only when loaded text already
-contains Markdown headings, then calls
-`RecursiveCharacterTextSplitter.split_documents(...)` with `add_start_index=True`
-so each chunk keeps loader metadata plus its source start offset.
+phase. PDF files are loaded page by page, then merged into one source-level
+document before chunking so retrieval chunks can span page boundaries while
+still reporting the page numbers they overlap. The experiment uses
+`MarkdownHeaderTextSplitter` only when loaded text already contains Markdown
+headings, then calls `RecursiveCharacterTextSplitter.split_documents(...)` with
+`add_start_index=True` so each chunk keeps loader metadata plus its source start
+offset.
 
 Run from the repository root:
 

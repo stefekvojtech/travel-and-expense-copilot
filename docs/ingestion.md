@@ -191,6 +191,11 @@ with LangChain community loaders, then chunks the loaded documents with
 LangChain text splitters. It does not read production blocks from
 `data/processed/`.
 
+PDF files are loaded page by page with LangChain, then merged into one
+source-level experiment document before chunking. This allows experimental
+chunks to span page boundaries while preserving overlapped page numbers in chunk
+metadata.
+
 The experiment writes numbered artifact folders in creation order:
 
 - `01_documents/`: per-source JSONL files containing loaded LangChain document

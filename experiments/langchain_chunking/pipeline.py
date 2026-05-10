@@ -263,6 +263,8 @@ def load_with_langchain(source_path: Path) -> tuple[list[Document], list[Experim
                 metadata=metadata,
             )
         )
+    if suffix == ".pdf":
+        documents = _merge_pdf_page_documents(documents)
     return documents, []
 
 
@@ -302,12 +304,18 @@ def chunk_loaded_documents(
         documents_for_recursive_split
     ):
         chunk_text = split_document.page_content.strip()
-        if not chunk_text:
+        if not chunk_text or _is_page_marker_only(chunk_text):
             continue
         metadata = split_document.metadata
         doc_id = str(metadata["experiment_doc_id"])
         source_path = str(metadata["experiment_source_path"])
         document_index = int(metadata["experiment_document_index"])
+        start_index = _resolved_start_index(metadata, chunk_text)
+        pages = _pages_from_metadata(
+            metadata,
+            start_index=start_index,
+            text_length=len(chunk_text),
+        )
         chunks.append(
             ChunkArtifact(
                 chunk_id=f"{doc_id}:lc-chunk:{len(chunks) + 1:05d}",
@@ -316,8 +324,16 @@ def chunk_loaded_documents(
                 doc_type=str(metadata["experiment_doc_type"]),
                 title=_title_from_source_path(source_path),
                 text=chunk_text,
-                source_block_ids=[f"{doc_id}:lc-document:{document_index:05d}"],
-                pages=_pages_from_metadata(metadata),
+                source_block_ids=[
+                    f"{doc_id}:lc-document:{source_document_index:05d}"
+                    for source_document_index in _source_document_indexes_from_metadata(
+                        metadata,
+                        fallback=document_index,
+                        start_index=start_index,
+                        text_length=len(chunk_text),
+                    )
+                ],
+                pages=pages,
                 sheets=[],
                 section_path=_section_path_from_metadata(metadata),
                 chunk_strategy=str(metadata["experiment_chunk_strategy"]),
@@ -325,13 +341,77 @@ def chunk_loaded_documents(
                 order=len(chunks) + 1,
                 metadata={
                     "loader_name": metadata["experiment_loader_name"],
-                    "start_index": metadata.get("start_index"),
+                    "start_index": start_index,
                     "source_document_metadata": _source_document_metadata(metadata),
                 },
             )
         )
     _validate_chunks_within_max_tokens(chunks, max_chunk_tokens=max_chunk_tokens)
     return chunks
+
+
+def _resolved_start_index(metadata: dict[str, Any], chunk_text: str) -> int | None:
+    start_index = metadata.get("start_index")
+    if isinstance(start_index, int) and start_index >= 0:
+        return start_index
+
+    full_text = metadata.get("experiment_full_text")
+    if isinstance(full_text, str):
+        index = full_text.find(chunk_text)
+        if index >= 0:
+            return index
+    return None
+
+
+def _is_page_marker_only(text: str) -> bool:
+    return re.fullmatch(r"<!--\s*source_page:\s*\d+\s*-->", text.strip()) is not None
+
+
+def _merge_pdf_page_documents(documents: list[Document]) -> list[Document]:
+    if len(documents) <= 1:
+        return documents
+
+    text_parts: list[str] = []
+    page_spans: list[dict[str, int]] = []
+    source_document_indexes: list[int] = []
+    source_metadata: list[dict[str, Any]] = []
+    for document in documents:
+        metadata = document.metadata
+        page_number = _page_number_from_metadata(metadata)
+        document_index = int(metadata["experiment_document_index"])
+        part = f"<!-- source_page: {page_number} -->\n\n{document.page_content}"
+        start = sum(len(text_part) for text_part in text_parts)
+        if text_parts:
+            start += 2 * len(text_parts)
+        text_parts.append(part)
+        page_spans.append(
+            {
+                "page": page_number,
+                "document_index": document_index,
+                "start": start,
+                "end": start + len(part),
+            }
+        )
+        source_document_indexes.append(document_index)
+        source_metadata.append(_source_document_metadata(metadata))
+
+    first_metadata = documents[0].metadata
+    merged_metadata = {
+        **first_metadata,
+        "experiment_document_index": 1,
+        "experiment_merged_document_count": len(documents),
+        "experiment_pages": [span["page"] for span in page_spans],
+        "experiment_source_document_indexes": source_document_indexes,
+        "experiment_page_spans": page_spans,
+        "experiment_full_text": "\n\n".join(text_parts),
+        "experiment_source_document_metadata": source_metadata,
+    }
+    return [
+        Document(
+            page_content="\n\n".join(text_parts),
+            metadata=merged_metadata,
+        )
+    ]
 
 
 def _prepare_documents_for_recursive_split(
@@ -446,11 +526,66 @@ def _section_path_from_metadata(metadata: dict[str, Any]) -> str | None:
     return str(values[-1]) if values else None
 
 
-def _pages_from_metadata(metadata: dict[str, Any]) -> list[int]:
+def _pages_from_metadata(
+    metadata: dict[str, Any],
+    *,
+    start_index: int | None = None,
+    text_length: int | None = None,
+) -> list[int]:
+    page_spans = metadata.get("experiment_page_spans")
+    if isinstance(page_spans, list) and start_index is not None and text_length is not None:
+        end_index = start_index + text_length
+        pages = [
+            span.get("page")
+            for span in page_spans
+            if isinstance(span, dict)
+            and isinstance(span.get("page"), int)
+            and isinstance(span.get("start"), int)
+            and isinstance(span.get("end"), int)
+            and span["start"] < end_index
+            and span["end"] > start_index
+        ]
+        return sorted(set(pages))
+
+    experiment_pages = metadata.get("experiment_pages")
+    if isinstance(experiment_pages, list) and all(
+        isinstance(page, int) for page in experiment_pages
+    ):
+        return sorted(set(experiment_pages))
+
     page = metadata.get("page")
     if isinstance(page, int):
         return [page + 1]
     return []
+
+
+def _page_number_from_metadata(metadata: dict[str, Any]) -> int:
+    pages = _pages_from_metadata(metadata)
+    return pages[0] if pages else int(metadata["experiment_document_index"])
+
+
+def _source_document_indexes_from_metadata(
+    metadata: dict[str, Any],
+    *,
+    fallback: int,
+    start_index: int | None,
+    text_length: int,
+) -> list[int]:
+    page_spans = metadata.get("experiment_page_spans")
+    if isinstance(page_spans, list) and start_index is not None:
+        end_index = start_index + text_length
+        indexes = [
+            span.get("document_index")
+            for span in page_spans
+            if isinstance(span, dict)
+            and isinstance(span.get("document_index"), int)
+            and isinstance(span.get("start"), int)
+            and isinstance(span.get("end"), int)
+            and span["start"] < end_index
+            and span["end"] > start_index
+        ]
+        return sorted(set(indexes)) or [fallback]
+    return [fallback]
 
 
 def _documents_preview_markdown(documents: list[Document]) -> str:
@@ -539,6 +674,11 @@ def _loaded_records_from_documents(documents: list[Document]) -> list[LoadedDocu
 
 
 def _source_document_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
+    if "experiment_source_document_metadata" in metadata:
+        return {
+            "merged_from": metadata["experiment_source_document_metadata"],
+        }
+
     header_names = {header_name for _, header_name in HEADERS_TO_SPLIT_ON}
     return {
         key: value

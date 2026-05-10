@@ -3,7 +3,7 @@
 - doc_id: `travel-policy-2c55f3d095`
 - source_path: `data/raw/travel_policy.pdf`
 - loader: `PyPDFLoader`
-- loaded_documents: `4`
+- loaded_documents: `1`
 - chunks: `7`
 
 ## Chunks
@@ -283,11 +283,13 @@ Prague after-hours threshold is 21:00 in XLSX
 
 ### travel-policy-2c55f3d095:lc-chunk:00007
 
-- strategy: `plain_text+section_as_chunk`
-- tokens: `171` pages=[4]
+- strategy: `plain_text+recursive_tiktoken`
+- tokens: `178` pages=[4]
 - source_block_ids: `["travel-policy-2c55f3d095:lc-document:00004"]`
 
 ```text
+<!-- source_page: 4 -->
+
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
 Page 4
 Case

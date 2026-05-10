@@ -3,14 +3,16 @@
 - doc_id: `travel-policy-2c55f3d095`
 - source_path: `data/raw/travel_policy.pdf`
 - loader: `PyPDFLoader`
-- loaded_documents: `4`
+- loaded_documents: `1`
 
 ## Document 1
 
-- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 0, "page_label": "1"}`
-- pages: `[1]`
+- source_document_metadata: `{"merged_from": [{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 0, "page_label": "1"}, {"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 1, "page_label": "2"}, {"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 2, "page_label": "3"}, {"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 3, "page_label": "4"}]}`
+- pages: `[1, 2, 3, 4]`
 
 ```text
+<!-- source_page: 1 -->
+
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
 Page 1
 Atlas Mobility Group
@@ -78,14 +80,9 @@ layover, late-night arrival without safe onward transport, or missed business me
  International flights should be booked at least 14 calendar days before travel when practical.
  Conference hotels should be booked as soon as the event is approved because above-cap hotel exceptions require
 evidence that reasonable alternatives were unavailable.
-```
 
-## Document 2
+<!-- source_page: 2 -->
 
-- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 1, "page_label": "2"}`
-- pages: `[2]`
-
-```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
 Page 2
  Last-minute travel is allowed for urgent business needs but may require manager explanation during audit.
@@ -161,14 +158,9 @@ owner approval.
  Taxi between home and office is normally not reimbursable unless approved overtime ends after 22:00, public transport is
 unsafe, or Travel Security approves.
 7. Hotels and Accommodation
-```
 
-## Document 3
+<!-- source_page: 3 -->
 
-- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 2, "page_label": "3"}`
-- pages: `[3]`
-
-```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
 Page 3
 Hotels must be booked through the approved portal when available. The traveler should choose a hotel near the business
@@ -225,14 +217,9 @@ Berlin hotel cap is maintained in XLSX and is EUR 180
 Prague taxi at 20:30 without safety issue
 Usually not reimbursable
 Prague after-hours threshold is 21:00 in XLSX
-```
 
-## Document 4
+<!-- source_page: 4 -->
 
-- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 3, "page_label": "4"}`
-- pages: `[4]`
-
-```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
 Page 4
 Case
