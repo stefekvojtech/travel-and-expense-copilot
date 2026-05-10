@@ -209,6 +209,21 @@ The experiment writes numbered artifact folders in creation order:
 warnings in Markdown tables. XLSX is skipped in the current experiment, and image
 files are skipped to avoid paid vision calls.
 
+Production chunk JSONL files can also be rendered into readable Markdown:
+
+```powershell
+python scripts/pipeline.py preview-chunks
+```
+
+Legacy equivalent:
+
+```powershell
+python scripts/preview_chunks.py
+```
+
+This reads `data/processed/chunks/*.jsonl` and writes
+`data/processed/chunks_preview/*.md` without changing the canonical chunk JSONL.
+
 ## Embedding
 
 `app/ingest/pipeline_embed.py` reads all chunk JSONL files and stores them in a

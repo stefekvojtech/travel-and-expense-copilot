@@ -100,6 +100,7 @@ Commands:
 ```powershell
 python scripts/pipeline.py ingest
 python scripts/pipeline.py chunk
+python scripts/pipeline.py preview-chunks
 python scripts/pipeline.py embed --dry-run
 python scripts/pipeline.py embed
 python scripts/pipeline.py search "Can I take a taxi from Prague airport after 21:00?"
@@ -110,6 +111,7 @@ The older focused script entrypoints are still available:
 ```powershell
 python scripts/ingest_incremental.py
 python scripts/chunk_blocks.py
+python scripts/preview_chunks.py
 python scripts/embed_chunks.py --dry-run
 python scripts/embed_chunks.py
 python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"

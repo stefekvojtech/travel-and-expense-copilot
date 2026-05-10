@@ -10,6 +10,7 @@ import sys
 
 from app.core.config import Settings, get_settings
 from app.ingest.pipeline_chunk import chunk_all_blocks
+from app.ingest.pipeline_chunk_preview import preview_all_chunks
 from app.ingest.pipeline_embed import embed_all_chunks
 from app.ingest.pipeline_raw import ingest_sources
 from app.retrieval.context import assemble_context
@@ -39,6 +40,11 @@ def main() -> None:
     subparsers.add_parser(
         "chunk",
         help="Build embedding-ready chunk JSONL from block artifacts.",
+    )
+
+    subparsers.add_parser(
+        "preview-chunks",
+        help="Render production chunk JSONL as readable Markdown previews.",
     )
 
     embed_parser = subparsers.add_parser(
@@ -83,6 +89,8 @@ def main() -> None:
         _run_ingest(settings, force=args.force)
     elif args.command == "chunk":
         _run_chunk(settings)
+    elif args.command == "preview-chunks":
+        _run_preview_chunks(settings)
     elif args.command == "embed":
         _run_embed(settings, dry_run=args.dry_run)
     elif args.command == "search":
@@ -107,6 +115,15 @@ def _run_chunk(settings: Settings) -> None:
         f"Generated {result.chunk_count} chunks "
         f"from {len(result.chunked_documents)} block files."
     )
+
+
+def _run_preview_chunks(settings: Settings) -> None:
+    result = preview_all_chunks(settings)
+    print(
+        f"Generated chunk previews for {len(result.previewed_documents)} documents "
+        f"and {result.chunk_count} chunks."
+    )
+    print(f"Output written to {result.output_dir}")
 
 
 def _run_embed(settings: Settings, *, dry_run: bool) -> None:
