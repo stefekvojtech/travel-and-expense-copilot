@@ -1,1 +1,1 @@
-"""Ingestion pipelines for normalizing raw sources into blocks and chunks."""
+"""Numbered ingestion stages for loading, normalizing, chunking, and embedding."""

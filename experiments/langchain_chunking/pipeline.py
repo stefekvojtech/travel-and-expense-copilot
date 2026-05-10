@@ -25,7 +25,7 @@ from langchain_text_splitters import (
 from app.core.config import get_settings
 from app.ingest.artifacts import BlockArtifact, ChunkArtifact
 from app.ingest.loaders import normalize_by_file_type
-from app.ingest.pipeline_chunk import chunk_blocks as production_chunk_blocks
+from app.ingest.step03_chunk_blocks import chunk_blocks as production_chunk_blocks
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DATA_DIR = ROOT_DIR / "data" / "raw"

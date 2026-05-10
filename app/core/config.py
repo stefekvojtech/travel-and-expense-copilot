@@ -66,8 +66,6 @@ class Settings:
     temperature: float
     raw_data_dir: Path
     processed_data_dir: Path
-    previews_dir: Path
-    chunks_dir: Path
     vector_store_dir: Path
     vector_collection_name: str
     retrieval_top_k: int
@@ -83,6 +81,7 @@ class Settings:
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    processed_data_dir = _get_path("PROCESSED_DATA_DIR")
     return Settings(
         app_name=os.environ["APP_NAME"],
         environment=os.environ["APP_ENV"],
@@ -93,10 +92,8 @@ def get_settings() -> Settings:
         vision_model=os.environ["VISION_MODEL"],
         temperature=_get_float("MODEL_TEMPERATURE", 0.0),
         raw_data_dir=_get_path("RAW_DATA_DIR"),
-        processed_data_dir=_get_path("PROCESSED_DATA_DIR"),
-        previews_dir=_get_path("PREVIEWS_DIR", fallback_name="MARKDOWN_DIR"),
-        chunks_dir=_get_path("CHUNKS_DIR"),
-        vector_store_dir=_get_path("VECTOR_STORE_DIR"),
+        processed_data_dir=processed_data_dir,
+        vector_store_dir=processed_data_dir / "04_vectorstore",
         vector_collection_name=os.environ["VECTOR_COLLECTION_NAME"],
         retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 12),
         retrieval_rerank_k=_get_int("RETRIEVAL_RERANK_K", 5),

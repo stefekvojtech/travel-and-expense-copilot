@@ -13,7 +13,8 @@ and the full evaluation runner are not yet developed.
 Implemented:
 
 - Raw document ingestion from `data/raw/`
-- Normalization into human-readable preview Markdown and canonical block JSONL
+- Loaded-document inspection artifacts
+- Normalization into canonical block JSONL and readable block previews
 - Chunk generation from block JSONL artifacts
 - OpenAI embedding into a local Chroma vector store
 - Chroma vector retrieval
@@ -60,7 +61,7 @@ app/
   ui/                   Empty scaffold for future plain HTML/CSS/JS UI
 data/
   raw/                  Demo source documents
-  processed/            Generated previews, blocks, chunks, and Chroma store
+  processed/            Numbered generated artifacts and Chroma store
   eval/                 Golden evaluation examples
 scripts/                Command-line entrypoints and unified pipeline CLI
 docs/                   Human documentation
@@ -90,39 +91,31 @@ terminal working directory.
 The current local pipeline is:
 
 1. Put raw files in `data/raw/`.
-2. Run ingestion to create preview Markdown, block JSONL, manifest, and warnings.
-3. Run chunking to create embedding-ready chunk JSONL.
-4. Run embedding to write vectors into local Chroma.
-5. Run search to retrieve chunks, rerank them, and print assembled evidence context.
+2. Load source documents into `01_loaded_documents` and readable previews.
+3. Normalize loaded/raw sources into `02_normalized_blocks` and readable previews.
+4. Chunk blocks into `03_chunks` and readable chunk previews.
+5. Embed chunks into local Chroma under `04_vectorstore`.
+6. Run search separately to retrieve chunks, rerank them, and print evidence context.
 
 Commands:
 
 ```powershell
-python scripts/pipeline.py ingest
-python scripts/pipeline.py chunk
-python scripts/pipeline.py preview-chunks
-python scripts/pipeline.py embed --dry-run
-python scripts/pipeline.py embed
-python scripts/pipeline.py search "Can I take a taxi from Prague airport after 21:00?"
+python scripts/01_load_documents.py
+python scripts/02_normalize_blocks.py
+python scripts/03_chunk_blocks.py
+python scripts/04_embed_chunks.py
+python scripts/pipeline.py
 ```
 
-The older focused script entrypoints are still available:
+Search stays outside the corpus-build pipeline:
 
 ```powershell
-python scripts/ingest_incremental.py
-python scripts/chunk_blocks.py
-python scripts/preview_chunks.py
-python scripts/embed_chunks.py --dry-run
-python scripts/embed_chunks.py
 python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
-Use `python scripts/pipeline.py ingest --force` or `python scripts/ingest_force.py`
-only when you intentionally want to rebuild all ingestion artifacts. Image ingestion
-can call OpenAI vision and consume paid credits when an API key is configured.
-
-Use `python scripts/embed_chunks.py --dry-run` before a real embedding run. A real
-embedding run calls OpenAI embeddings and consumes paid credits.
+The numbered stages always rebuild their own output folders. There is no
+incremental/force split and no dry-run embedding command. Stage 01 image loading
+can call OpenAI vision, and stage 04 embedding calls OpenAI embeddings.
 
 ## Supported Source Types
 
@@ -134,22 +127,22 @@ Current source loaders:
 - TXT: `app/ingest/loaders/text.py`
 - PNG/JPG/JPEG: `app/ingest/loaders/image.py`
 
-Unsupported files are written to `data/processed/ingest_warnings.jsonl`.
+Unsupported files and loader warnings are shown in `data/processed/report.md`.
 
 ## Important Concepts
 
-Preview Markdown files are for human inspection. They are not the canonical source for
-chunk lineage.
+Preview Markdown files are for human inspection. They are generated beside the
+machine-readable files for the same stage and are not canonical lineage inputs.
 
-Block JSONL files in `data/processed/blocks/` are the canonical normalized
+Block JSONL files in `data/processed/02_normalized_blocks/` are the canonical normalized
 artifacts. Chunking reads these files.
 
-Chunk JSONL files in `data/processed/chunks/` are the embedding-ready artifacts.
+Chunk JSONL files in `data/processed/03_chunks/` are the embedding-ready artifacts.
 Each chunk carries source lineage metadata such as `doc_id`, `chunk_id`,
 `source_path`, `source_block_ids`, `section_path`, `pages`, `sheets`, and
 `token_count`.
 
-The local Chroma vector store lives under `data/processed/vectorstore/`. It uses
+The local Chroma vector store lives under `data/processed/04_vectorstore/`. It uses
 cosine distance through collection metadata `{"hnsw:space": "cosine"}`.
 
 ## Development Notes

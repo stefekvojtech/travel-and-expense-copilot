@@ -6,12 +6,6 @@ context assembly.
 The current user-facing entrypoint is:
 
 ```powershell
-python scripts/pipeline.py search "Can I take a taxi from Prague airport after 21:00?"
-```
-
-Legacy equivalent:
-
-```powershell
 python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
@@ -40,9 +34,11 @@ local reranking, or citation-ready context assembly.
 `app/retrieval/vector_store.py` opens the local Chroma collection configured by:
 
 ```text
-VECTOR_STORE_DIR=data/processed/vectorstore
+PROCESSED_DATA_DIR=data/processed
 VECTOR_COLLECTION_NAME=travel_expense_policy_chunks
 ```
+
+The vector-store path is derived as `data/processed/04_vectorstore/`.
 
 The collection metadata is defined in `app/retrieval/chroma_config.py`:
 
@@ -54,12 +50,6 @@ The collection metadata is defined in `app/retrieval/chroma_config.py`:
 That means normal search is a paid model call.
 
 To inspect Chroma without embedding a query:
-
-```powershell
-python scripts/pipeline.py search --dry-run
-```
-
-Legacy equivalent:
 
 ```powershell
 python scripts/search_chunks.py --dry-run
@@ -74,14 +64,6 @@ The first retrieval pass supports exact-match metadata filters:
 - `section_path`
 
 CLI examples:
-
-```powershell
-python scripts/pipeline.py search "meal cap Vienna" --doc-type xlsx
-python scripts/pipeline.py search "flight evidence" --source-path data/raw/travel_policy.pdf
-python scripts/pipeline.py search "receipt required" --section-path "2. Receipt and Evidence Requirements"
-```
-
-Legacy equivalents:
 
 ```powershell
 python scripts/search_chunks.py "meal cap Vienna" --doc-type xlsx

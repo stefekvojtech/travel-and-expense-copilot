@@ -1,37 +1,51 @@
 # Ingestion
 
-Ingestion turns raw source files into two artifacts:
+Ingestion turns raw source files into numbered artifacts under `data/processed/`.
+Each machine-readable stage has a matching `_preview` folder for human review.
 
-- preview Markdown files for humans
-- Block JSONL files for canonical lineage and downstream chunking
-
-The current entrypoints are:
+The current build commands are:
 
 ```powershell
-python scripts/pipeline.py ingest
-python scripts/pipeline.py ingest --force
-python scripts/pipeline.py chunk
-python scripts/pipeline.py embed --dry-run
-python scripts/pipeline.py embed
+python scripts/01_load_documents.py
+python scripts/02_normalize_blocks.py
+python scripts/03_chunk_blocks.py
+python scripts/04_embed_chunks.py
 ```
 
-The focused legacy script entrypoints remain available:
+To run the full raw-to-vector-store build:
 
 ```powershell
-python scripts/ingest_incremental.py
-python scripts/ingest_force.py
-python scripts/chunk_blocks.py
-python scripts/embed_chunks.py --dry-run
-python scripts/embed_chunks.py
+python scripts/pipeline.py
 ```
+
+Search is separate from the build pipeline:
+
+```powershell
+python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
+```
+
+## Artifact Order
+
+```text
+data/raw/*
+  -> 01_loaded_documents/
+  -> 01_loaded_documents_preview/
+  -> 02_normalized_blocks/
+  -> 02_normalized_blocks_preview/
+  -> 03_chunks/
+  -> 03_chunks_preview/
+  -> 04_vectorstore/
+  -> report.md
+```
+
+The numbered stages always rebuild their own output folders. There is no
+incremental/force mode and no manifest file. Warnings are written into
+`data/processed/report.md`.
 
 ## Source Discovery
 
-`app/ingest/pipeline_raw.py` discovers every file under `RAW_DATA_DIR`, currently
-`data/raw/`.
-
-Local `AGENTS.md` instruction files are excluded from raw discovery because they
-are agent guidance, not source corpus documents.
+`app/ingest/source_files.py` discovers every file under `RAW_DATA_DIR`, currently
+`data/raw/`. Local `AGENTS.md` instruction files are excluded.
 
 Supported suffixes:
 
@@ -44,68 +58,39 @@ Supported suffixes:
 - `.jpg`
 - `.jpeg`
 
-Unsupported files are not silently ignored. They are written to
-`data/processed/ingest_warnings.jsonl` with an `unsupported_suffix` warning.
+Unsupported files are not silently ignored. They are listed in the report's
+Warnings table.
 
-## Incremental vs Force Ingestion
+## Stage 01: Loaded Documents
 
-`python scripts/pipeline.py ingest` and `python scripts/ingest_incremental.py`
-reuse existing artifacts when:
+`app/ingest/step01_load_documents.py` writes:
 
-- the source path is still present
-- the raw file hash has not changed
-- the previous preview Markdown output exists
-- the previous block JSONL output exists
+- `data/processed/01_loaded_documents/*.jsonl`
+- `data/processed/01_loaded_documents_preview/*.md`
 
-`python scripts/pipeline.py ingest --force` and `python scripts/ingest_force.py`
-rebuild all supported raw sources even when hashes match.
+PDF, HTML, and TXT use LangChain community loaders:
 
-Force ingestion can trigger OpenAI vision calls for image files when
-`OPENAI_API_KEY` is configured. Treat that as a paid model operation.
+- PDF: `PyPDFLoader`, loaded page-by-page and merged into one source-level
+  inspection record
+- HTML: `BSHTMLLoader`
+- TXT: `TextLoader`
 
-## Document IDs
+XLSX and image files use the project loaders so source coverage matches the
+production pipeline. Image loading may call OpenAI vision when `OPENAI_API_KEY`
+is configured.
 
-Each supported source gets a stable `doc_id` built from:
+This stage is for inspecting loaded source text. Chunking does not use these
+records directly; chunking uses normalized blocks from stage 02.
 
-- a slugified source filename stem
-- a short SHA-1 digest of the project-relative source path
+## Stage 02: Normalized Blocks
 
-Example:
+`app/ingest/step02_normalize_blocks.py` writes:
 
-```text
-expense-policy-aead3745bd
-```
+- `data/processed/02_normalized_blocks/*.jsonl`
+- `data/processed/02_normalized_blocks_preview/*.md`
 
-This keeps IDs readable while reducing collisions when two files have the same
-name in different directories.
-
-## Manifest
-
-`data/processed/ingest_manifest.jsonl` stores one JSON row per ingested document.
-Important fields include:
-
-- `doc_id`
-- `source_path`
-- `output_markdown_path`
-- `output_blocks_path`
-- `doc_type`
-- `title`
-- `content_hash`
-- `source_size_bytes`
-- `source_modified_at`
-- `ingested_at`
-- `block_count`
-- `extraction_method`
-- `extraction_warning`
-
-The manifest is used by incremental ingestion to decide whether a source can be
-skipped.
-
-## Blocks
-
-Block JSONL files live in `data/processed/blocks/`.
-
-Each block has:
+Blocks are the canonical normalized artifacts used for chunking and citation
+lineage. Each block has:
 
 - `doc_id`
 - `block_id`
@@ -120,49 +105,42 @@ Each block has:
 - `order`
 - `metadata`
 
-Blocks are the canonical input for chunking. Preview Markdown files are not used for
-chunk lineage.
+PDF normalization uses `pypdf` for text and `pdfplumber` for tables. It removes
+repeated page-header noise, skips simple page labels, maps numbered headings to
+Markdown headings, preserves bullets, and emits extracted tables as Markdown
+tables with page metadata.
 
-## Loader Behavior
+HTML normalization uses BeautifulSoup. It removes `script` and `style`,
+preserves common semantic tags, renders tables and lists into Markdown, and
+tracks section paths from headings.
 
-PDF loading uses `pypdf` for text extraction and `pdfplumber` for table extraction.
-It removes repeated page-header noise, skips simple page labels, maps numbered
-headings to Markdown headings, preserves bullets, and emits extracted tables as
-Markdown tables with page metadata.
+XLSX normalization uses OpenPyXL with `read_only=True` and `data_only=True`.
+Sheets are converted into a sheet heading, a table header block, and row-level
+`table_row` blocks. Common row fields such as country, city, category, expense
+category, and currency are copied into metadata when present.
 
-HTML loading uses BeautifulSoup. It removes `script` and `style`, preserves common
-semantic tags, renders tables and lists into Markdown, and tracks section paths
-from headings. This is basic sanitization, not a complete security sanitizer.
+TXT normalization reads UTF-8 text, cleans paragraph whitespace, and stores the
+file as one plain-text block.
 
-XLSX loading uses OpenPyXL with `read_only=True` and `data_only=True`, meaning
-formula cells are read as cached visible values. Sheets are converted into a sheet
-heading, a table header block, and row-level `table_row` blocks. Common row fields
-such as country, city, category, expense category, and currency are copied into
-metadata when present.
+Image normalization reuses the stage 01 loaded image text when available. This
+avoids calling vision twice in a normal pipeline run.
 
-TXT loading reads UTF-8 text, cleans paragraph whitespace, and stores the file as
-one plain-text block. This intentionally lets the chunking stage exercise recursive
-splitting.
+## Stage 03: Chunking
 
-Image loading uses OpenAI vision through LangChain/OpenAI when `OPENAI_API_KEY` is
-present. Without an API key, it writes a placeholder Markdown block and sets
-`extraction_warning` to `missing_openai_api_key`.
+`app/ingest/step03_chunk_blocks.py` reads `02_normalized_blocks` and writes:
 
-Loader modules are documented with top-level module docstrings. Those docstrings
-should summarize the supported source type, the extraction approach, and the
-lineage metadata preserved for chunking and citations.
+- `data/processed/03_chunks/*.jsonl`
+- `data/processed/03_chunks_preview/*.md`
 
-## Chunking
-
-`app/ingest/pipeline_chunk.py` reads block JSONL files and writes chunk JSONL to
-`data/processed/chunks/`.
-
-For XLSX sources, each table row becomes a chunk unless it exceeds the configured
-chunk size, in which case it is split recursively.
+For XLSX sources, each table row becomes a chunk unless it exceeds `CHUNK_SIZE`,
+in which case it is split recursively.
 
 For other sources, blocks are assembled into Markdown and split with
-`MarkdownHeaderTextSplitter`, then oversized sections are split with a
-token-aware recursive splitter using the `cl100k_base` encoding.
+`MarkdownHeaderTextSplitter`, then oversized sections are split with
+`RecursiveCharacterTextSplitter.from_tiktoken_encoder(...)`.
+
+`CHUNK_SIZE` and `CHUNK_OVERLAP` are passed directly into the LangChain splitter.
+`MAX_CHUNK_TOKENS` remains a validation limit after chunking.
 
 Chunk metadata includes:
 
@@ -180,94 +158,40 @@ Chunk metadata includes:
 - `order`
 - merged source metadata
 
-Table continuation chunks can include header/context text so a row fragment stays
-understandable.
+The production table behavior is preserved: table header/context text is repeated
+for continuation chunks where needed. Chunk-to-block mapping is strict; failure
+to map split text back to source blocks raises an error.
 
-## LangChain Chunking Experiment
+## Stage 04: Embedding
 
-`scripts/experiment_langchain_chunking.py` runs an isolated comparison path under
-`data/processed_langchain_experiment/`. It loads raw PDF, HTML, and TXT files
-with LangChain community loaders, then chunks the loaded documents with
-LangChain text splitters. It does not read production blocks from
-`data/processed/`.
+`app/ingest/step04_embed_chunks.py` reads `03_chunks` and stores chunks in local
+Chroma under:
 
-PDF files are loaded page by page with LangChain, then merged into one
-source-level experiment document before chunking. This allows experimental
-chunks to span page boundaries while preserving overlapped page numbers in chunk
-metadata.
-
-The experiment writes numbered artifact folders in creation order:
-
-- `01_documents/`: per-source JSONL files containing loaded LangChain document
-  records
-- `02_documents_preview/`: full readable previews of those loaded documents
-- `03_chunks/`: per-source JSONL files containing experimental `ChunkArtifact`
-  records
-- `04_chunks_preview/`: full readable previews of every experimental chunk
-
-`report.md` summarizes loaded documents, chunk counts, artifact paths, and
-warnings in Markdown tables. XLSX is skipped in the current experiment, and image
-files are skipped to avoid paid vision calls.
-
-Production chunk JSONL files can also be rendered into readable Markdown:
-
-```powershell
-python scripts/pipeline.py preview-chunks
-```
-
-Legacy equivalent:
-
-```powershell
-python scripts/preview_chunks.py
-```
-
-This reads `data/processed/chunks/*.jsonl` and writes
-`data/processed/chunks_preview/*.md` without changing the canonical chunk JSONL.
-
-## Embedding
-
-`app/ingest/pipeline_embed.py` reads all chunk JSONL files and stores them in a
-local Chroma collection.
-
-Dry run:
-
-```powershell
-python scripts/pipeline.py embed --dry-run
-```
-
-Legacy equivalent:
-
-```powershell
-python scripts/embed_chunks.py --dry-run
-```
-
-Real embedding:
-
-```powershell
-python scripts/pipeline.py embed
-```
-
-Legacy equivalent:
-
-```powershell
-python scripts/embed_chunks.py
+```text
+data/processed/04_vectorstore/
 ```
 
 Real embedding calls OpenAI through `langchain_openai.OpenAIEmbeddings` and
-consumes paid credits.
+consumes paid credits. The previous Chroma collection is not removed up front.
+The embedder builds a temporary collection, adds all chunks, verifies the count,
+then promotes the temporary collection to the configured collection name.
 
-The embedder writes chunk text as the vector document. Chunk metadata is flattened
-for Chroma. List-like fields such as `source_block_ids`, `pages`, and `sheets` are
-stored as JSON strings.
+The embedder writes chunk text as the vector document. Chunk metadata is
+flattened for Chroma. List-like fields such as `source_block_ids`, `pages`, and
+`sheets` are stored as JSON strings.
 
-Embedding is designed as a replace operation:
+## Report
 
-1. Create a temporary collection.
-2. Add all chunks.
-3. Verify the temporary collection count.
-4. Rename the previous collection to a backup name.
-5. Promote the temporary collection to the configured collection name.
-6. Delete backup/orphaned collections and vector directories when safe.
+`app/ingest/pipeline_report.py` writes `data/processed/report.md`.
+
+The report contains:
+
+- generation timestamp
+- total loaded documents, blocks, chunks, and warnings
+- a document table with artifact paths for all numbered stages
+- a warnings table
+
+There is no separate `ingest_manifest.jsonl` or `ingest_warnings.jsonl`.
 
 ## Configuration
 
@@ -276,9 +200,6 @@ Important ingestion and embedding settings in `.env.example`:
 ```text
 RAW_DATA_DIR=data/raw
 PROCESSED_DATA_DIR=data/processed
-PREVIEWS_DIR=data/processed/previews
-CHUNKS_DIR=data/processed/chunks
-VECTOR_STORE_DIR=data/processed/vectorstore
 VECTOR_COLLECTION_NAME=travel_expense_policy_chunks
 
 EMBEDDING_MODEL=text-embedding-3-large
@@ -289,7 +210,4 @@ CHUNK_OVERLAP=120
 MAX_CHUNK_TOKENS=1200
 ```
 
-`MAX_CHUNK_TOKENS` is enforced as a hard upper bound. The chunking pipeline uses
-the smaller of `CHUNK_SIZE` and `MAX_CHUNK_TOKENS` as the effective splitter size,
-then validates that every produced chunk is within the configured maximum before
-writing chunk artifacts.
+Artifact subfolders are derived from `PROCESSED_DATA_DIR`.

@@ -1,186 +1,55 @@
-"""Unified CLI for ingestion, chunking, embedding, and retrieval search.
+"""Run the full raw-source to vector-store corpus build.
 
-The subcommands wrap the same application pipelines exposed by the smaller
-scripts. Embedding and non-dry-run search can call configured OpenAI embedding
-models.
+This command runs stages 01 through 04: load documents, normalize blocks, chunk
+blocks, and embed chunks into Chroma. Image loading and embedding may call paid
+OpenAI models when configured.
 """
 
-import argparse
 import sys
 
-from app.core.config import Settings, get_settings
-from app.ingest.pipeline_chunk import chunk_all_blocks
-from app.ingest.pipeline_chunk_preview import preview_all_chunks
-from app.ingest.pipeline_embed import embed_all_chunks
-from app.ingest.pipeline_raw import ingest_sources
-from app.retrieval.context import assemble_context
-from app.retrieval.rerank import rerank_chunks
-from app.retrieval.vector_store import RetrievalFilters, get_vector_store_info, search_chunks
+from app.core.config import get_settings
+from app.ingest.pipeline_report import write_pipeline_report
+from app.ingest.step01_load_documents import load_all_documents
+from app.ingest.step02_normalize_blocks import normalize_all_blocks
+from app.ingest.step03_chunk_blocks import chunk_all_blocks
+from app.ingest.step04_embed_chunks import embed_all_chunks
 
 
 def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
 
-    parser = argparse.ArgumentParser(
-        description="Run the local Travel & Expense Copilot pipeline."
-    )
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    ingest_parser = subparsers.add_parser(
-        "ingest",
-        help="Normalize raw sources into preview Markdown and block JSONL.",
-    )
-    ingest_parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Rebuild all supported raw sources even when content hashes match.",
-    )
-
-    subparsers.add_parser(
-        "chunk",
-        help="Build embedding-ready chunk JSONL from block artifacts.",
-    )
-
-    subparsers.add_parser(
-        "preview-chunks",
-        help="Render production chunk JSONL as readable Markdown previews.",
-    )
-
-    embed_parser = subparsers.add_parser(
-        "embed",
-        help="Embed chunk JSONL into the local Chroma vector store.",
-    )
-    embed_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Count chunks and validate paths without calling the embedding model.",
-    )
-
-    search_parser = subparsers.add_parser(
-        "search",
-        help="Search embedded chunks and print citation-ready assembled context.",
-    )
-    search_parser.add_argument(
-        "query",
-        nargs="?",
-        help="Question or search phrase to embed and search.",
-    )
-    search_parser.add_argument("--k", type=int, help="Number of chunks to retrieve.")
-    search_parser.add_argument(
-        "--doc-type",
-        help="Filter by source document type, e.g. pdf, xlsx, image.",
-    )
-    search_parser.add_argument(
-        "--source-path",
-        help="Filter by project-relative source path.",
-    )
-    search_parser.add_argument("--section-path", help="Filter by exact section path.")
-    search_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Inspect the Chroma collection without calling the embedding model.",
-    )
-
-    args = parser.parse_args()
     settings = get_settings()
+    runtime_warnings = []
 
-    if args.command == "ingest":
-        _run_ingest(settings, force=args.force)
-    elif args.command == "chunk":
-        _run_chunk(settings)
-    elif args.command == "preview-chunks":
-        _run_preview_chunks(settings)
-    elif args.command == "embed":
-        _run_embed(settings, dry_run=args.dry_run)
-    elif args.command == "search":
-        _run_search(args, settings, parser=search_parser)
-
-
-def _run_ingest(settings: Settings, *, force: bool) -> None:
-    result = ingest_sources(settings, force=force)
-    action = "Force re-ingested" if force else "Ingested"
+    load_result = load_all_documents(settings)
+    runtime_warnings.extend(load_result.warnings)
+    write_pipeline_report(settings, runtime_warnings=runtime_warnings)
     print(
-        f"{action} {len(result.ingested_documents)} documents; "
-        f"skipped {len(result.skipped_documents)} unchanged documents; "
-        f"removed {len(result.removed_documents)} orphaned preview/block files."
+        f"01 loaded {sum(document.loaded_document_count for document in load_result.documents)} "
+        f"document records from {len(load_result.documents)} source files."
     )
-    if result.warnings:
-        print(f"Warning: skipped {len(result.warnings)} unsupported files.")
 
-
-def _run_chunk(settings: Settings) -> None:
-    result = chunk_all_blocks(settings)
+    normalize_result = normalize_all_blocks(settings)
+    runtime_warnings.extend(normalize_result.warnings)
+    write_pipeline_report(settings, runtime_warnings=runtime_warnings)
     print(
-        f"Generated {result.chunk_count} chunks "
-        f"from {len(result.chunked_documents)} block files."
+        f"02 normalized {normalize_result.block_count} blocks "
+        f"from {len(normalize_result.documents)} source files."
     )
 
-
-def _run_preview_chunks(settings: Settings) -> None:
-    result = preview_all_chunks(settings)
+    chunk_result = chunk_all_blocks(settings)
+    write_pipeline_report(settings, runtime_warnings=runtime_warnings)
     print(
-        f"Generated chunk previews for {len(result.previewed_documents)} documents "
-        f"and {result.chunk_count} chunks."
+        f"03 generated {chunk_result.chunk_count} chunks "
+        f"from {len(chunk_result.chunked_documents)} block files."
     )
-    print(f"Output written to {result.output_dir}")
 
-
-def _run_embed(settings: Settings, *, dry_run: bool) -> None:
-    result = embed_all_chunks(settings, dry_run=dry_run)
-    if result.embedded:
-        print(
-            f"Embedded {result.chunk_count} chunks into Chroma collection "
-            f"`{result.collection_name}` at {result.vector_store_path}."
-        )
-    else:
-        print(
-            f"Dry run: found {result.chunk_count} chunks for Chroma collection "
-            f"`{result.collection_name}` at {result.vector_store_path}."
-        )
-
-
-def _run_search(
-    args: argparse.Namespace,
-    settings: Settings,
-    *,
-    parser: argparse.ArgumentParser,
-) -> None:
-    if args.dry_run:
-        info = get_vector_store_info(settings)
-        print(
-            f"Chroma collection `{info.collection_name}` contains {info.chunk_count} "
-            f"chunks at {info.vector_store_path}."
-        )
-        return
-
-    if not args.query:
-        parser.error("query is required unless --dry-run is used")
-
-    filters = RetrievalFilters(
-        doc_type=args.doc_type,
-        source_path=args.source_path,
-        section_path=args.section_path,
+    embed_result = embed_all_chunks(settings)
+    print(
+        f"04 embedded {embed_result.chunk_count} chunks into Chroma collection "
+        f"`{embed_result.collection_name}` at {embed_result.vector_store_path}."
     )
-    results = search_chunks(settings, args.query, k=args.k, filters=filters)
-    if not results:
-        print("No chunks found.")
-        return
-
-    reranked_results = rerank_chunks(
-        args.query,
-        results,
-        model_name=settings.rerank_model,
-        top_k=len(results),
-    )
-    assembled_context = assemble_context(
-        reranked_results,
-        max_blocks=settings.retrieval_context_k,
-        max_total_tokens=settings.retrieval_context_max_tokens,
-        max_block_tokens=settings.retrieval_context_max_block_tokens,
-    )
-    print("=== Assembled Context ===\n")
-    print(assembled_context.context_text)
 
 
 if __name__ == "__main__":

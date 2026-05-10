@@ -8,19 +8,24 @@ final natural-language answer for users.
 
 ```text
 data/raw/*
-  -> app/ingest/pipeline_raw.py
-  -> data/processed/previews/*.md
-  -> data/processed/blocks/*.jsonl
-  -> data/processed/ingest_manifest.jsonl
-  -> data/processed/ingest_warnings.jsonl
+  -> app/ingest/step01_load_documents.py
+  -> data/processed/01_loaded_documents/*.jsonl
+  -> data/processed/01_loaded_documents_preview/*.md
 
-data/processed/blocks/*.jsonl
-  -> app/ingest/pipeline_chunk.py
-  -> data/processed/chunks/*.jsonl
+data/raw/* + data/processed/01_loaded_documents/*.jsonl
+  -> app/ingest/step02_normalize_blocks.py
+  -> data/processed/02_normalized_blocks/*.jsonl
+  -> data/processed/02_normalized_blocks_preview/*.md
 
-data/processed/chunks/*.jsonl
-  -> app/ingest/pipeline_embed.py
-  -> data/processed/vectorstore/
+data/processed/02_normalized_blocks/*.jsonl
+  -> app/ingest/step03_chunk_blocks.py
+  -> data/processed/03_chunks/*.jsonl
+  -> data/processed/03_chunks_preview/*.md
+  -> data/processed/report.md
+
+data/processed/03_chunks/*.jsonl
+  -> app/ingest/step04_embed_chunks.py
+  -> data/processed/04_vectorstore/
 
 query
   -> app/retrieval/vector_store.py
@@ -43,18 +48,24 @@ embedding.
 `app/streaming/` currently exist only as empty scaffolds.
 
 `scripts/` contains the command-line entrypoints that call application modules.
-`scripts/pipeline.py` is the unified CLI for `ingest`, `chunk`, `embed`, and
-`search`; the focused scripts remain as compatibility shortcuts. The scripts
-should stay thin.
+`scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
+build stages individually. `scripts/pipeline.py` runs the corpus build from raw
+files through vector-store embedding. Search remains a separate retrieval script.
+The scripts should stay thin.
 
 ## Current Modules
 
 `app/core/config.py` defines the `Settings` dataclass and `get_settings()` cache.
 Required settings come from environment variables, usually via `.env`.
 
-`app/ingest/pipeline_raw.py` discovers raw files, splits supported and unsupported
-files, runs file-type loaders, writes preview Markdown, writes block JSONL, writes
-the manifest, and writes warnings.
+`app/ingest/step01_load_documents.py` discovers raw files and writes
+loaded-document inspection JSONL plus readable previews. PDF, HTML, and TXT use
+LangChain community loaders. XLSX and images use the project loaders so source
+coverage stays aligned with production behavior.
+
+`app/ingest/step02_normalize_blocks.py` normalizes supported sources into block
+JSONL and readable block previews. Image normalization reuses the stage 01 image
+text when available to avoid a second vision call in a normal pipeline run.
 
 `app/ingest/artifacts.py` defines the shared block and chunk artifact schemas used
 by raw ingestion, chunking, and embedding.
@@ -67,14 +78,18 @@ by raw ingestion, chunking, and embedding.
 - TXT uses simple paragraph cleanup.
 - Images use OpenAI vision through LangChain/OpenAI when `OPENAI_API_KEY` exists.
 
-`app/ingest/pipeline_chunk.py` reads block JSONL artifacts and creates chunks with
+`app/ingest/step03_chunk_blocks.py` reads block JSONL artifacts and creates chunks with
 LangChain text splitters. Spreadsheet rows are chunked row-by-row. Other sources
 are assembled into Markdown with spans so chunks can be mapped back to source
 blocks.
 
-`app/ingest/pipeline_embed.py` reads chunk JSONL files and embeds chunk text into
+`app/ingest/step04_embed_chunks.py` reads chunk JSONL files and embeds chunk text into
 local Chroma. It builds a temporary collection first and promotes it only after
 count verification.
+
+`app/ingest/pipeline_report.py` writes `data/processed/report.md` from the
+current numbered artifacts and warnings. The pipeline no longer writes
+`ingest_manifest.jsonl` or `ingest_warnings.jsonl`.
 
 `app/retrieval/vector_store.py` opens Chroma, embeds the query, retrieves chunks,
 and supports exact-match filters for `doc_type`, `source_path`, and
@@ -89,7 +104,7 @@ formats evidence blocks with citation IDs and retrieval metadata.
 
 Every Python module should start with a short top-level module docstring. In this
 project, a module means a single `.py` file, such as
-`app/ingest/pipeline_raw.py` or `scripts/search_chunks.py`.
+`app/ingest/step01_load_documents.py` or `scripts/search_chunks.py`.
 
 Module docstrings should make the file understandable at a glance. They should
 describe the module's role in the pipeline, the artifacts it reads or writes, and
@@ -114,16 +129,25 @@ the code already says.
 
 `data/raw/` contains source documents.
 
-`data/processed/previews/` contains human-readable Markdown previews. These are useful for
-inspection, but they are not canonical lineage artifacts.
+`data/processed/01_loaded_documents/` contains loaded source document records.
+This stage is useful for inspecting loader output before project normalization.
 
-`data/processed/blocks/` contains canonical normalized block JSONL. Blocks carry
-source metadata and are the input to chunking.
+`data/processed/01_loaded_documents_preview/` contains readable previews of the
+loaded source document records.
 
-`data/processed/chunks/` contains embedding-ready chunk JSONL. Chunks inherit
+`data/processed/02_normalized_blocks/` contains canonical normalized block
+JSONL. Blocks carry source metadata and are the input to chunking.
+
+`data/processed/02_normalized_blocks_preview/` contains readable block previews.
+
+`data/processed/03_chunks/` contains embedding-ready chunk JSONL. Chunks inherit
 metadata and source block lineage.
 
-`data/processed/vectorstore/` contains the local Chroma database.
+`data/processed/03_chunks_preview/` contains readable chunk previews.
+
+`data/processed/04_vectorstore/` contains the local Chroma database.
+
+`data/processed/report.md` summarizes stage outputs and warnings.
 
 `data/eval/` contains golden evaluation examples. The runner is not yet developed.
 
