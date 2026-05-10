@@ -3,8 +3,8 @@
 This folder is intentionally separate from the production ingestion pipeline.
 
 The experiment loads raw files with LangChain community document loaders where
-possible, chunks the loaded documents with LangChain text splitters, and writes
-all outputs under:
+possible, normalizes the same sources with the project's existing ingestion
+loaders, chunks the normalized blocks, and writes all outputs under:
 
 ```text
 data/processed_langchain_experiment/
@@ -18,14 +18,11 @@ Chunk sizing uses the shared `.env` settings: `CHUNK_SIZE`, `CHUNK_OVERLAP`, and
 `MAX_CHUNK_TOKENS` as the effective splitter size and validates generated chunks
 before writing them.
 
-The implementation keeps LangChain `Document` objects through the splitting
-phase. PDF files are loaded page by page, then merged into one source-level
-document before chunking so retrieval chunks can span page boundaries while
-still reporting the page numbers they overlap. The experiment uses
-`MarkdownHeaderTextSplitter` only when loaded text already contains Markdown
-headings, then calls `RecursiveCharacterTextSplitter.split_documents(...)` with
-`add_start_index=True` so each chunk keeps loader metadata plus its source start
-offset.
+The loaded-document stage keeps LangChain `Document` objects for inspection. PDF
+files are loaded page by page, then merged into one source-level document so the
+raw LangChain loader output is easier to inspect. The chunking stage uses the
+project's normalized block artifacts as input, so chunks receive Markdown
+headings, table Markdown, page metadata, and block lineage before splitting.
 
 Run from the repository root:
 
@@ -43,20 +40,26 @@ Current scope:
 
 Generated outputs:
 
-- `01_documents/*.jsonl`: loaded LangChain document records, one JSONL file per
-  source document
-- `02_documents_preview/*.md`: full readable previews of the loaded documents
+- `01_loaded_documents/*.jsonl`: loaded LangChain document records, one JSONL
+  file per source document
+- `01_loaded_documents_preview/*.md`: full readable previews of the loaded
+  documents
+- `02_normalized_blocks/*.jsonl`: normalized block artifacts from the existing
+  project loaders
+- `02_normalized_blocks_preview/*.md`: full readable previews of those blocks
 - `03_chunks/*.jsonl`: shared `ChunkArtifact` records per source document
-- `04_chunks_preview/*.md`: full readable previews of every generated chunk
+- `03_chunks_preview/*.md`: full readable previews of every generated chunk
 - `report.md`: summary table plus skipped files and loader warnings
 
 The numbered folders are ordered by pipeline stage:
 
 ```text
 raw files
-  -> 01_documents
-  -> 02_documents_preview
+  -> 01_loaded_documents
+  -> 01_loaded_documents_preview
+  -> 02_normalized_blocks
+  -> 02_normalized_blocks_preview
   -> 03_chunks
-  -> 04_chunks_preview
+  -> 03_chunks_preview
   -> report.md
 ```

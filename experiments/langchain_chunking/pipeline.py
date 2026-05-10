@@ -14,25 +14,25 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from hashlib import sha1
 from pathlib import Path
-from typing import Any, Callable, Iterable
+from typing import Any, Iterable
 
 from langchain_core.documents import Document
-from langchain_text_splitters import (
-    MarkdownHeaderTextSplitter,
-    RecursiveCharacterTextSplitter,
-)
 
 from app.core.config import get_settings
-from app.ingest.artifacts import ChunkArtifact
+from app.ingest.artifacts import BlockArtifact, ChunkArtifact
+from app.ingest.loaders import normalize_by_file_type
+from app.ingest.pipeline_chunk import chunk_blocks as chunk_block_artifacts
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 RAW_DATA_DIR = ROOT_DIR / "data" / "raw"
 EXPERIMENT_OUTPUT_DIR = ROOT_DIR / "data" / "processed_langchain_experiment"
 LOCAL_AGENT_INSTRUCTION_FILENAME = "AGENTS.md"
-DOCUMENTS_DIR_NAME = "01_documents"
-DOCUMENT_PREVIEWS_DIR_NAME = "02_documents_preview"
+LOADED_DOCUMENTS_DIR_NAME = "01_loaded_documents"
+LOADED_DOCUMENT_PREVIEWS_DIR_NAME = "01_loaded_documents_preview"
+NORMALIZED_BLOCKS_DIR_NAME = "02_normalized_blocks"
+NORMALIZED_BLOCK_PREVIEWS_DIR_NAME = "02_normalized_blocks_preview"
 CHUNKS_DIR_NAME = "03_chunks"
-CHUNK_PREVIEWS_DIR_NAME = "04_chunks_preview"
+CHUNK_PREVIEWS_DIR_NAME = "03_chunks_preview"
 
 HEADERS_TO_SPLIT_ON = [
     ("#", "Header 1"),
@@ -70,9 +70,12 @@ class ExperimentDocumentResult:
     doc_type: str
     loader_name: str
     loaded_document_count: int
+    normalized_block_count: int
     chunk_count: int
-    output_documents_path: str
-    output_documents_preview_path: str
+    output_loaded_documents_path: str
+    output_loaded_documents_preview_path: str
+    output_normalized_blocks_path: str
+    output_normalized_blocks_preview_path: str
     output_chunks_path: str
     output_chunks_preview_path: str
 
@@ -104,12 +107,16 @@ def run_experiment(
         if max_chunk_tokens is not None
         else settings.max_chunk_tokens
     )
-    documents_dir = output_dir / DOCUMENTS_DIR_NAME
-    document_previews_dir = output_dir / DOCUMENT_PREVIEWS_DIR_NAME
+    loaded_documents_dir = output_dir / LOADED_DOCUMENTS_DIR_NAME
+    loaded_document_previews_dir = output_dir / LOADED_DOCUMENT_PREVIEWS_DIR_NAME
+    normalized_blocks_dir = output_dir / NORMALIZED_BLOCKS_DIR_NAME
+    normalized_block_previews_dir = output_dir / NORMALIZED_BLOCK_PREVIEWS_DIR_NAME
     chunks_dir = output_dir / CHUNKS_DIR_NAME
     chunk_previews_dir = output_dir / CHUNK_PREVIEWS_DIR_NAME
-    documents_dir.mkdir(parents=True, exist_ok=True)
-    document_previews_dir.mkdir(parents=True, exist_ok=True)
+    loaded_documents_dir.mkdir(parents=True, exist_ok=True)
+    loaded_document_previews_dir.mkdir(parents=True, exist_ok=True)
+    normalized_blocks_dir.mkdir(parents=True, exist_ok=True)
+    normalized_block_previews_dir.mkdir(parents=True, exist_ok=True)
     chunks_dir.mkdir(parents=True, exist_ok=True)
     chunk_previews_dir.mkdir(parents=True, exist_ok=True)
 
@@ -140,22 +147,30 @@ def run_experiment(
         if not documents:
             continue
 
-        chunks = chunk_loaded_documents(
-            documents,
+        records = _loaded_records_from_documents(documents)
+        doc_id = str(documents[0].metadata["experiment_doc_id"])
+        blocks = normalize_to_blocks(source_path)
+        chunks = chunk_block_artifacts(
+            blocks,
             chunk_size=resolved_chunk_size,
             chunk_overlap=resolved_chunk_overlap,
             max_chunk_tokens=resolved_max_chunk_tokens,
         )
-        records = _loaded_records_from_documents(documents)
-        doc_id = str(documents[0].metadata["experiment_doc_id"])
-        documents_path = documents_dir / f"{doc_id}.jsonl"
-        document_preview_path = document_previews_dir / f"{doc_id}.md"
+        loaded_documents_path = loaded_documents_dir / f"{doc_id}.jsonl"
+        loaded_document_preview_path = loaded_document_previews_dir / f"{doc_id}.md"
+        normalized_blocks_path = normalized_blocks_dir / f"{doc_id}.jsonl"
+        normalized_block_preview_path = normalized_block_previews_dir / f"{doc_id}.md"
         chunks_path = chunks_dir / f"{doc_id}.jsonl"
         chunk_preview_path = chunk_previews_dir / f"{doc_id}.md"
-        _write_jsonl(documents_path, records)
+        _write_jsonl(loaded_documents_path, records)
         _write_text_if_changed(
-            document_preview_path,
-            _documents_preview_markdown(documents),
+            loaded_document_preview_path,
+            _loaded_documents_preview_markdown(documents),
+        )
+        _write_jsonl(normalized_blocks_path, blocks)
+        _write_text_if_changed(
+            normalized_block_preview_path,
+            _normalized_blocks_preview_markdown(blocks),
         )
         _write_jsonl(chunks_path, chunks)
         _write_text_if_changed(
@@ -169,19 +184,37 @@ def run_experiment(
                 doc_type=str(documents[0].metadata["experiment_doc_type"]),
                 loader_name=str(documents[0].metadata["experiment_loader_name"]),
                 loaded_document_count=len(documents),
+                normalized_block_count=len(blocks),
                 chunk_count=len(chunks),
-                output_documents_path=_project_relative_path(documents_path),
-                output_documents_preview_path=_project_relative_path(document_preview_path),
+                output_loaded_documents_path=_project_relative_path(loaded_documents_path),
+                output_loaded_documents_preview_path=_project_relative_path(
+                    loaded_document_preview_path
+                ),
+                output_normalized_blocks_path=_project_relative_path(normalized_blocks_path),
+                output_normalized_blocks_preview_path=_project_relative_path(
+                    normalized_block_preview_path
+                ),
                 output_chunks_path=_project_relative_path(chunks_path),
                 output_chunks_preview_path=_project_relative_path(chunk_preview_path),
             )
         )
 
     _write_text_if_changed(output_dir / "report.md", _report_markdown(document_results, warnings))
-    _remove_orphaned_files(documents_dir, [Path(result.output_documents_path) for result in document_results])
     _remove_orphaned_files(
-        document_previews_dir,
-        [Path(result.output_documents_preview_path) for result in document_results],
+        loaded_documents_dir,
+        [Path(result.output_loaded_documents_path) for result in document_results],
+    )
+    _remove_orphaned_files(
+        loaded_document_previews_dir,
+        [Path(result.output_loaded_documents_preview_path) for result in document_results],
+    )
+    _remove_orphaned_files(
+        normalized_blocks_dir,
+        [Path(result.output_normalized_blocks_path) for result in document_results],
+    )
+    _remove_orphaned_files(
+        normalized_block_previews_dir,
+        [Path(result.output_normalized_blocks_preview_path) for result in document_results],
     )
     _remove_orphaned_files(chunks_dir, [Path(result.output_chunks_path) for result in document_results])
     _remove_orphaned_files(
@@ -268,103 +301,30 @@ def load_with_langchain(source_path: Path) -> tuple[list[Document], list[Experim
     return documents, []
 
 
-def chunk_loaded_documents(
-    documents: list[Document],
-    *,
-    chunk_size: int,
-    chunk_overlap: int,
-    max_chunk_tokens: int,
-) -> list[ChunkArtifact]:
-    """Chunk LangChain-loaded documents with LangChain splitter primitives."""
-    effective_chunk_size = _effective_chunk_size(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        max_chunk_tokens=max_chunk_tokens,
-    )
-    recursive_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        encoding_name="cl100k_base",
-        chunk_size=effective_chunk_size,
-        chunk_overlap=chunk_overlap,
-        add_start_index=True,
-    )
-    header_splitter = MarkdownHeaderTextSplitter(
-        headers_to_split_on=HEADERS_TO_SPLIT_ON,
-        strip_headers=False,
-    )
-
-    documents_for_recursive_split = _prepare_documents_for_recursive_split(
-        documents,
-        header_splitter=header_splitter,
-        length_function=recursive_splitter._length_function,
-        effective_chunk_size=effective_chunk_size,
-    )
-
-    chunks: list[ChunkArtifact] = []
-    for split_document in recursive_splitter.split_documents(
-        documents_for_recursive_split
-    ):
-        chunk_text = split_document.page_content.strip()
-        if not chunk_text or _is_page_marker_only(chunk_text):
-            continue
-        metadata = split_document.metadata
-        doc_id = str(metadata["experiment_doc_id"])
-        source_path = str(metadata["experiment_source_path"])
-        document_index = int(metadata["experiment_document_index"])
-        start_index = _resolved_start_index(metadata, chunk_text)
-        pages = _pages_from_metadata(
-            metadata,
-            start_index=start_index,
-            text_length=len(chunk_text),
+def normalize_to_blocks(source_path: Path) -> list[BlockArtifact]:
+    """Normalize a source with existing project loaders into block artifacts."""
+    normalized_source = normalize_by_file_type(source_path)
+    doc_id = _build_doc_id(source_path)
+    source_reference = _project_relative_path(source_path)
+    doc_type = _doc_type(source_path.suffix.lower())
+    title = _title_from_source_path(source_reference)
+    return [
+        BlockArtifact(
+            doc_id=doc_id,
+            block_id=f"{doc_id}:{index:05d}",
+            source_path=source_reference,
+            doc_type=doc_type,
+            title=title,
+            block_type=source_block.block_type,
+            text=source_block.text,
+            section_path=source_block.section_path,
+            page=source_block.page,
+            sheet=source_block.sheet,
+            order=index,
+            metadata=source_block.metadata,
         )
-        chunks.append(
-            ChunkArtifact(
-                chunk_id=f"{doc_id}:lc-chunk:{len(chunks) + 1:05d}",
-                doc_id=doc_id,
-                source_path=source_path,
-                doc_type=str(metadata["experiment_doc_type"]),
-                title=_title_from_source_path(source_path),
-                text=chunk_text,
-                source_block_ids=[
-                    f"{doc_id}:lc-document:{source_document_index:05d}"
-                    for source_document_index in _source_document_indexes_from_metadata(
-                        metadata,
-                        fallback=document_index,
-                        start_index=start_index,
-                        text_length=len(chunk_text),
-                    )
-                ],
-                pages=pages,
-                sheets=[],
-                section_path=_section_path_from_metadata(metadata),
-                chunk_strategy=str(metadata["experiment_chunk_strategy"]),
-                token_count=recursive_splitter._length_function(chunk_text),
-                order=len(chunks) + 1,
-                metadata={
-                    "loader_name": metadata["experiment_loader_name"],
-                    "start_index": start_index,
-                    "source_document_metadata": _source_document_metadata(metadata),
-                },
-            )
-        )
-    _validate_chunks_within_max_tokens(chunks, max_chunk_tokens=max_chunk_tokens)
-    return chunks
-
-
-def _resolved_start_index(metadata: dict[str, Any], chunk_text: str) -> int | None:
-    start_index = metadata.get("start_index")
-    if isinstance(start_index, int) and start_index >= 0:
-        return start_index
-
-    full_text = metadata.get("experiment_full_text")
-    if isinstance(full_text, str):
-        index = full_text.find(chunk_text)
-        if index >= 0:
-            return index
-    return None
-
-
-def _is_page_marker_only(text: str) -> bool:
-    return re.fullmatch(r"<!--\s*source_page:\s*\d+\s*-->", text.strip()) is not None
+        for index, source_block in enumerate(normalized_source.blocks, start=1)
+    ]
 
 
 def _merge_pdf_page_documents(documents: list[Document]) -> list[Document]:
@@ -412,118 +372,6 @@ def _merge_pdf_page_documents(documents: list[Document]) -> list[Document]:
             metadata=merged_metadata,
         )
     ]
-
-
-def _prepare_documents_for_recursive_split(
-    documents: list[Document],
-    *,
-    header_splitter: MarkdownHeaderTextSplitter,
-    length_function: Callable[[str], int],
-    effective_chunk_size: int,
-) -> list[Document]:
-    prepared_documents: list[Document] = []
-    for document in documents:
-        if not _looks_like_markdown_with_headers(document.page_content):
-            prepared_documents.append(
-                Document(
-                    page_content=document.page_content,
-                    metadata={
-                        **document.metadata,
-                        "experiment_section_path": None,
-                        "experiment_chunk_strategy": _chunk_strategy(
-                            has_markdown_header=False,
-                            token_count=length_function(document.page_content),
-                            effective_chunk_size=effective_chunk_size,
-                        ),
-                    },
-                )
-            )
-            continue
-
-        for section_document in header_splitter.split_text(document.page_content):
-            section_text = section_document.page_content.strip()
-            if not section_text:
-                continue
-            section_metadata = {
-                **document.metadata,
-                **section_document.metadata,
-            }
-            section_path = _section_path_from_metadata(section_metadata)
-            prepared_documents.append(
-                Document(
-                    page_content=section_text,
-                    metadata={
-                        **section_metadata,
-                        "experiment_section_path": section_path,
-                        "experiment_chunk_strategy": _chunk_strategy(
-                            has_markdown_header=section_path is not None,
-                            token_count=length_function(section_text),
-                            effective_chunk_size=effective_chunk_size,
-                        ),
-                    },
-                )
-            )
-    return prepared_documents
-
-
-def _chunk_strategy(
-    *,
-    has_markdown_header: bool,
-    token_count: int,
-    effective_chunk_size: int,
-) -> str:
-    prefix = "markdown_header" if has_markdown_header else "plain_text"
-    suffix = "recursive_tiktoken" if token_count > effective_chunk_size else "section_as_chunk"
-    return f"{prefix}+{suffix}"
-
-
-def _effective_chunk_size(
-    *,
-    chunk_size: int,
-    chunk_overlap: int,
-    max_chunk_tokens: int,
-) -> int:
-    if max_chunk_tokens < 1:
-        raise ValueError("MAX_CHUNK_TOKENS must be greater than zero.")
-    if chunk_size < 1:
-        raise ValueError("CHUNK_SIZE must be greater than zero.")
-
-    effective_chunk_size = min(chunk_size, max_chunk_tokens)
-    if chunk_overlap >= effective_chunk_size:
-        raise ValueError(
-            "CHUNK_OVERLAP must be smaller than the effective chunk size "
-            f"({effective_chunk_size})."
-        )
-    return effective_chunk_size
-
-
-def _validate_chunks_within_max_tokens(
-    chunks: Iterable[ChunkArtifact],
-    *,
-    max_chunk_tokens: int,
-) -> None:
-    oversized_chunks = [
-        f"{chunk.chunk_id} ({chunk.token_count} tokens)"
-        for chunk in chunks
-        if chunk.token_count > max_chunk_tokens
-    ]
-    if oversized_chunks:
-        raise ValueError(
-            "Experimental chunking produced chunks above MAX_CHUNK_TOKENS="
-            f"{max_chunk_tokens}: {', '.join(oversized_chunks)}"
-        )
-
-
-def _looks_like_markdown_with_headers(text: str) -> bool:
-    return any(line.startswith("#") for line in text.splitlines())
-
-
-def _section_path_from_metadata(metadata: dict[str, Any]) -> str | None:
-    if "experiment_section_path" in metadata:
-        section_path = metadata["experiment_section_path"]
-        return str(section_path) if section_path else None
-    values = [metadata[key] for _, key in HEADERS_TO_SPLIT_ON if metadata.get(key)]
-    return str(values[-1]) if values else None
 
 
 def _pages_from_metadata(
@@ -588,7 +436,7 @@ def _source_document_indexes_from_metadata(
     return [fallback]
 
 
-def _documents_preview_markdown(documents: list[Document]) -> str:
+def _loaded_documents_preview_markdown(documents: list[Document]) -> str:
     metadata = documents[0].metadata
     lines = [
         f"# LangChain Document Preview: {Path(str(metadata['experiment_source_path'])).name}",
@@ -611,6 +459,41 @@ def _documents_preview_markdown(documents: list[Document]) -> str:
                 "",
                 "```text",
                 document.page_content,
+                "```",
+                "",
+            ]
+        )
+    return "\n".join(lines).strip() + "\n"
+
+
+def _normalized_blocks_preview_markdown(blocks: list[BlockArtifact]) -> str:
+    first_block = blocks[0]
+    lines = [
+        f"# Normalized Block Preview: {Path(first_block.source_path).name}",
+        "",
+        f"- doc_id: `{first_block.doc_id}`",
+        f"- source_path: `{first_block.source_path}`",
+        f"- doc_type: `{first_block.doc_type}`",
+        f"- blocks: `{len(blocks)}`",
+        "",
+        "## Blocks",
+        "",
+    ]
+    for block in blocks:
+        page_text = f" page={block.page}" if block.page is not None else ""
+        sheet_text = f" sheet={block.sheet!r}" if block.sheet is not None else ""
+        section_text = (
+            f" section={block.section_path!r}" if block.section_path is not None else ""
+        )
+        lines.extend(
+            [
+                f"### {block.block_id}",
+                "",
+                f"- type: `{block.block_type}`{page_text}{sheet_text}{section_text}",
+                f"- metadata: `{json.dumps(block.metadata, ensure_ascii=True)}`",
+                "",
+                "```text",
+                block.text,
                 "```",
                 "",
             ]
@@ -703,8 +586,8 @@ def _report_markdown(
         "",
         "## Documents",
         "",
-        "| Source | Loader | Loaded docs | Chunks | Documents | Document preview | Chunks | Chunk preview |",
-        "| --- | --- | ---: | ---: | --- | --- | --- | --- |",
+        "| Source | Loader | Loaded docs | Blocks | Chunks | Loaded docs | Loaded preview | Blocks | Blocks preview | Chunks | Chunk preview |",
+        "| --- | --- | ---: | ---: | ---: | --- | --- | --- | --- | --- | --- |",
     ]
     for document in documents:
         lines.append(
@@ -712,9 +595,12 @@ def _report_markdown(
             f"`{document.source_path}` | "
             f"`{document.loader_name}` | "
             f"{document.loaded_document_count} | "
+            f"{document.normalized_block_count} | "
             f"{document.chunk_count} | "
-            f"`{document.output_documents_path}` | "
-            f"`{document.output_documents_preview_path}` | "
+            f"`{document.output_loaded_documents_path}` | "
+            f"`{document.output_loaded_documents_preview_path}` | "
+            f"`{document.output_normalized_blocks_path}` | "
+            f"`{document.output_normalized_blocks_preview_path}` | "
             f"`{document.output_chunks_path}` | "
             f"`{document.output_chunks_preview_path}` |"
         )
@@ -768,7 +654,13 @@ def _remove_legacy_artifacts(output_dir: Path) -> None:
     for legacy_file in (output_dir / "documents.jsonl", output_dir / "warnings.jsonl"):
         if legacy_file.exists() and legacy_file.resolve().is_relative_to(output_dir.resolve()):
             legacy_file.unlink()
-    for legacy_dir_name in ("chunks", "previews"):
+    for legacy_dir_name in (
+        "chunks",
+        "previews",
+        "01_documents",
+        "02_documents_preview",
+        "04_chunks_preview",
+    ):
         legacy_dir = output_dir / legacy_dir_name
         if legacy_dir.exists() and legacy_dir.resolve().is_relative_to(output_dir.resolve()):
             for path in sorted(legacy_dir.rglob("*"), reverse=True):
