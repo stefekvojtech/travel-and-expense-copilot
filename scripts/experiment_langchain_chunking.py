@@ -11,7 +11,7 @@ def main() -> None:
     )
     print(f"Output written to {result.output_dir}")
     if result.warnings:
-        print(f"Warnings: {len(result.warnings)}. See {result.output_dir}/warnings.jsonl")
+        print(f"Warnings: {len(result.warnings)}. See {result.output_dir}/report.md")
 
 
 if __name__ == "__main__":

@@ -183,6 +183,27 @@ Chunk metadata includes:
 Table continuation chunks can include header/context text so a row fragment stays
 understandable.
 
+## LangChain Chunking Experiment
+
+`scripts/experiment_langchain_chunking.py` runs an isolated comparison path under
+`data/processed_langchain_experiment/`. It loads raw PDF, HTML, and TXT files
+with LangChain community loaders, then chunks the loaded documents with
+LangChain text splitters. It does not read production blocks from
+`data/processed/`.
+
+The experiment writes numbered artifact folders in creation order:
+
+- `01_documents/`: per-source JSONL files containing loaded LangChain document
+  records
+- `02_documents_preview/`: full readable previews of those loaded documents
+- `03_chunks/`: per-source JSONL files containing experimental `ChunkArtifact`
+  records
+- `04_chunks_preview/`: full readable previews of every experimental chunk
+
+`report.md` summarizes loaded documents, chunk counts, artifact paths, and
+warnings in Markdown tables. XLSX is skipped in the current experiment, and image
+files are skipped to avoid paid vision calls.
+
 ## Embedding
 
 `app/ingest/pipeline_embed.py` reads all chunk JSONL files and stores them in a

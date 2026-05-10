@@ -1,17 +1,14 @@
-# LangChain Chunk Preview: travel_policy.pdf
+# LangChain Document Preview: travel_policy.pdf
 
 - doc_id: `travel-policy-2c55f3d095`
 - source_path: `data/raw/travel_policy.pdf`
 - loader: `PyPDFLoader`
 - loaded_documents: `4`
-- chunks: `7`
 
-## Sample Chunks
+## Document 1
 
-### travel-policy-2c55f3d095:lc-chunk:00001
-
-- strategy: `recursive_tiktoken`
-- tokens: `572` pages=[1]
+- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 0, "page_label": "1"}`
+- pages: `[1]`
 
 ```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
@@ -30,15 +27,42 @@ Atlas Mobility Group.
 The policy does not replace country-specific tax rules, immigration requirements, security guidance, or written Finance
 exceptions. If local law imposes stricter evidence or reporting duties, the stricter requirement applies.
 For numeric reimbursement caps such as meal caps, hotel caps, mileage rates, and taxi after-hours thresholds, use the Per
-Diem Caps spre
-```
-
-### travel-policy-2c55f3d095:lc-chunk:00002
-
-- strategy: `recursive_tiktoken`
-- tokens: `233` pages=[1]
-
-```text
+Diem Caps spreadsheet. For receipt evidence and reimbursement submission rules, use the Expense Policy HTML page.
+For travel logistics and approval authority, this Travel Policy PDF is the governing source.
+1.1 Source Priority
+Priority
+Source
+Use it for
+Example
+1
+Local law and tax rule
+Mandatory legal requirements
+VAT invoice rules, tax deductibility
+2
+Written pre-approval
+Approved exceptions
+Hotel above cap due to conference
+shortage
+3
+Travel Policy PDF
+Travel logistics, approval authority, booking class,
+travel evidence
+Business class approval
+4
+Expense Policy HTML
+Evidence requirements, submission rules,
+reimbursable categories
+Receipt over EUR 10
+5
+Per Diem Caps XLSX
+Numeric city and country caps and thresholds
+Berlin hotel cap
+2. Roles and Responsibilities
+ Employee: book travel through approved channels, keep evidence, submit claims on time, and split mixed receipts
+accurately.
+ Line manager: confirm business purpose, approve travel when required, and reject expenses that lack a valid business
+reason.
+ Cost center owner: approve high-cost travel, premium cabin exceptions, client entertainment above threshold, and policy
 deviations.
  Finance Operations: maintain expense categories, caps, audit controls, reimbursement timing, and exception processing.
  Travel Security: advise on security-sensitive destinations, medical risk, and emergency travel changes.
@@ -52,13 +76,14 @@ layover, late-night arrival without safe onward transport, or missed business me
 3.1 Advance Booking
  Domestic rail or short-haul flights should be booked at least 7 calendar days before travel when practical.
  International flights should be booked at least 14 calendar days before travel when practical.
- Conference hotels should be booked as soon as the event is approved because above-c
+ Conference hotels should be booked as soon as the event is approved because above-cap hotel exceptions require
+evidence that reasonable alternatives were unavailable.
 ```
 
-### travel-policy-2c55f3d095:lc-chunk:00003
+## Document 2
 
-- strategy: `recursive_tiktoken`
-- tokens: `581` pages=[2]
+- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 1, "page_label": "2"}`
+- pages: `[2]`
 
 ```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
@@ -107,15 +132,20 @@ Travel to high-risk destination
 Yes
 Travel Security + line
 manager
-Security approval, itine
-```
-
-### travel-policy-2c55f3d095:lc-chunk:00004
-
-- strategy: `recursive_tiktoken`
-- tokens: `242` pages=[2]
-
-```text
+Security approval, itinerary, emergency
+contact
+5. Flights
+Economy class is the default cabin for all flights. Premium economy may be selected when the flight duration exceeds 4
+hours and the price difference is reasonable. Business class requires pre-approval and is limited to intercontinental trips
+above 6 hours or documented medical, security, or critical business need.
+Travelers must keep a boarding pass or equivalent proof of travel. A booking confirmation alone is not enough to prove that
+the passenger travelled. If the airline does not provide a boarding pass, an airline travel certificate may be used.
+5.1 Flight Reimbursement Restrictions
+ Priority boarding is not reimbursable unless required due to business-critical timing or approved medical need.
+ Lounge access is not reimbursable by default.
+ Seat selection fees are reimbursable only when required for a disability, medical need, or documented work requirement.
+ Baggage fees are reimbursable when the baggage is needed for business equipment, travel length, or customer materials.
+ Airline change fees are reimbursable only when the change is caused by business need or disruption outside the traveler's
 control.
 6. Rail, Public Transport, Taxi, and Rental Car
 Rail is preferred over short-haul flights when total travel time is reasonable and the destination is reachable with reliable
@@ -133,10 +163,10 @@ unsafe, or Travel Security approves.
 7. Hotels and Accommodation
 ```
 
-### travel-policy-2c55f3d095:lc-chunk:00005
+## Document 3
 
-- strategy: `recursive_tiktoken`
-- tokens: `563` pages=[3]
+- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 2, "page_label": "3"}`
+- pages: `[3]`
 
 ```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026
@@ -153,15 +183,20 @@ disruption, or safety constraints.
  Breakfast cannot be claimed separately when the hotel folio shows breakfast included in the rate.
 8. Meals, Subsistence, and Entertainment
 Meal reimbursement is governed by the Expense Policy HTML page and numeric caps in the Per Diem Caps spreadsheet.
-The travel policy defines when a meal i
-```
-
-### travel-policy-2c55f3d095:lc-chunk:00006
-
-- strategy: `recursive_tiktoken`
-- tokens: `313` pages=[3]
-
-```text
+The travel policy defines when a meal is connected to travel. Meals are normally reimbursable during overnight business
+travel, approved offsite meetings, customer visits, or late return after 20:00.
+Alcohol is not reimbursable for ordinary employee meals. Alcohol may be reimbursed only as pre-approved client
+entertainment with attendee list and business purpose.
+8.1 Client Entertainment
+ Client entertainment must have a clear business purpose and attendee list.
+ Client entertainment above EUR 120 total requires pre-approval.
+ Entertainment must not be used to bypass ordinary meal caps for team meals.
+ Alcohol with client meals requires pre-approval even when total cost is below EUR 120.
+9. Expense Submission and Audit
+Claims should be submitted within 30 calendar days after the trip end date. Finance may reject claims older than 90 days
+unless an exception is approved. Claims must include business purpose, category, date, vendor, currency, amount, and
+supporting evidence.
+Finance may audit any claim before or after reimbursement. Audit checks may include duplicate detection, cap validation,
 date consistency, route reasonableness, alcohol removal, missing receipt declarations, and source-currency verification.
 9.1 Missing Evidence
  Missing receipt declarations are allowed only when the expense is otherwise reasonable and the employee explains why
@@ -182,13 +217,20 @@ Vienna dinner: food EUR 32, wine EUR
 8, ordinary travel meal
 Food reimbursable, wine
 removed
-Food is below Vienna cap; alcohol is no
+Food is below Vienna cap; alcohol is not reimbursable without
+entertainment pre-approval
+Berlin hotel EUR 175 per night
+Within cap
+Berlin hotel cap is maintained in XLSX and is EUR 180
+Prague taxi at 20:30 without safety issue
+Usually not reimbursable
+Prague after-hours threshold is 21:00 in XLSX
 ```
 
-### travel-policy-2c55f3d095:lc-chunk:00007
+## Document 4
 
-- strategy: `recursive_tiktoken`
-- tokens: `171` pages=[4]
+- source_document_metadata: `{"producer": "ReportLab PDF Library - (opensource)", "creator": "(unspecified)", "creationdate": "2026-04-30T20:00:16+00:00", "author": "(anonymous)", "keywords": "", "moddate": "2026-04-30T20:00:16+00:00", "subject": "(unspecified)", "title": "(anonymous)", "trapped": "/False", "source": "C:\\Users\\vojte\\GoogleDrive\\Code\\travel-and-expense-copilot\\data\\raw\\travel_policy.pdf", "total_pages": 4, "page": 3, "page_label": "4"}`
+- pages: `[4]`
 
 ```text
 Atlas Mobility Group synthetic policy corpus - Travel Policy 2026

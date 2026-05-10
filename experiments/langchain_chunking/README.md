@@ -18,6 +18,12 @@ Chunk sizing uses the shared `.env` settings: `CHUNK_SIZE`, `CHUNK_OVERLAP`, and
 `MAX_CHUNK_TOKENS` as the effective splitter size and validates generated chunks
 before writing them.
 
+The implementation keeps LangChain `Document` objects through the splitting
+phase. It uses `MarkdownHeaderTextSplitter` only when loaded text already
+contains Markdown headings, then calls
+`RecursiveCharacterTextSplitter.split_documents(...)` with `add_start_index=True`
+so each chunk keeps loader metadata plus its source start offset.
+
 Run from the repository root:
 
 ```powershell
@@ -34,8 +40,20 @@ Current scope:
 
 Generated outputs:
 
-- `documents.jsonl`: loaded LangChain document records
-- `chunks/*.jsonl`: shared `ChunkArtifact` records per source file
-- `previews/*.md`: readable chunk previews
-- `warnings.jsonl`: skipped files and loader issues
-- `report.md`: summary table and sample chunks
+- `01_documents/*.jsonl`: loaded LangChain document records, one JSONL file per
+  source document
+- `02_documents_preview/*.md`: full readable previews of the loaded documents
+- `03_chunks/*.jsonl`: shared `ChunkArtifact` records per source document
+- `04_chunks_preview/*.md`: full readable previews of every generated chunk
+- `report.md`: summary table plus skipped files and loader warnings
+
+The numbered folders are ordered by pipeline stage:
+
+```text
+raw files
+  -> 01_documents
+  -> 02_documents_preview
+  -> 03_chunks
+  -> 04_chunks_preview
+  -> report.md
+```
