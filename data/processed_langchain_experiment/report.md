@@ -1,10 +1,28 @@
 # LangChain Chunking Experiment Report
 
-- generated_at: `2026-05-10T15:27:55.041306+00:00`
+- generated_at: `2026-05-10T15:35:45.683444+00:00`
 - output_dir: `data/processed_langchain_experiment`
 - documents_chunked: `3`
 - chunks_generated: `43`
 - warnings: `3`
+
+## Pipeline Stages
+
+This experiment writes machine-readable artifacts and matching human-readable previews for each stage.
+
+| Stage | Machine artifacts | Preview artifacts | Purpose |
+| --- | --- | --- | --- |
+| 1. Loaded documents | `01_loaded_documents/*.jsonl` | `01_loaded_documents_preview/*.md` | Raw LangChain loader output for inspection before project normalization. |
+| 2. Normalized blocks | `02_normalized_blocks/*.jsonl` | `02_normalized_blocks_preview/*.md` | Project-normalized structural units with Markdown, source metadata, pages, sheets, tables, and block lineage. |
+| 3. Chunks | `03_chunks/*.jsonl` | `03_chunks_preview/*.md` | Retrieval-sized `ChunkArtifact` records produced from normalized blocks. |
+
+Preview files are generated only from the same-stage machine artifact; they are for reading and debugging, not downstream pipeline input.
+
+Flow:
+
+```text
+raw files -> loaded documents -> normalized blocks -> chunks
+```
 
 ## Documents
 
@@ -18,6 +36,6 @@
 
 | Source | Type | Message | Observed at |
 | --- | --- | --- | --- |
-| `data/raw/airport_transfer_eligibility_decision_tree.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:27:51.206094+00:00` |
-| `data/raw/corporate_travel_card_rules.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:27:51.208912+00:00` |
-| `data/raw/per_diem_caps.xlsx` | `unsupported_in_experiment` | XLSX is intentionally skipped in this first LangChain chunking experiment. | `2026-05-10T15:27:52.278957+00:00` |
+| `data/raw/airport_transfer_eligibility_decision_tree.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:35:42.270439+00:00` |
+| `data/raw/corporate_travel_card_rules.png` | `skipped_paid_vision` | Images are skipped because extracting them would require a paid vision call. | `2026-05-10T15:35:42.273637+00:00` |
+| `data/raw/per_diem_caps.xlsx` | `unsupported_in_experiment` | XLSX is intentionally skipped in this first LangChain chunking experiment. | `2026-05-10T15:35:43.043266+00:00` |
