@@ -25,21 +25,9 @@ if load_dotenv is not None:
     load_dotenv(ROOT_DIR / ".env")
 
 
-def _get_bool(name: str, default: bool) -> bool:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
-
-
 def _get_int(name: str, default: int) -> int:
     value = os.getenv(name)
     return int(value) if value is not None else default
-
-
-def _get_float(name: str, default: float) -> float:
-    value = os.getenv(name)
-    return float(value) if value is not None else default
 
 
 def _get_path(name: str) -> Path:
@@ -54,14 +42,8 @@ def _get_path(name: str) -> Path:
 
 @dataclass(frozen=True)
 class Settings:
-    app_name: str
-    environment: str
-    debug: bool
-    model_provider: str
-    chat_model: str
     embedding_model: str
     vision_model: str
-    temperature: float
     raw_data_dir: Path
     processed_data_dir: Path
     vector_store_dir: Path
@@ -81,14 +63,8 @@ class Settings:
 def get_settings() -> Settings:
     processed_data_dir = _get_path("PROCESSED_DATA_DIR")
     return Settings(
-        app_name=os.environ["APP_NAME"],
-        environment=os.environ["APP_ENV"],
-        debug=_get_bool("DEBUG", False),
-        model_provider=os.environ["MODEL_PROVIDER"],
-        chat_model=os.environ["CHAT_MODEL"],
         embedding_model=os.environ["EMBEDDING_MODEL"],
         vision_model=os.environ["VISION_MODEL"],
-        temperature=_get_float("MODEL_TEMPERATURE", 0.0),
         raw_data_dir=_get_path("RAW_DATA_DIR"),
         processed_data_dir=processed_data_dir,
         vector_store_dir=processed_data_dir / "04_vectorstore",
