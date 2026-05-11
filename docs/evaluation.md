@@ -1,7 +1,7 @@
 # Evaluation
 
-The project has a golden eval dataset but does not yet have an automated eval
-runner.
+The project has a golden eval dataset and a retrieval-focused automated eval
+runner. It does not yet have answer-level faithfulness or judge evaluation.
 
 Dataset:
 
@@ -9,17 +9,23 @@ Dataset:
 data/eval/golden_eval_set.jsonl
 ```
 
-Expected future command:
+Current command:
 
 ```powershell
 python scripts/20_run_eval.py
 ```
 
-That script is not yet developed.
+This command embeds each eval question through the retrieval stack and therefore
+uses the configured paid embedding provider.
 
 Evaluation scripts use the `20_*` numbering band. The first runner should be
 `scripts/20_run_eval.py` because ingestion occupies `01_*` through `09_*`, and
 retrieval/debug entrypoints occupy `10_*` through `19_*`.
+
+Outputs:
+
+- `data/eval/20_retrieval_eval_report.md`
+- `data/eval/20_retrieval_eval_results.jsonl`
 
 ## Current Golden Eval Format
 
@@ -54,31 +60,31 @@ The eval suite should cover:
 - reimbursement calculation
 - abstention behavior
 
-## Intended Metrics
+## Current Metrics
 
-Planned metrics:
+The retrieval eval runner currently tracks:
 
 - retrieval hit@k
-- faithfulness or groundedness
-- citation presence
-- abstention correctness
+- reranked source hit
+- assembled-context source hit
+- tag-level context source hit rates
 
-The current code can support retrieval-oriented evaluation before full answer
-generation exists. For example, an early eval runner could:
+For each eval row, the runner:
 
 1. Load each eval row.
 2. Run vector retrieval.
 3. Rerank results.
 4. Assemble context.
 5. Check whether required sources appear in the evidence blocks.
-6. Check whether expected metadata filters would have helped.
+
+Rows with no `required_sources`, such as current abstention cases, are excluded
+from source-hit denominators. Abstention correctness remains answer-level future
+work.
 
 Answer-level metrics such as faithfulness, confidence, and citation correctness
 need the future answer generator and judge flow.
 
 ## Current Limitations
-
-There is no `scripts/20_run_eval.py`.
 
 There is no answer-generation stage to compare against `expected_answer`.
 
@@ -86,19 +92,20 @@ There is no judge prompt or automated groundedness grader.
 
 There is no deterministic calculation tool yet for reimbursement arithmetic.
 
-There is no persistent eval report format yet.
+There is no query embedding cache, so repeated eval runs call the configured
+embedding provider for every evaluated question.
 
-## Suggested First Eval Runner
+## Retrieval Eval Output
 
-A practical first implementation would focus on retrieval:
+The Markdown report is intended for quick human inspection. It contains:
 
-- read `data/eval/golden_eval_set.jsonl`
-- run `search_chunks()` from `app/retrieval/step01_search_chunks.py` for each question
-- rerank with `rerank_chunks()`
-- assemble context with `assemble_context()`
-- mark pass/fail for required source hit in top-k and assembled context
-- write a local JSON or Markdown report under `data/eval/`
+- run timestamp
+- eval input and output paths
+- retrieval settings
+- retrieved, reranked, and context source hit rates
+- tag breakdown
+- failed context-source-hit cases
 
-This avoids answer-generation calls. Retrieval still embeds each query unless
-query embeddings are cached or the vector search is replaced with a local test
-double.
+The JSONL results file contains one row per eval case with retrieved sources,
+reranked sources, context sources, chunk IDs, source-hit flags, and missing
+required sources.

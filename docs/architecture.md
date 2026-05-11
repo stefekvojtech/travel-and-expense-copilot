@@ -35,6 +35,11 @@ query
   -> app/retrieval/step02_rerank_chunks.py
   -> app/retrieval/step03_assemble_context.py
   -> citation-ready evidence context
+
+data/eval/golden_eval_set.jsonl
+  -> app/eval/step01_run_retrieval_eval.py
+  -> data/eval/20_retrieval_eval_results.jsonl
+  -> data/eval/20_retrieval_eval_report.md
 ```
 
 ## Runtime Boundaries
@@ -46,6 +51,8 @@ root and resolves relative configured paths from the project root.
 embedding.
 
 `app/retrieval/` owns local vector search, reranking, and context assembly.
+
+`app/eval/` owns evaluation runners and report generation.
 
 `app/api/`, `app/agents/`, `app/prompts/`, `app/tools/`, `app/ui/`, and
 `app/streaming/` currently exist only as empty scaffolds.
@@ -66,7 +73,7 @@ Script numbering is grouped by workflow band:
 - `30_*` and above: future runtime, API, UI, or agent workflows if they need
   ordered command-line entrypoints
 
-Following that convention, the planned automated retrieval eval runner should be
+Following that convention, the automated retrieval eval runner is
 `scripts/20_run_eval.py`.
 
 ## Current Modules
@@ -117,6 +124,12 @@ FlashRank.
 `app/retrieval/step03_assemble_context.py` selects diverse chunks, applies token
 budgets, and formats evidence blocks with citation IDs and retrieval metadata.
 
+`app/eval/step01_run_retrieval_eval.py` reads the golden eval set, runs the
+current retrieval flow, checks whether required sources appear in retrieved,
+reranked, and assembled-context results, and writes Markdown plus JSONL reports.
+It embeds each eval question through the retrieval stack, so normal execution
+uses the configured paid embedding provider.
+
 ## Code Documentation Conventions
 
 Every Python module should start with a short top-level module docstring. In this
@@ -165,7 +178,7 @@ a compact citation-oriented metadata set from normalized blocks.
 
 `data/processed/report.md` summarizes stage outputs and warnings.
 
-`data/eval/` contains golden evaluation examples. The runner is not yet developed.
+`data/eval/` contains golden evaluation examples and retrieval eval outputs.
 
 ## Planned Boundaries
 
@@ -191,4 +204,4 @@ the retrieval context that a future answer generator can use.
 There is no API server, web UI, upload workflow, or streaming response panel yet.
 The corresponding directories are currently empty scaffolds.
 
-There is no automated eval runner yet.
+There is no answer-level eval runner yet.

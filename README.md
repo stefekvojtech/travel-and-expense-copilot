@@ -6,7 +6,7 @@ This project is a learning/demo RAG system for practicing document ingestion,
 chunking, embeddings, retrieval, citations, deterministic tools, and evaluation.
 It is not a finished assistant yet. The current implementation builds and searches
 a local policy corpus; answer generation, API routes, UI, agent tools, judge flow,
-and the full evaluation runner are not yet developed.
+and answer-level evaluation are not yet developed.
 
 ## Current Status
 
@@ -21,6 +21,7 @@ Implemented:
 - Local FlashRank reranking
 - Citation-ready context assembly
 - A golden eval dataset in `data/eval/golden_eval_set.jsonl`
+- Retrieval eval runner with Markdown and JSONL outputs
 
 Not yet developed:
 
@@ -30,7 +31,7 @@ Not yet developed:
 - Prompt files under `app/prompts/`
 - Agent/tool layer under `app/agents/`
 - MCP server tools under `mcp_server/`
-- Automated eval runner
+- Answer-level eval runner
 - Judge/faithfulness flow
 
 ## Documentation
@@ -55,6 +56,7 @@ app/
   api/                  Empty scaffold for future API routes
   core/                 Settings and project-root path resolution
   ingest/               Raw ingestion, loaders, chunking, embedding
+  eval/                 Retrieval evaluation over golden examples
   prompts/              Empty scaffold for future prompt files
   retrieval/            Chroma search, FlashRank rerank, context assembly
   streaming/            Empty scaffold for future streaming behavior
@@ -126,8 +128,22 @@ Script numbers indicate the order and role of local workflow entrypoints:
   ordered command-line entrypoints
 
 The first automated eval runner should therefore be `scripts/20_run_eval.py`.
-It should evaluate retrieval quality against `data/eval/golden_eval_set.jsonl`
-before answer generation is added.
+It evaluates retrieval quality against `data/eval/golden_eval_set.jsonl` before
+answer generation is added.
+
+Retrieval evaluation writes:
+
+- `data/eval/20_retrieval_eval_report.md`
+- `data/eval/20_retrieval_eval_results.jsonl`
+
+Command:
+
+```powershell
+python scripts/20_run_eval.py
+```
+
+This command embeds each eval question and therefore uses the configured paid
+embedding provider.
 
 The numbered stages always rebuild their own output folders. The full pipeline
 does the same, then embeds into Chroma. There is no incremental/force split.
