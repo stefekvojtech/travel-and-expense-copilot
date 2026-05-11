@@ -12,7 +12,6 @@
 - order: `1`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `91` section='Atlas Mobility Group - Expense Policy 2026'
-- source_block_ids: `["expense-policy-aead3745bd:00001", "expense-policy-aead3745bd:00002", "expense-policy-aead3745bd:00003", "expense-policy-aead3745bd:00004", "expense-policy-aead3745bd:00005", "expense-policy-aead3745bd:00006", "expense-policy-aead3745bd:00007", "expense-policy-aead3745bd:00008", "expense-policy-aead3745bd:00009", "expense-policy-aead3745bd:00010", "expense-policy-aead3745bd:00011", "expense-policy-aead3745bd:00012", "expense-policy-aead3745bd:00013"]`
 - metadata: `{}`
 
 ```text
@@ -36,7 +35,6 @@ FAQ
 - order: `2`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `198` section='1. Purpose and Scope'
-- source_block_ids: `["expense-policy-aead3745bd:00014", "expense-policy-aead3745bd:00015", "expense-policy-aead3745bd:00016", "expense-policy-aead3745bd:00017", "expense-policy-aead3745bd:00018", "expense-policy-aead3745bd:00019", "expense-policy-aead3745bd:00020", "expense-policy-aead3745bd:00021", "expense-policy-aead3745bd:00022", "expense-policy-aead3745bd:00023"]`
 - metadata: `{}`
 
 ```text
@@ -57,7 +55,6 @@ Atlas reimburses business expenses only when the business purpose, date, amount,
 - order: `3`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `246` section='2. Receipt and Evidence Requirements'
-- source_block_ids: `["expense-policy-aead3745bd:00024", "expense-policy-aead3745bd:00025", "expense-policy-aead3745bd:00026", "expense-policy-aead3745bd:00027"]`
 - metadata: `{}`
 
 ```text
@@ -77,7 +74,6 @@ Missing evidence does not automatically make an expense non-reimbursable, but it
 - order: `4`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `295` section='3. Meals and Daily Subsistence'
-- source_block_ids: `["expense-policy-aead3745bd:00028", "expense-policy-aead3745bd:00029", "expense-policy-aead3745bd:00030", "expense-policy-aead3745bd:00031", "expense-policy-aead3745bd:00032", "expense-policy-aead3745bd:00033"]`
 - metadata: `{}`
 
 ```text
@@ -99,7 +95,6 @@ Tips are reimbursable up to 10% of the pre-tax meal amount where tipping is cust
 - order: `5`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `176` section='4. Client Entertainment and Hospitality'
-- source_block_ids: `["expense-policy-aead3745bd:00034", "expense-policy-aead3745bd:00035", "expense-policy-aead3745bd:00036"]`
 - metadata: `{}`
 
 ```text
@@ -118,7 +113,6 @@ Client entertainment is a stricter category than meals. It requires evidence of 
 - order: `6`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `171` section='5. Local Transport, Taxi, Parking, and Public Transit'
-- source_block_ids: `["expense-policy-aead3745bd:00037", "expense-policy-aead3745bd:00038", "expense-policy-aead3745bd:00039", "expense-policy-aead3745bd:00040", "expense-policy-aead3745bd:00041", "expense-policy-aead3745bd:00042", "expense-policy-aead3745bd:00043"]`
 - metadata: `{}`
 
 ```text
@@ -136,7 +130,6 @@ Employees should prefer public transport when safe and practical. Taxi rules dep
 - order: `7`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `133` section='6. Private Car and Mileage'
-- source_block_ids: `["expense-policy-aead3745bd:00044", "expense-policy-aead3745bd:00045", "expense-policy-aead3745bd:00046"]`
 - metadata: `{}`
 
 ```text
@@ -154,7 +147,6 @@ Private car use should be pre-approved when the one-way distance exceeds 150 km.
 - order: `8`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `134` section='7. Digital Tools and Submission Rules'
-- source_block_ids: `["expense-policy-aead3745bd:00047", "expense-policy-aead3745bd:00048", "expense-policy-aead3745bd:00049", "expense-policy-aead3745bd:00050", "expense-policy-aead3745bd:00051", "expense-policy-aead3745bd:00052"]`
 - metadata: `{}`
 
 ```text
@@ -171,7 +163,6 @@ Expense claims must be submitted within 30 calendar days after the trip end date
 - order: `9`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `123` section='8. Non-Reimbursable Expenses'
-- source_block_ids: `["expense-policy-aead3745bd:00053", "expense-policy-aead3745bd:00054", "expense-policy-aead3745bd:00055", "expense-policy-aead3745bd:00056", "expense-policy-aead3745bd:00057", "expense-policy-aead3745bd:00058", "expense-policy-aead3745bd:00059", "expense-policy-aead3745bd:00060"]`
 - metadata: `{}`
 
 ```text
@@ -190,7 +181,6 @@ The following are normally not reimbursable:
 - order: `10`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `55` section='9. FAQ'
-- source_block_ids: `["expense-policy-aead3745bd:00061", "expense-policy-aead3745bd:00062", "expense-policy-aead3745bd:00063"]`
 - metadata: `{}`
 
 ```text
@@ -204,7 +194,6 @@ You may claim the reimbursable food portion up to the applicable meal cap, but t
 - order: `11`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `32` section='Can I use my credit card statement instead of a receipt?'
-- source_block_ids: `["expense-policy-aead3745bd:00064", "expense-policy-aead3745bd:00065"]`
 - metadata: `{}`
 
 ```text
@@ -217,7 +206,6 @@ No. A card statement proves payment but does not prove business purpose or item-
 - order: `12`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `43` section='What if the local cap is lower than the actual hotel price during a conference?'
-- source_block_ids: `["expense-policy-aead3745bd:00066", "expense-policy-aead3745bd:00067"]`
 - metadata: `{}`
 
 ```text
@@ -230,7 +218,6 @@ The claim may be reimbursed above cap only if the employee obtained pre-approval
 - order: `13`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `59` section='What if the spreadsheet and HTML policy disagree?'
-- source_block_ids: `["expense-policy-aead3745bd:00068", "expense-policy-aead3745bd:00069", "expense-policy-aead3745bd:00070"]`
 - metadata: `{}`
 
 ```text

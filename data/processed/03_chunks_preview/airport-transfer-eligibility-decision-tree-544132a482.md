@@ -11,8 +11,7 @@
 
 - order: `1`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `274` section='Image Extraction'
-- source_block_ids: `["airport-transfer-eligibility-decision-tree-544132a482:00001"]`
+- tokens: `272` section='Image Extraction'
 - metadata: `{}`
 
 ```text
@@ -40,7 +39,7 @@ Taxi is not normally reimbursable.
 ✅ Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.
 - NO → 5. Is there a documented safety concern, service disruption, or no practical connection?
 - YES
-✔️ Taxi may be reimbursable with explanation and supporting details.
+✔ Taxi may be reimbursable with explanation and supporting details.
 - NO
 ❌ Taxi is not reimbursable.
 Use public transport.
@@ -57,6 +56,6 @@ Use public transport.
 
 ---
 
-ℹ️ Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
+ℹ Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
 ```
 ```

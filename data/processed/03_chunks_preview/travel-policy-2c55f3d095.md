@@ -11,8 +11,7 @@
 
 - order: `1`
 - strategy: `plain_text+section_as_chunk`
-- tokens: `100` pages=[1]
-- source_block_ids: `["travel-policy-2c55f3d095:00001"]`
+- tokens: `100` page=1
 - metadata: `{}`
 
 ```text
@@ -23,8 +22,7 @@ Atlas Mobility Group Travel Policy 2026 Document type: Synthetic internal travel
 
 - order: `2`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `149` pages=[1] section='1. Policy Intent and Scope'
-- source_block_ids: `["travel-policy-2c55f3d095:00002", "travel-policy-2c55f3d095:00003"]`
+- tokens: `149` page=1 section='1. Policy Intent and Scope'
 - metadata: `{}`
 
 ```text
@@ -36,8 +34,7 @@ This policy defines how employees and eligible contractors book business travel,
 
 - order: `3`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `155` pages=[1] section='1.1 Source Priority'
-- source_block_ids: `["travel-policy-2c55f3d095:00004", "travel-policy-2c55f3d095:00005", "travel-policy-2c55f3d095:00006"]`
+- tokens: `155` page=1 section='1.1 Source Priority'
 - metadata: `{"table_indexes_on_page": [1]}`
 
 ```text
@@ -56,8 +53,7 @@ This policy defines how employees and eligible contractors book business travel,
 
 - order: `4`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `124` pages=[1] section='2. Roles and Responsibilities'
-- source_block_ids: `["travel-policy-2c55f3d095:00007", "travel-policy-2c55f3d095:00008", "travel-policy-2c55f3d095:00009", "travel-policy-2c55f3d095:00010", "travel-policy-2c55f3d095:00011", "travel-policy-2c55f3d095:00012", "travel-policy-2c55f3d095:00013", "travel-policy-2c55f3d095:00014", "travel-policy-2c55f3d095:00015"]`
+- tokens: `124` page=1 section='2. Roles and Responsibilities'
 - metadata: `{}`
 
 ```text
@@ -76,8 +72,7 @@ deviations.
 
 - order: `5`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `117` pages=[1] section='3. Booking Rules'
-- source_block_ids: `["travel-policy-2c55f3d095:00016", "travel-policy-2c55f3d095:00017"]`
+- tokens: `117` page=1 section='3. Booking Rules'
 - metadata: `{}`
 
 ```text
@@ -89,8 +84,7 @@ Employees must use the approved travel portal for flights, hotels, and rail book
 
 - order: `6`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `96` pages=[1, 2] section='3.1 Advance Booking'
-- source_block_ids: `["travel-policy-2c55f3d095:00018", "travel-policy-2c55f3d095:00019", "travel-policy-2c55f3d095:00020", "travel-policy-2c55f3d095:00021", "travel-policy-2c55f3d095:00022", "travel-policy-2c55f3d095:00023"]`
+- tokens: `96` page=1 section='3.1 Advance Booking'
 - metadata: `{}`
 
 ```text
@@ -106,8 +100,7 @@ evidence that reasonable alternatives were unavailable.
 
 - order: `7`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `35` pages=[2] section='4. Approval Matrix'
-- source_block_ids: `["travel-policy-2c55f3d095:00024", "travel-policy-2c55f3d095:00025"]`
+- tokens: `35` page=2 section='4. Approval Matrix'
 - metadata: `{}`
 
 ```text
@@ -119,8 +112,7 @@ The table below is intentionally included so the PDF is not just plain paragraph
 
 - order: `8`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `208` pages=[2] section='4. Approval Matrix'
-- source_block_ids: `["travel-policy-2c55f3d095:00026", "travel-policy-2c55f3d095:00027"]`
+- tokens: `208` page=2 section='4. Approval Matrix'
 - metadata: `{"table_indexes_on_page": [1]}`
 
 ```text
@@ -140,8 +132,7 @@ The table below is intentionally included so the PDF is not just plain paragraph
 
 - order: `9`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `111` pages=[2] section='5. Flights'
-- source_block_ids: `["travel-policy-2c55f3d095:00028", "travel-policy-2c55f3d095:00029"]`
+- tokens: `111` page=2 section='5. Flights'
 - metadata: `{}`
 
 ```text
@@ -153,8 +144,7 @@ Economy class is the default cabin for all flights. Premium economy may be selec
 
 - order: `10`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `121` pages=[2] section='5.1 Flight Reimbursement Restrictions'
-- source_block_ids: `["travel-policy-2c55f3d095:00030", "travel-policy-2c55f3d095:00031", "travel-policy-2c55f3d095:00032", "travel-policy-2c55f3d095:00033", "travel-policy-2c55f3d095:00034", "travel-policy-2c55f3d095:00035", "travel-policy-2c55f3d095:00036"]`
+- tokens: `121` page=2 section='5.1 Flight Reimbursement Restrictions'
 - metadata: `{}`
 
 ```text
@@ -171,8 +161,7 @@ control.
 
 - order: `11`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `143` pages=[2] section='6. Rail, Public Transport, Taxi, and Rental Car'
-- source_block_ids: `["travel-policy-2c55f3d095:00037", "travel-policy-2c55f3d095:00038"]`
+- tokens: `143` page=2 section='6. Rail, Public Transport, Taxi, and Rental Car'
 - metadata: `{}`
 
 ```text
@@ -184,8 +173,7 @@ Rail is preferred over short-haul flights when total travel time is reasonable a
 
 - order: `12`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `91` pages=[2] section='6.1 Taxi Evidence'
-- source_block_ids: `["travel-policy-2c55f3d095:00039", "travel-policy-2c55f3d095:00040", "travel-policy-2c55f3d095:00041", "travel-policy-2c55f3d095:00042", "travel-policy-2c55f3d095:00043"]`
+- tokens: `91` page=2 section='6.1 Taxi Evidence'
 - metadata: `{}`
 
 ```text
@@ -200,8 +188,7 @@ unsafe, or Travel Security approves.
 
 - order: `13`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `100` pages=[2, 3] section='7. Hotels and Accommodation'
-- source_block_ids: `["travel-policy-2c55f3d095:00044", "travel-policy-2c55f3d095:00045"]`
+- tokens: `100` page=2 section='7. Hotels and Accommodation'
 - metadata: `{}`
 
 ```text
@@ -213,8 +200,7 @@ Hotels must be booked through the approved portal when available. The traveler s
 
 - order: `14`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `97` pages=[3] section='7.1 Hotel Evidence'
-- source_block_ids: `["travel-policy-2c55f3d095:00046", "travel-policy-2c55f3d095:00047", "travel-policy-2c55f3d095:00048", "travel-policy-2c55f3d095:00049", "travel-policy-2c55f3d095:00050"]`
+- tokens: `97` page=3 section='7.1 Hotel Evidence'
 - metadata: `{}`
 
 ```text
@@ -229,8 +215,7 @@ Hotels must be booked through the approved portal when available. The traveler s
 
 - order: `15`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `103` pages=[3] section='8. Meals, Subsistence, and Entertainment'
-- source_block_ids: `["travel-policy-2c55f3d095:00051", "travel-policy-2c55f3d095:00052"]`
+- tokens: `103` page=3 section='8. Meals, Subsistence, and Entertainment'
 - metadata: `{}`
 
 ```text
@@ -242,8 +227,7 @@ Meal reimbursement is governed by the Expense Policy HTML page and numeric caps 
 
 - order: `16`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `71` pages=[3] section='8.1 Client Entertainment'
-- source_block_ids: `["travel-policy-2c55f3d095:00053", "travel-policy-2c55f3d095:00054", "travel-policy-2c55f3d095:00055", "travel-policy-2c55f3d095:00056", "travel-policy-2c55f3d095:00057"]`
+- tokens: `71` page=3 section='8.1 Client Entertainment'
 - metadata: `{}`
 
 ```text
@@ -258,8 +242,7 @@ Meal reimbursement is governed by the Expense Policy HTML page and numeric caps 
 
 - order: `17`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `100` pages=[3] section='9. Expense Submission and Audit'
-- source_block_ids: `["travel-policy-2c55f3d095:00058", "travel-policy-2c55f3d095:00059"]`
+- tokens: `100` page=3 section='9. Expense Submission and Audit'
 - metadata: `{}`
 
 ```text
@@ -271,8 +254,7 @@ Claims should be submitted within 30 calendar days after the trip end date. Fina
 
 - order: `18`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `64` pages=[3] section='9.1 Missing Evidence'
-- source_block_ids: `["travel-policy-2c55f3d095:00060", "travel-policy-2c55f3d095:00061", "travel-policy-2c55f3d095:00062", "travel-policy-2c55f3d095:00063", "travel-policy-2c55f3d095:00064"]`
+- tokens: `64` page=3 section='9.1 Missing Evidence'
 - metadata: `{}`
 
 ```text
@@ -287,8 +269,7 @@ the receipt is unavailable.
 
 - order: `19`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `119` pages=[3] section='10. Non-Reimbursable Travel Items'
-- source_block_ids: `["travel-policy-2c55f3d095:00065", "travel-policy-2c55f3d095:00066", "travel-policy-2c55f3d095:00067", "travel-policy-2c55f3d095:00068", "travel-policy-2c55f3d095:00069", "travel-policy-2c55f3d095:00070"]`
+- tokens: `119` page=3 section='10. Non-Reimbursable Travel Items'
 - metadata: `{}`
 
 ```text
@@ -304,8 +285,7 @@ the receipt is unavailable.
 
 - order: `20`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `138` pages=[3] section='11. Worked Examples'
-- source_block_ids: `["travel-policy-2c55f3d095:00071", "travel-policy-2c55f3d095:00072", "travel-policy-2c55f3d095:00073"]`
+- tokens: `138` page=3 section='11. Worked Examples'
 - metadata: `{"table_indexes_on_page": [1]}`
 
 ```text
@@ -322,8 +302,7 @@ the receipt is unavailable.
 
 - order: `21`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `74` pages=[4] section='11. Worked Examples'
-- source_block_ids: `["travel-policy-2c55f3d095:00074", "travel-policy-2c55f3d095:00075"]`
+- tokens: `74` page=4 section='11. Worked Examples'
 - metadata: `{"table_indexes_on_page": [1]}`
 
 ```text
@@ -338,8 +317,7 @@ the receipt is unavailable.
 
 - order: `22`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `99` pages=[4] section='12. RAG Notes for Builders'
-- source_block_ids: `["travel-policy-2c55f3d095:00076", "travel-policy-2c55f3d095:00077"]`
+- tokens: `99` page=4 section='12. RAG Notes for Builders'
 - metadata: `{}`
 
 ```text

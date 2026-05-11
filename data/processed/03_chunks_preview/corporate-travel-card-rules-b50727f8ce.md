@@ -11,8 +11,7 @@
 
 - order: `1`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `363` section='Image Extraction'
-- source_block_ids: `["corporate-travel-card-rules-b50727f8ce:00001"]`
+- tokens: `364` section='Image Extraction'
 - metadata: `{}`
 
 ```text
@@ -71,7 +70,6 @@ Quick reference guide for business travel expenses
 - Cardholder is responsible for accurate submission.
 - Final reimbursement remains subject to company policy review.
 
----
-Reference poster only. Always follow the latest travel and expense policy.
+ℹ Reference poster only. Always follow the latest travel and expense policy.
 ```
 ```

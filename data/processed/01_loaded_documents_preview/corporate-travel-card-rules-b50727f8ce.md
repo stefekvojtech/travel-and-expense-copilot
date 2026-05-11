@@ -65,7 +65,6 @@ Quick reference guide for business travel expenses
 - Cardholder is responsible for accurate submission.
 - Final reimbursement remains subject to company policy review.
 
----
-Reference poster only. Always follow the latest travel and expense policy.
+ℹ Reference poster only. Always follow the latest travel and expense policy.
 ```
 ```

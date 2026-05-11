@@ -12,7 +12,6 @@
 - order: `1`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `580`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -26,7 +25,6 @@ Finance Operations expects employees to choose the lowest logical option, not bl
 - order: `2`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `551`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -39,7 +37,6 @@ Meals must be connected to business travel, an approved offsite meeting, a custo
 - order: `3`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `503`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -54,7 +51,6 @@ Employees must pay attention to source currency. Claims should be entered in the
 - order: `4`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `572`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -69,7 +65,6 @@ Rental cars should be compact or mid-size by default. A larger vehicle may be re
 - order: `5`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `449`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -84,7 +79,6 @@ Expense timing matters. Claims should be submitted within 30 calendar days after
 - order: `6`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `390`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -98,7 +92,6 @@ Employees should not use a policy loophole in one source to bypass a stricter re
 - order: `7`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `548`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
@@ -113,7 +106,6 @@ Manual review is not punishment. It is the normal process for cases where eligib
 - order: `8`
 - strategy: `plain_text+recursive_tiktoken`
 - tokens: `517`
-- source_block_ids: `["extended-expense-scenarios-b3f521ebe6:00001"]`
 - metadata: `{}`
 
 ```text
