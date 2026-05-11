@@ -22,6 +22,7 @@ Implemented:
 - Local FlashRank reranking
 - Citation-ready context assembly
 - First-pass grounded answer generation from retrieved evidence
+- Structured answer-output validation and fail-closed citation checks
 - Prompt files for the grounded-answering contract and answer examples
 - A golden eval dataset in `data/eval/golden_eval_set.jsonl`
 - Retrieval eval runner with Markdown and JSONL outputs
@@ -186,7 +187,9 @@ cosine distance through collection metadata `{"hnsw:space": "cosine"}`.
 
 Grounded answer generation reads prompts from `app/prompts/`, calls the existing
 retrieval pipeline, and asks the configured `ANSWER_MODEL` to answer only from
-the assembled evidence context.
+the assembled evidence context. The answer layer uses structured model output,
+validates citations against assembled evidence IDs, and abstains before answer
+generation when reranked evidence is below the current weak-evidence threshold.
 
 ## Development Notes
 

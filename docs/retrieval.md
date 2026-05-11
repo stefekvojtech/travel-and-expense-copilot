@@ -27,7 +27,7 @@ question
   -> RerankedChunk records
   -> context assembly
   -> formatted evidence blocks with citation IDs
-  -> optional answer generation through app/agents/answer.py
+  -> optional answer generation and validation through app/agents/answer.py
 ```
 
 Retrieval modules are documented with top-level module docstrings. These
@@ -176,15 +176,14 @@ This output is the evidence input to `app/agents/answer.py`.
 
 The following retrieval-related features are planned but not currently developed:
 
-- citation validation against generated answers
-- confidence scoring
-- weak-evidence abstention
 - source-window expansion around selected chunks
 - adjacent chunk collapsing
 - inferred metadata filters from the user question
 - judge step for unsupported claims
 - deterministic tool use for arithmetic or policy-cap lookup
 
-The first answer-generation path returns a model-provided confidence field and
-abstention state, but there is no independent judge, citation validator, or
-deterministic confidence scorer yet.
+The first answer-generation path validates generated citations against assembled
+evidence IDs and abstains before answer generation when all reranked evidence is
+below the weak-evidence threshold. It still does not have an independent judge,
+source-window expansion, or deterministic confidence explanation beyond the
+model-provided confidence and weak-evidence cutoff.

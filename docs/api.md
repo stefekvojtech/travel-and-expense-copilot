@@ -24,7 +24,9 @@ through `app/agents/answer.py` and `scripts/30_ask.py`.
 
 `app/tools/`, `app/ui/`, and `app/streaming/` exist as empty scaffolds.
 `app/agents/` and `app/prompts/` now contain the script-level grounded answer
-implementation.
+implementation. That answer path uses structured model output, validates
+citations against assembled evidence IDs, fails closed on invalid model output,
+and abstains when evidence is below the weak-evidence threshold.
 
 The current way to use the project is through scripts in `scripts/`.
 `python scripts/00_run_ingestion.py` rebuilds the corpus from raw files through
@@ -131,9 +133,11 @@ Planned guardrails:
 - redact obvious PII before model calls where practical
 - sanitize HTML before indexing
 - prevent retrieved documents from overriding system behavior
-- abstain when evidence is weak
 - judge generated answers for unsupported claims
 - use deterministic tools for arithmetic instead of an LLM
 
 The current code has only partial groundwork. HTML loading strips `script` and
-`style`, but full sanitization and prompt-injection handling are not implemented.
+`style`, the answer prompt says retrieved documents cannot override system
+behavior, and the answer layer has a deterministic weak-evidence abstention
+cutoff. Full sanitization, PII redaction, prompt-injection handling, judge
+review, and deterministic arithmetic tools are not implemented.

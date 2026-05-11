@@ -93,11 +93,12 @@ abstention cases, are excluded from those hit-rate denominators. Abstention
 correctness remains answer-level future work.
 
 Answer-level metrics such as faithfulness, confidence, and citation correctness
-need the future answer generator and judge flow.
+need a future answer-level eval runner and judge flow.
 
 ## Current Limitations
 
-There is no answer-generation stage to compare against `expected_answer`.
+There is no answer-level eval runner to compare `scripts/30_ask.py` outputs
+against `expected_answer`.
 
 There is no judge prompt or automated groundedness grader.
 

@@ -41,6 +41,8 @@ query
   -> app/agents/answer.py
   -> retrieval pipeline
   -> app/prompts/system.md + app/prompts/answer_fewshot.md
+  -> structured answer model output
+  -> citation and weak-evidence validation
   -> grounded answer with citations, confidence, and abstention state
 
 data/eval/golden_eval_set.jsonl
@@ -143,7 +145,10 @@ budgets, and formats evidence blocks with citation IDs and retrieval metadata.
 generate answer. It calls OpenAI through `langchain-openai`, so normal execution
 performs a paid answer-generation model call in addition to the retrieval query
 embedding. The default answer model is `gpt-5.5` unless `ANSWER_MODEL` overrides
-it.
+it. Model output is constrained with LangChain structured output and Pydantic,
+then validated against the assembled evidence citation IDs. If evidence is
+below the weak-evidence threshold, or if the model output fails validation, the
+answer layer abstains instead of returning an unsupported answer.
 
 `app/prompts/system.md` defines the grounded-answering contract.
 `app/prompts/answer_fewshot.md` defines the first answer JSON schema and
@@ -219,10 +224,12 @@ These boundaries are planned by project rules but not yet implemented:
 ## Current Limitations
 
 The current answer generator is a first-pass script-level implementation. It has
-no streaming behavior, no route wrapper, no tool-calling loop, and no judge step.
+no streaming behavior, no route wrapper, no tool-calling loop, no retry/repair
+loop for invalid model output, and no judge step.
 
 There is no judge step and no independent confidence explanation beyond the
-answer model's structured `confidence` field.
+answer model's structured `confidence` field plus the deterministic
+weak-evidence cutoff.
 
 There is no API server, web UI, upload workflow, or streaming response panel yet.
 The corresponding directories are currently empty scaffolds.
