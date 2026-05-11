@@ -139,9 +139,9 @@ Block JSONL files in `data/processed/02_normalized_blocks/` are the canonical no
 artifacts. Chunking reads these files.
 
 Chunk JSONL files in `data/processed/03_chunks/` are the embedding-ready artifacts.
-Each chunk carries source lineage metadata such as `doc_id`, `chunk_id`,
-`source_path`, `source_block_ids`, `section_path`, `pages`, `sheets`, and
-`token_count`.
+Each chunk carries citation-oriented metadata such as `doc_id`, `chunk_id`,
+`source_path`, `section_path`, `page`, `sheet`, and `token_count`. Richer
+block-level lineage remains in `data/processed/02_normalized_blocks/`.
 
 The local Chroma vector store lives under `data/processed/04_vectorstore/`. It uses
 cosine distance through collection metadata `{"hnsw:space": "cosine"}`.

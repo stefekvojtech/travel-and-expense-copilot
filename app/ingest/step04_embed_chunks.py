@@ -20,7 +20,7 @@ from uuid import uuid4
 
 from app.core.config import Settings
 from app.ingest.artifact_paths import chunks_dir
-from app.ingest.artifacts import ChunkArtifact
+from app.ingest.artifacts import ChunkArtifact, chunk_artifact_from_dict
 from app.retrieval.chroma_config import CHROMA_COLLECTION_METADATA
 
 
@@ -210,7 +210,7 @@ def _read_chunks(chunks_path: Path) -> list[ChunkArtifact]:
     chunks: list[ChunkArtifact] = []
     for line in chunks_path.read_text(encoding="utf-8").splitlines():
         if line.strip():
-            chunks.append(ChunkArtifact(**json.loads(line)))
+            chunks.append(chunk_artifact_from_dict(json.loads(line)))
     return chunks
 
 
@@ -225,9 +225,8 @@ def _chunk_metadata(chunk: ChunkArtifact) -> dict[str, str | int | float | bool 
         "chunk_strategy": chunk.chunk_strategy,
         "token_count": chunk.token_count,
         "order": chunk.order,
-        "source_block_ids": json.dumps(chunk.source_block_ids, ensure_ascii=True),
-        "pages": json.dumps(chunk.pages, ensure_ascii=True),
-        "sheets": json.dumps(chunk.sheets, ensure_ascii=True),
+        "page": chunk.page,
+        "sheet": chunk.sheet,
     }
     metadata.update(_flatten_metadata(chunk.metadata))
     return metadata

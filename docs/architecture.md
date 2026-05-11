@@ -84,8 +84,8 @@ by raw ingestion, chunking, and embedding.
 
 `app/ingest/step03_chunk_blocks.py` reads block JSONL artifacts and creates chunks with
 LangChain text splitters. Spreadsheet rows are chunked row-by-row. Other sources
-are assembled into Markdown with spans so chunks can be mapped back to source
-blocks.
+are assembled into Markdown so headings and source citation metadata carry into
+chunks.
 
 `app/ingest/step04_embed_chunks.py` reads chunk JSONL files and embeds chunk text into
 local Chroma. It builds a temporary collection first and promotes it only after
@@ -145,7 +145,7 @@ JSONL. Blocks carry source metadata and are the input to chunking.
 `data/processed/02_normalized_blocks_preview/` contains readable block previews.
 
 `data/processed/03_chunks/` contains embedding-ready chunk JSONL. Chunks inherit
-metadata and source block lineage.
+a compact citation-oriented metadata set from normalized blocks.
 
 `data/processed/03_chunks_preview/` contains readable chunk previews.
 

@@ -88,8 +88,8 @@ records directly; chunking uses normalized blocks from stage 02.
 - `data/processed/02_normalized_blocks/*.jsonl`
 - `data/processed/02_normalized_blocks_preview/*.md`
 
-Blocks are the canonical normalized artifacts used for chunking and citation
-lineage. Each block has:
+Blocks are the canonical normalized artifacts used for chunking and optional
+deep inspection. Each block has:
 
 - `doc_id`
 - `block_id`
@@ -148,18 +148,18 @@ Chunk metadata includes:
 - `source_path`
 - `doc_type`
 - `title`
-- `source_block_ids`
 - `section_path`
-- `pages`
-- `sheets`
+- `page`
+- `sheet`
 - `chunk_strategy`
 - `token_count`
 - `order`
 - merged source metadata
 
 The production table behavior is preserved: table header/context text is repeated
-for continuation chunks where needed. Chunk-to-block mapping is strict; failure
-to map split text back to source blocks raises an error.
+for continuation chunks where needed. Stage 02 block artifacts retain richer
+block-level lineage, while stage 03 chunks keep the smaller metadata set needed
+for retrieval filters, citations, and debugging.
 
 ## Stage 04: Embedding
 
@@ -178,8 +178,8 @@ The embedder builds a temporary collection, adds all chunks, verifies the count,
 then promotes the temporary collection to the configured collection name.
 
 The embedder writes chunk text as the vector document. Chunk metadata is
-flattened for Chroma. List-like fields such as `source_block_ids`, `pages`, and
-`sheets` are stored as JSON strings.
+flattened for Chroma. Citation fields such as `page`, `sheet`, and row metadata
+are stored as scalar Chroma metadata where available.
 
 ## Report
 

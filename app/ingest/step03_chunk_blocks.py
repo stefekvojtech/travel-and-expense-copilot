@@ -3,7 +3,7 @@
 This stage reads `02_normalized_blocks`, writes `03_chunks`, and writes matching
 `03_chunks_preview` Markdown files. It uses LangChain Markdown and recursive
 token-aware splitters, while preserving production behavior for XLSX row chunks,
-table header context, continuation chunks, and strict source-block mapping.
+table header context, continuation chunks, and citation-oriented chunk metadata.
 """
 
 from __future__ import annotations
@@ -395,10 +395,9 @@ def _build_chunk(
         doc_type=first_block.doc_type,
         title=first_block.title,
         text=text,
-        source_block_ids=[block.block_id for block in blocks],
         section_path=section_path,
-        pages=pages,
-        sheets=sheets,
+        page=pages[0] if pages else None,
+        sheet=sheets[0] if sheets else None,
         chunk_strategy=chunk_strategy,
         token_count=splitter._length_function(text),
         order=order,
@@ -677,8 +676,8 @@ def _chunks_preview_markdown(chunks: list[ChunkArtifact]) -> str:
         "",
     ]
     for chunk in chunks:
-        page_text = f" pages={_format_int_list(chunk.pages)}" if chunk.pages else ""
-        sheet_text = f" sheets={_format_str_list(chunk.sheets)}" if chunk.sheets else ""
+        page_text = f" page={chunk.page}" if chunk.page is not None else ""
+        sheet_text = f" sheet={chunk.sheet!r}" if chunk.sheet else ""
         section_text = f" section={chunk.section_path!r}" if chunk.section_path else ""
         lines.extend(
             [
@@ -687,7 +686,6 @@ def _chunks_preview_markdown(chunks: list[ChunkArtifact]) -> str:
                 f"- order: `{chunk.order}`",
                 f"- strategy: `{chunk.chunk_strategy}`",
                 f"- tokens: `{chunk.token_count}`{page_text}{sheet_text}{section_text}",
-                f"- source_block_ids: `{json.dumps(chunk.source_block_ids, ensure_ascii=True)}`",
                 f"- metadata: `{json.dumps(chunk.metadata, ensure_ascii=True)}`",
                 "",
                 "```text",
@@ -697,14 +695,6 @@ def _chunks_preview_markdown(chunks: list[ChunkArtifact]) -> str:
             ]
         )
     return "\n".join(lines).strip() + "\n"
-
-
-def _format_int_list(values: list[int]) -> str:
-    return "[" + ", ".join(str(value) for value in values) + "]"
-
-
-def _format_str_list(values: list[str]) -> str:
-    return "[" + ", ".join(repr(value) for value in values) + "]"
 
 
 def _merge_metadata(blocks: list[BlockArtifact]) -> dict:

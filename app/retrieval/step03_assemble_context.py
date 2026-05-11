@@ -131,9 +131,12 @@ def _build_evidence_block(
         doc_type=_optional_str(chunk.metadata.get("doc_type")),
         title=_optional_str(chunk.metadata.get("title")),
         section_path=chunk.section_path,
-        page_label=_join_json_list(chunk.metadata.get("pages")),
-        sheet_label=_join_json_list(chunk.metadata.get("sheets")),
-        row_number=_optional_int(chunk.metadata.get("metadata_row_number")),
+        page_label=_metadata_label(chunk.metadata, "page", "pages"),
+        sheet_label=_metadata_label(chunk.metadata, "sheet", "sheets"),
+        row_number=_optional_int(
+            chunk.metadata.get("row_number")
+            or chunk.metadata.get("metadata_row_number")
+        ),
         cosine_distance=chunk.cosine_distance,
         approximate_cosine_similarity=chunk.approximate_cosine_similarity,
         rerank_score=chunk.rerank_score if isinstance(chunk, RerankedChunk) else None,
@@ -191,8 +194,8 @@ def _format_context_block(block: EvidenceBlock) -> str:
             f"chunk_id: {block.chunk_id}",
             f"doc_type: {block.doc_type}",
             f"section_path: {block.section_path}",
-            f"pages: {block.page_label}" if block.page_label else None,
-            f"sheets: {block.sheet_label}" if block.sheet_label else None,
+            f"page: {block.page_label}" if block.page_label else None,
+            f"sheet: {block.sheet_label}" if block.sheet_label else None,
             f"row_number: {block.row_number}"
             if block.row_number is not None
             else None,
@@ -266,6 +269,13 @@ def _join_json_list(value: Any) -> str | None:
 
     labels = [str(item) for item in values if item not in (None, "")]
     return ", ".join(labels) if labels else None
+
+
+def _metadata_label(metadata: dict[str, Any], key: str, legacy_key: str) -> str | None:
+    value = metadata.get(key)
+    if value not in (None, ""):
+        return str(value)
+    return _join_json_list(metadata.get(legacy_key))
 
 
 def _optional_str(value: Any) -> str | None:

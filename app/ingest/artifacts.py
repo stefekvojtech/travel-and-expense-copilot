@@ -2,11 +2,13 @@
 
 Loaded-document artifacts preserve source loader output for inspection. Block
 artifacts preserve source-level lineage from normalization. Chunk artifacts are
-embedding-ready records derived from those blocks.
+embedding-ready records derived from those blocks with a small
+citation-oriented metadata set.
 """
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Any
 
@@ -63,11 +65,35 @@ class ChunkArtifact:
     doc_type: str
     title: str
     text: str
-    source_block_ids: list[str]
     section_path: str | None
-    pages: list[int]
-    sheets: list[str]
+    page: int | None
+    sheet: str | None
     chunk_strategy: str
     token_count: int
     order: int
     metadata: dict[str, Any]
+
+
+def chunk_artifact_from_dict(row: dict[str, Any]) -> ChunkArtifact:
+    """Build a chunk artifact from current rows or older generated rows."""
+    normalized = dict(row)
+    if "page" not in normalized:
+        normalized["page"] = _first_value(normalized.pop("pages", []))
+    if "sheet" not in normalized:
+        normalized["sheet"] = _first_value(normalized.pop("sheets", []))
+    normalized.pop("source_block_ids", None)
+    return ChunkArtifact(**normalized)
+
+
+def _first_value(value: Any) -> Any:
+    if isinstance(value, list):
+        return value[0] if value else None
+    if isinstance(value, str):
+        try:
+            decoded = json.loads(value)
+        except json.JSONDecodeError:
+            return value or None
+        if isinstance(decoded, list):
+            return decoded[0] if decoded else None
+        return decoded
+    return value

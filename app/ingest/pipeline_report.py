@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -20,7 +21,13 @@ from app.ingest.artifact_paths import (
     report_path,
     write_text_if_changed,
 )
-from app.ingest.artifacts import BlockArtifact, ChunkArtifact, LoadedDocumentArtifact, PipelineWarning
+from app.ingest.artifacts import (
+    BlockArtifact,
+    ChunkArtifact,
+    LoadedDocumentArtifact,
+    PipelineWarning,
+    chunk_artifact_from_dict,
+)
 from app.ingest.source_files import discover_raw_files, split_supported_files
 
 
@@ -118,10 +125,18 @@ def _read_block_records(settings: Settings) -> dict[str, list[BlockArtifact]]:
 def _read_chunk_records(settings: Settings) -> dict[str, list[ChunkArtifact]]:
     chunks_by_doc_id: dict[str, list[ChunkArtifact]] = {}
     for path in sorted(chunks_dir(settings).glob("*.jsonl")):
-        chunks = read_jsonl(path, ChunkArtifact)
+        chunks = _read_chunks(path)
         if chunks:
             chunks_by_doc_id[chunks[0].doc_id] = chunks
     return chunks_by_doc_id
+
+
+def _read_chunks(path: Path) -> list[ChunkArtifact]:
+    chunks: list[ChunkArtifact] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            chunks.append(chunk_artifact_from_dict(json.loads(line)))
+    return chunks
 
 
 def _collect_warnings(
