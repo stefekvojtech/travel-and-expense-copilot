@@ -57,6 +57,18 @@ ingestion flow from raw files through vector-store embedding. Search remains a
 separate retrieval script.
 The scripts should stay thin.
 
+Script numbering is grouped by workflow band:
+
+- `00_*`: orchestration scripts that run multiple numbered stages
+- `01_*` through `09_*`: corpus-build stages, from raw source files to indexes
+- `10_*` through `19_*`: retrieval and retrieval-debug entrypoints
+- `20_*` through `29_*`: evaluation entrypoints
+- `30_*` and above: future runtime, API, UI, or agent workflows if they need
+  ordered command-line entrypoints
+
+Following that convention, the planned automated retrieval eval runner should be
+`scripts/20_run_eval.py`.
+
 ## Current Modules
 
 `app/core/config.py` defines the `Settings` dataclass and `get_settings()` cache.

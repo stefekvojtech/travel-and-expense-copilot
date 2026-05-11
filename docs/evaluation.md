@@ -12,10 +12,14 @@ data/eval/golden_eval_set.jsonl
 Expected future command:
 
 ```powershell
-python scripts/run_eval.py
+python scripts/20_run_eval.py
 ```
 
 That script is not yet developed.
+
+Evaluation scripts use the `20_*` numbering band. The first runner should be
+`scripts/20_run_eval.py` because ingestion occupies `01_*` through `09_*`, and
+retrieval/debug entrypoints occupy `10_*` through `19_*`.
 
 ## Current Golden Eval Format
 
@@ -74,7 +78,7 @@ need the future answer generator and judge flow.
 
 ## Current Limitations
 
-There is no `scripts/run_eval.py`.
+There is no `scripts/20_run_eval.py`.
 
 There is no answer-generation stage to compare against `expected_answer`.
 

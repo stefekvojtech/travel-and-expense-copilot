@@ -114,6 +114,21 @@ Retrieval stays outside the corpus-build pipeline:
 python scripts/10_retrieve_context.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
+## Script Numbering
+
+Script numbers indicate the order and role of local workflow entrypoints:
+
+- `00_*`: orchestration scripts that run multiple numbered stages
+- `01_*` through `09_*`: corpus-build stages, from raw source files to indexes
+- `10_*` through `19_*`: retrieval and retrieval-debug entrypoints
+- `20_*` through `29_*`: evaluation entrypoints
+- `30_*` and above: future runtime, API, UI, or agent workflows if they need
+  ordered command-line entrypoints
+
+The first automated eval runner should therefore be `scripts/20_run_eval.py`.
+It should evaluate retrieval quality against `data/eval/golden_eval_set.jsonl`
+before answer generation is added.
+
 The numbered stages always rebuild their own output folders. The full pipeline
 does the same, then embeds into Chroma. There is no incremental/force split.
 Ask before running stage 04 chunk embedding, either directly with
