@@ -181,6 +181,17 @@ The embedder writes chunk text as the vector document. Chunk metadata is
 flattened for Chroma. Citation fields such as `page`, `sheet`, and row metadata
 are stored as scalar Chroma metadata where available.
 
+### Embedding Model Consistency
+
+Use one embedding model for the whole RAG system. Document chunk embeddings,
+query embeddings, evaluation retrieval, and any future embedding-backed task
+must use the same configured `EMBEDDING_MODEL`.
+
+Do not mix embedding models for different tasks or stages. If the project moves
+to a new embedding model, rebuild the RAG index from the source documents with
+that new model, including regenerated vectors for all chunks. Old vectors from a
+different model must not stay in the active Chroma collection.
+
 ## Report
 
 `app/ingest/pipeline_report.py` writes `data/processed/report.md`.
