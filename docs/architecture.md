@@ -69,7 +69,7 @@ coverage stays aligned with production behavior.
 
 `app/ingest/step02_normalize_blocks.py` normalizes supported sources into block
 JSONL and readable block previews. Image normalization reuses the stage 01 image
-text when available to avoid a second vision call in a normal pipeline run.
+text when available to avoid duplicate image extraction in a normal pipeline run.
 
 `app/ingest/artifacts.py` defines the shared block and chunk artifact schemas used
 by raw ingestion, chunking, and embedding.
@@ -112,7 +112,7 @@ project, a module means a single `.py` file, such as
 
 Module docstrings should make the file understandable at a glance. They should
 describe the module's role in the pipeline, the artifacts it reads or writes, and
-important boundaries such as paid OpenAI calls or planned-only scaffolds.
+important boundaries such as stage 04 chunk embedding or planned-only scaffolds.
 
 Examples of the current convention:
 
@@ -121,8 +121,8 @@ Examples of the current convention:
   preserve
 - retrieval modules state whether they perform query embedding, local reranking,
   or citation-ready context assembly
-- scripts state the command purpose and whether normal execution may call a paid
-  model
+- scripts state the command purpose and whether normal execution runs stage 04
+  chunk embedding
 
 Inline comments should explain non-obvious decisions, edge cases, lineage
 assumptions, or temporary demo shortcuts. Avoid comments that simply repeat what

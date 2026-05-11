@@ -3,8 +3,8 @@
 This stage writes `02_normalized_blocks` JSONL files and
 `02_normalized_blocks_preview` Markdown files. It reuses the production loaders
 for PDF, HTML, XLSX, TXT, and images. Image normalization reuses the stage 01
-loaded image text when available so a normal pipeline run does not call paid
-vision twice.
+loaded image text when available so a normal pipeline run does not repeat image
+extraction.
 """
 
 from __future__ import annotations

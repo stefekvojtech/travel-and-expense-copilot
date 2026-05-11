@@ -95,6 +95,6 @@ A practical first implementation would focus on retrieval:
 - mark pass/fail for required source hit in top-k and assembled context
 - write a local JSON or Markdown report under `data/eval/`
 
-This avoids paid chat calls. It still calls OpenAI embeddings for each query unless
+This avoids answer-generation calls. Retrieval still embeds each query unless
 query embeddings are cached or the vector search is replaced with a local test
 double.

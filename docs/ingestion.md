@@ -76,8 +76,7 @@ PDF, HTML, and TXT use LangChain community loaders:
 - TXT: `TextLoader`
 
 XLSX and image files use the project loaders so source coverage matches the
-production pipeline. Image loading may call OpenAI vision when `OPENAI_API_KEY`
-is configured.
+production pipeline.
 
 This stage is for inspecting loaded source text. Chunking does not use these
 records directly; chunking uses normalized blocks from stage 02.
@@ -171,8 +170,10 @@ Chroma under:
 data/processed/04_vectorstore/
 ```
 
-Real embedding calls OpenAI through `langchain_openai.OpenAIEmbeddings` and
-consumes paid credits. The previous Chroma collection is not removed up front.
+Real embedding calls OpenAI through `langchain_openai.OpenAIEmbeddings` for all
+chunks and consumes paid credits. Ask before running this stage, including when
+it is triggered indirectly by `scripts/00_run_ingestion.py`. The previous Chroma
+collection is not removed up front.
 The embedder builds a temporary collection, adds all chunks, verifies the count,
 then promotes the temporary collection to the configured collection name.
 

@@ -1,8 +1,8 @@
 """Run the complete numbered ingestion flow.
 
 This command runs stages 01 through 04: load documents, normalize blocks, chunk
-blocks, and embed chunks into Chroma. Image loading and embedding may call paid
-OpenAI models when configured.
+blocks, and embed chunks into Chroma. Stage 04 calls the configured OpenAI
+embedding model for all chunks, so ask before running this command.
 """
 
 import sys

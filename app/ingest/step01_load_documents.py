@@ -3,8 +3,7 @@
 This first stage writes `01_loaded_documents` JSONL files and matching readable
 Markdown previews. PDF, HTML, and TXT sources use LangChain community loaders.
 XLSX and image sources use the project's production loaders so source coverage
-matches the main pipeline; image loading may call paid OpenAI vision when an API
-key is configured.
+matches the main pipeline.
 """
 
 from __future__ import annotations

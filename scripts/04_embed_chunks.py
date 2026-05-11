@@ -1,8 +1,8 @@
 """Embed stage 03 chunks into the local Chroma vector store.
 
 This command calls the configured OpenAI embedding model and consumes paid
-credits. The previous collection is replaced only after the new collection is
-fully written and count-verified.
+credits, so ask before running it. The previous collection is replaced only
+after the new collection is fully written and count-verified.
 """
 
 from app.core.config import get_settings

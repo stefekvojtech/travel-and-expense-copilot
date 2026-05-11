@@ -1,7 +1,4 @@
-"""Rebuild stage 01 loaded-document artifacts from raw sources.
-
-Image loading may call paid OpenAI vision when `OPENAI_API_KEY` is configured.
-"""
+"""Rebuild stage 01 loaded-document artifacts from raw sources."""
 
 from app.core.config import get_settings
 from app.ingest.pipeline_report import write_pipeline_report

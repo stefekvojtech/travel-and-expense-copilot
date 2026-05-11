@@ -2,7 +2,7 @@
 
 The image loader converts receipts and other image sources into Markdown text
 and a single image-derived source block. It returns a warning placeholder when
-`OPENAI_API_KEY` is unavailable, and real extraction is a paid model call.
+`OPENAI_API_KEY` is unavailable.
 """
 
 from __future__ import annotations

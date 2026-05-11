@@ -3,7 +3,8 @@
 This module reads `03_chunks` JSONL files, builds OpenAI embeddings for the
 chunk text, stores flattened metadata in Chroma, and promotes replacement
 collections only after count verification. Normal execution makes paid
-embedding calls through the configured provider.
+embedding calls through the configured provider, so ask before running a command
+that invokes this module.
 """
 
 from __future__ import annotations

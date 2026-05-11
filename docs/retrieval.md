@@ -26,8 +26,8 @@ question
 ```
 
 Retrieval modules are documented with top-level module docstrings. These
-docstrings should make it clear whether a module performs paid query embedding,
-local reranking, or citation-ready context assembly.
+docstrings should make it clear whether a module performs query embedding, local
+reranking, or citation-ready context assembly.
 
 ## Vector Store
 
@@ -47,7 +47,6 @@ The collection metadata is defined in `app/retrieval/chroma_config.py`:
 ```
 
 `search_chunks()` embeds the query with the configured OpenAI embedding model.
-That means normal search is a paid model call.
 
 ## Retrieval Filters
 
