@@ -39,11 +39,21 @@ def main() -> None:
         help="Evaluate only the first N rows. Useful for smoke checks.",
     )
     args = parser.parse_args()
+    if args.limit is not None and args.limit <= 0:
+        parser.error("--limit must be a positive integer")
 
     settings = get_settings()
     eval_path = _resolve_project_path(args.eval_path)
-    results_path = _resolve_project_path(args.results_path) if args.results_path else None
-    report_path = _resolve_project_path(args.report_path) if args.report_path else None
+    results_path = (
+        _resolve_project_path(args.results_path)
+        if args.results_path
+        else _limited_default_path(eval_path, args.limit, "jsonl")
+    )
+    report_path = (
+        _resolve_project_path(args.report_path)
+        if args.report_path
+        else _limited_default_path(eval_path, args.limit, "md")
+    )
 
     eval_run = run_retrieval_eval(
         settings,
@@ -74,6 +84,12 @@ def main() -> None:
 def _resolve_project_path(path_value: str) -> Path:
     path = Path(path_value)
     return path if path.is_absolute() else ROOT_DIR / path
+
+
+def _limited_default_path(eval_path: Path, limit: int | None, suffix: str) -> Path | None:
+    if limit is None:
+        return None
+    return eval_path.parent / f"20_retrieval_eval_limit_{limit}.{suffix}"
 
 
 if __name__ == "__main__":
