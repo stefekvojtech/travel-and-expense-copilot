@@ -76,6 +76,14 @@ def main() -> None:
         "context_source_hit: "
         f"{summary.context_source_hits}/{summary.source_required_cases}"
     )
+    print(
+        "context_chunk_case_hit: "
+        f"{summary.context_chunk_case_hits}/{summary.chunk_required_cases}"
+    )
+    print(
+        "context_chunk_group_hit: "
+        f"{summary.context_chunk_group_hits}/{summary.chunk_required_groups}"
+    )
     print(f"abstention_cases: {summary.abstention_cases}")
     print(f"Report: {summary.report_path}")
     print(f"Results: {summary.results_path}")

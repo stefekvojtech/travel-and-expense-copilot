@@ -24,6 +24,7 @@ from app.retrieval.step03_assemble_context import AssembledContext, assemble_con
 
 DEFAULT_RESULTS_FILENAME = "20_retrieval_eval_results.jsonl"
 DEFAULT_REPORT_FILENAME = "20_retrieval_eval_report.md"
+ChunkGroup = list[str]
 
 
 @dataclass(frozen=True)
@@ -32,6 +33,7 @@ class EvalExample:
     question: str
     expected_answer: str
     required_sources: list[str]
+    required_chunk_groups: list[ChunkGroup]
     expected_filters: dict[str, Any]
     should_abstain: bool
     tags: list[str]
@@ -42,6 +44,7 @@ class RetrievalEvalResult:
     id: str
     question: str
     required_sources: list[str]
+    required_chunk_groups: list[ChunkGroup]
     should_abstain: bool
     tags: list[str]
     retrieved_sources: list[str]
@@ -56,9 +59,18 @@ class RetrievalEvalResult:
     missing_sources_in_retrieved: list[str]
     missing_sources_in_reranked: list[str]
     missing_sources_in_context: list[str]
+    matched_chunk_groups_in_retrieved: list[ChunkGroup]
+    matched_chunk_groups_in_reranked: list[ChunkGroup]
+    matched_chunk_groups_in_context: list[ChunkGroup]
+    missing_chunk_groups_in_retrieved: list[ChunkGroup]
+    missing_chunk_groups_in_reranked: list[ChunkGroup]
+    missing_chunk_groups_in_context: list[ChunkGroup]
     passed_retrieved_source_hit: bool | None
     passed_reranked_source_hit: bool | None
     passed_context_source_hit: bool | None
+    passed_retrieved_chunk_hit: bool | None
+    passed_reranked_chunk_hit: bool | None
+    passed_context_chunk_hit: bool | None
 
 
 @dataclass(frozen=True)
@@ -69,10 +81,18 @@ class RetrievalEvalSummary:
     report_path: str
     total_cases: int
     source_required_cases: int
+    chunk_required_cases: int
+    chunk_required_groups: int
     abstention_cases: int
     retrieved_source_hits: int
     reranked_source_hits: int
     context_source_hits: int
+    retrieved_chunk_case_hits: int
+    reranked_chunk_case_hits: int
+    context_chunk_case_hits: int
+    retrieved_chunk_group_hits: int
+    reranked_chunk_group_hits: int
+    context_chunk_group_hits: int
     retrieval_top_k: int
     retrieval_rerank_k: int
     retrieval_context_k: int
@@ -135,6 +155,7 @@ def load_eval_examples(eval_path: Path) -> list[EvalExample]:
                 question=str(row["question"]),
                 expected_answer=str(row.get("expected_answer", "")),
                 required_sources=list(row.get("required_sources", [])),
+                required_chunk_groups=_read_chunk_groups(row),
                 expected_filters=dict(row.get("expected_filters", {})),
                 should_abstain=bool(row.get("should_abstain", False)),
                 tags=list(row.get("tags", [])),
@@ -165,6 +186,13 @@ def _evaluate_example(settings: Settings, example: EvalExample) -> RetrievalEval
     retrieved_sources = _unique_sources_from_chunks(retrieved_chunks)
     reranked_sources = _unique_sources_from_chunks(reranked_chunks)
     context_sources = _unique_sources_from_context(assembled_context)
+    retrieved_chunk_ids = _chunk_ids(retrieved_chunks)
+    reranked_chunk_ids = _chunk_ids(reranked_chunks)
+    context_chunk_ids = [
+        block.chunk_id
+        for block in assembled_context.evidence_blocks
+        if block.chunk_id is not None
+    ]
 
     retrieved_hits, retrieved_missing = _source_hits(
         required_sources=example.required_sources,
@@ -178,35 +206,60 @@ def _evaluate_example(settings: Settings, example: EvalExample) -> RetrievalEval
         required_sources=example.required_sources,
         found_sources=context_sources,
     )
+    retrieved_chunk_hits, retrieved_chunk_missing = _chunk_group_hits(
+        required_chunk_groups=example.required_chunk_groups,
+        found_chunk_ids=retrieved_chunk_ids,
+    )
+    reranked_chunk_hits, reranked_chunk_missing = _chunk_group_hits(
+        required_chunk_groups=example.required_chunk_groups,
+        found_chunk_ids=reranked_chunk_ids,
+    )
+    context_chunk_hits, context_chunk_missing = _chunk_group_hits(
+        required_chunk_groups=example.required_chunk_groups,
+        found_chunk_ids=context_chunk_ids,
+    )
 
     has_required_sources = bool(example.required_sources)
+    has_required_chunk_groups = bool(example.required_chunk_groups)
     return RetrievalEvalResult(
         id=example.id,
         question=example.question,
         required_sources=example.required_sources,
+        required_chunk_groups=example.required_chunk_groups,
         should_abstain=example.should_abstain,
         tags=example.tags,
         retrieved_sources=retrieved_sources,
         reranked_sources=reranked_sources,
         context_sources=context_sources,
-        retrieved_chunk_ids=_chunk_ids(retrieved_chunks),
-        reranked_chunk_ids=_chunk_ids(reranked_chunks),
-        context_chunk_ids=[
-            block.chunk_id
-            for block in assembled_context.evidence_blocks
-            if block.chunk_id is not None
-        ],
+        retrieved_chunk_ids=retrieved_chunk_ids,
+        reranked_chunk_ids=reranked_chunk_ids,
+        context_chunk_ids=context_chunk_ids,
         required_sources_in_retrieved=retrieved_hits,
         required_sources_in_reranked=reranked_hits,
         required_sources_in_context=context_hits,
         missing_sources_in_retrieved=retrieved_missing,
         missing_sources_in_reranked=reranked_missing,
         missing_sources_in_context=context_missing,
+        matched_chunk_groups_in_retrieved=retrieved_chunk_hits,
+        matched_chunk_groups_in_reranked=reranked_chunk_hits,
+        matched_chunk_groups_in_context=context_chunk_hits,
+        missing_chunk_groups_in_retrieved=retrieved_chunk_missing,
+        missing_chunk_groups_in_reranked=reranked_chunk_missing,
+        missing_chunk_groups_in_context=context_chunk_missing,
         passed_retrieved_source_hit=(
             not retrieved_missing if has_required_sources else None
         ),
         passed_reranked_source_hit=not reranked_missing if has_required_sources else None,
         passed_context_source_hit=not context_missing if has_required_sources else None,
+        passed_retrieved_chunk_hit=(
+            not retrieved_chunk_missing if has_required_chunk_groups else None
+        ),
+        passed_reranked_chunk_hit=(
+            not reranked_chunk_missing if has_required_chunk_groups else None
+        ),
+        passed_context_chunk_hit=(
+            not context_chunk_missing if has_required_chunk_groups else None
+        ),
     )
 
 
@@ -223,6 +276,11 @@ def _summarize_results(
         for result in results
         if result.passed_retrieved_source_hit is not None
     ]
+    chunk_results = [
+        result
+        for result in results
+        if result.passed_retrieved_chunk_hit is not None
+    ]
     return RetrievalEvalSummary(
         generated_at=datetime.now(timezone.utc).isoformat(),
         eval_path=project_relative_path(eval_path),
@@ -230,6 +288,11 @@ def _summarize_results(
         report_path=project_relative_path(report_path),
         total_cases=len(results),
         source_required_cases=len(source_results),
+        chunk_required_cases=len(chunk_results),
+        chunk_required_groups=sum(
+            len(result.required_chunk_groups)
+            for result in chunk_results
+        ),
         abstention_cases=sum(1 for result in results if result.should_abstain),
         retrieved_source_hits=sum(
             1 for result in source_results if result.passed_retrieved_source_hit
@@ -239,6 +302,27 @@ def _summarize_results(
         ),
         context_source_hits=sum(
             1 for result in source_results if result.passed_context_source_hit
+        ),
+        retrieved_chunk_case_hits=sum(
+            1 for result in chunk_results if result.passed_retrieved_chunk_hit
+        ),
+        reranked_chunk_case_hits=sum(
+            1 for result in chunk_results if result.passed_reranked_chunk_hit
+        ),
+        context_chunk_case_hits=sum(
+            1 for result in chunk_results if result.passed_context_chunk_hit
+        ),
+        retrieved_chunk_group_hits=sum(
+            len(result.matched_chunk_groups_in_retrieved)
+            for result in chunk_results
+        ),
+        reranked_chunk_group_hits=sum(
+            len(result.matched_chunk_groups_in_reranked)
+            for result in chunk_results
+        ),
+        context_chunk_group_hits=sum(
+            len(result.matched_chunk_groups_in_context)
+            for result in chunk_results
         ),
         retrieval_top_k=settings.retrieval_top_k,
         retrieval_rerank_k=settings.retrieval_rerank_k,
@@ -259,6 +343,8 @@ def _format_report(
         f"- report_path: `{summary.report_path}`",
         f"- total_cases: `{summary.total_cases}`",
         f"- source_required_cases: `{summary.source_required_cases}`",
+        f"- chunk_required_cases: `{summary.chunk_required_cases}`",
+        f"- chunk_required_groups: `{summary.chunk_required_groups}`",
         f"- abstention_cases: `{summary.abstention_cases}`",
         f"- retrieval_top_k: `{summary.retrieval_top_k}`",
         f"- retrieval_rerank_k: `{summary.retrieval_rerank_k}`",
@@ -283,11 +369,41 @@ def _format_report(
             summary.context_source_hits,
             summary.source_required_cases,
         ),
+        _metric_row(
+            "Retrieved chunk case hit",
+            summary.retrieved_chunk_case_hits,
+            summary.chunk_required_cases,
+        ),
+        _metric_row(
+            "Reranked chunk case hit",
+            summary.reranked_chunk_case_hits,
+            summary.chunk_required_cases,
+        ),
+        _metric_row(
+            "Context chunk case hit",
+            summary.context_chunk_case_hits,
+            summary.chunk_required_cases,
+        ),
+        _metric_row(
+            "Retrieved chunk group hit",
+            summary.retrieved_chunk_group_hits,
+            summary.chunk_required_groups,
+        ),
+        _metric_row(
+            "Reranked chunk group hit",
+            summary.reranked_chunk_group_hits,
+            summary.chunk_required_groups,
+        ),
+        _metric_row(
+            "Context chunk group hit",
+            summary.context_chunk_group_hits,
+            summary.chunk_required_groups,
+        ),
         "",
         "## Tag Breakdown",
         "",
-        "| Tag | Cases | Context hits | Rate |",
-        "| --- | ---: | ---: | ---: |",
+        "| Tag | Source cases | Context source hits | Source rate | Chunk cases | Context chunk hits | Chunk rate |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     lines.extend(_format_tag_rows(results))
     lines.extend(
@@ -300,6 +416,16 @@ def _format_report(
         ]
     )
     lines.extend(_format_failed_rows(results))
+    lines.extend(
+        [
+            "",
+            "## Failed Context Chunk Hits",
+            "",
+            "| ID | Missing chunk groups | Context chunks | Tags | Question |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+    )
+    lines.extend(_format_failed_chunk_rows(results))
     return "\n".join(lines) + "\n"
 
 
@@ -308,21 +434,34 @@ def _metric_row(label: str, hits: int, total: int) -> str:
 
 
 def _format_tag_rows(results: list[RetrievalEvalResult]) -> list[str]:
-    tag_cases: dict[str, list[RetrievalEvalResult]] = defaultdict(list)
+    source_tag_cases: dict[str, list[RetrievalEvalResult]] = defaultdict(list)
+    chunk_tag_cases: dict[str, list[RetrievalEvalResult]] = defaultdict(list)
     for result in results:
-        if result.passed_context_source_hit is None:
-            continue
         for tag in result.tags:
-            tag_cases[tag].append(result)
+            if result.passed_context_source_hit is not None:
+                source_tag_cases[tag].append(result)
+            if result.passed_context_chunk_hit is not None:
+                chunk_tag_cases[tag].append(result)
 
-    if not tag_cases:
-        return ["| No source-required tagged cases. | 0 | 0 | n/a |"]
+    all_tags = sorted(set(source_tag_cases) | set(chunk_tag_cases))
+    if not all_tags:
+        return ["| No tagged metric cases. | 0 | 0 | n/a | 0 | 0 | n/a |"]
 
     rows: list[str] = []
-    for tag in sorted(tag_cases):
-        cases = tag_cases[tag]
-        hits = sum(1 for result in cases if result.passed_context_source_hit)
-        rows.append(f"| `{tag}` | {len(cases)} | {hits} | {_rate(hits, len(cases))} |")
+    for tag in all_tags:
+        source_cases = source_tag_cases.get(tag, [])
+        source_hits = sum(
+            1 for result in source_cases if result.passed_context_source_hit
+        )
+        chunk_cases = chunk_tag_cases.get(tag, [])
+        chunk_hits = sum(
+            1 for result in chunk_cases if result.passed_context_chunk_hit
+        )
+        rows.append(
+            f"| `{tag}` | {len(source_cases)} | {source_hits} | "
+            f"{_rate(source_hits, len(source_cases))} | {len(chunk_cases)} | "
+            f"{chunk_hits} | {_rate(chunk_hits, len(chunk_cases))} |"
+        )
     return rows
 
 
@@ -345,6 +484,25 @@ def _format_failed_rows(results: list[RetrievalEvalResult]) -> list[str]:
     ]
 
 
+def _format_failed_chunk_rows(results: list[RetrievalEvalResult]) -> list[str]:
+    failed_results = [
+        result
+        for result in results
+        if result.passed_context_chunk_hit is False
+    ]
+    if not failed_results:
+        return ["| No failed context chunk hits. |  |  |  |  |"]
+
+    return [
+        (
+            f"| `{result.id}` | {_md_chunk_groups(result.missing_chunk_groups_in_context)} | "
+            f"{_md_list(result.context_chunk_ids)} | {_md_list(result.tags)} | "
+            f"{_escape_table_text(result.question)} |"
+        )
+        for result in failed_results
+    ]
+
+
 def _source_hits(
     *,
     required_sources: list[str],
@@ -357,6 +515,27 @@ def _source_hits(
             hits.append(required_source)
         else:
             missing.append(required_source)
+    return hits, missing
+
+
+def _chunk_group_hits(
+    *,
+    required_chunk_groups: list[ChunkGroup],
+    found_chunk_ids: list[str],
+) -> tuple[list[ChunkGroup], list[ChunkGroup]]:
+    found_ids = set(found_chunk_ids)
+    hits: list[ChunkGroup] = []
+    missing: list[ChunkGroup] = []
+    for required_group in required_chunk_groups:
+        matched_chunks = [
+            chunk_id
+            for chunk_id in required_group
+            if chunk_id in found_ids
+        ]
+        if matched_chunks:
+            hits.append(matched_chunks)
+        else:
+            missing.append(required_group)
     return hits, missing
 
 
@@ -399,6 +578,17 @@ def _chunk_ids(chunks: list[RetrievedChunk] | list[RerankedChunk]) -> list[str]:
     ]
 
 
+def _read_chunk_groups(row: dict[str, Any]) -> list[ChunkGroup]:
+    raw_groups = row.get("required_chunk_groups", [])
+    groups: list[ChunkGroup] = []
+    for raw_group in raw_groups:
+        if isinstance(raw_group, list):
+            group = [str(chunk_id) for chunk_id in raw_group if chunk_id]
+            if group:
+                groups.append(group)
+    return groups
+
+
 def _rate(hits: int, total: int) -> str:
     if total == 0:
         return "n/a"
@@ -409,6 +599,15 @@ def _md_list(values: list[str]) -> str:
     if not values:
         return ""
     return ", ".join(f"`{_escape_table_text(value)}`" for value in values)
+
+
+def _md_chunk_groups(groups: list[ChunkGroup]) -> str:
+    if not groups:
+        return ""
+    return "<br>".join(
+        " OR ".join(f"`{_escape_table_text(chunk_id)}`" for chunk_id in group)
+        for group in groups
+    )
 
 
 def _escape_table_text(value: str) -> str:

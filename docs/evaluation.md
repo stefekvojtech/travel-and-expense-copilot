@@ -35,9 +35,16 @@ Each JSONL row currently includes fields like:
 - `question`
 - `expected_answer`
 - `required_sources`
+- `required_chunk_groups`
 - `expected_filters`
 - `should_abstain`
 - `tags`
+
+`required_chunk_groups` is stricter than `required_sources`. Each inner list is
+one evidence requirement, and any chunk ID in that inner list can satisfy that
+requirement. This lets the eval accept equivalent chunks that contain the same
+policy fact while still checking for answer-relevant evidence instead of only
+checking that the right source file appeared.
 
 Example question categories currently represented include:
 
@@ -67,7 +74,9 @@ The retrieval eval runner currently tracks:
 - retrieval hit@k
 - reranked source hit
 - assembled-context source hit
+- retrieved, reranked, and assembled-context chunk-group hits
 - tag-level context source hit rates
+- tag-level context chunk hit rates
 
 For each eval row, the runner:
 
@@ -76,10 +85,12 @@ For each eval row, the runner:
 3. Rerank results.
 4. Assemble context.
 5. Check whether required sources appear in the evidence blocks.
+6. Check whether required chunk groups appear in the retrieved, reranked, and
+   assembled-context chunks.
 
-Rows with no `required_sources`, such as current abstention cases, are excluded
-from source-hit denominators. Abstention correctness remains answer-level future
-work.
+Rows with no `required_sources` or `required_chunk_groups`, such as current
+abstention cases, are excluded from those hit-rate denominators. Abstention
+correctness remains answer-level future work.
 
 Answer-level metrics such as faithfulness, confidence, and citation correctness
 need the future answer generator and judge flow.
@@ -103,9 +114,11 @@ The Markdown report is intended for quick human inspection. It contains:
 - eval input and output paths
 - retrieval settings
 - retrieved, reranked, and context source hit rates
+- retrieved, reranked, and context chunk case/group hit rates
 - tag breakdown
 - failed context-source-hit cases
+- failed context-chunk-hit cases
 
 The JSONL results file contains one row per eval case with retrieved sources,
-reranked sources, context sources, chunk IDs, source-hit flags, and missing
-required sources.
+reranked sources, context sources, chunk IDs, source-hit flags, chunk-hit flags,
+matched chunk groups, missing chunk groups, and missing required sources.
