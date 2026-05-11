@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Iterable
 
-from app.retrieval.vector_store import RetrievedChunk
+from app.retrieval.step01_search_chunks import RetrievedChunk
 
 
 @dataclass(frozen=True)

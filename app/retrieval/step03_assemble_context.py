@@ -13,8 +13,8 @@ from typing import Any, Iterable
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from app.retrieval.rerank import RerankedChunk
-from app.retrieval.vector_store import RetrievedChunk
+from app.retrieval.step01_search_chunks import RetrievedChunk
+from app.retrieval.step02_rerank_chunks import RerankedChunk
 
 ContextCandidate = RetrievedChunk | RerankedChunk
 

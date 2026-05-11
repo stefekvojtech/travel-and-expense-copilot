@@ -26,7 +26,7 @@ also exist as empty scaffolds.
 
 The current way to use the project is through scripts in `scripts/`.
 `python scripts/00_run_ingestion.py` rebuilds the corpus from raw files through
-Chroma embedding. Retrieval is run separately with `python scripts/search_chunks.py`.
+Chroma embedding. Retrieval is run separately with `python scripts/10_retrieve_context.py`.
 
 ## Expected Future API Shape
 

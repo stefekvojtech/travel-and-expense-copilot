@@ -89,7 +89,7 @@ There is no persistent eval report format yet.
 A practical first implementation would focus on retrieval:
 
 - read `data/eval/golden_eval_set.jsonl`
-- run `search_chunks()` for each question
+- run `search_chunks()` from `app/retrieval/step01_search_chunks.py` for each question
 - rerank with `rerank_chunks()`
 - assemble context with `assemble_context()`
 - mark pass/fail for required source hit in top-k and assembled context

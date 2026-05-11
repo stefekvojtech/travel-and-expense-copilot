@@ -6,7 +6,7 @@ context assembly.
 The current user-facing entrypoint is:
 
 ```powershell
-python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
+python scripts/10_retrieve_context.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
 This prints assembled evidence context. It does not yet generate a final grounded
@@ -31,7 +31,7 @@ reranking, or citation-ready context assembly.
 
 ## Vector Store
 
-`app/retrieval/vector_store.py` opens the local Chroma collection configured by:
+`app/retrieval/step01_search_chunks.py` opens the local Chroma collection configured by:
 
 ```text
 PROCESSED_DATA_DIR=data/processed
@@ -59,9 +59,9 @@ The first retrieval pass supports exact-match metadata filters:
 CLI examples:
 
 ```powershell
-python scripts/search_chunks.py "meal cap Vienna" --doc-type xlsx
-python scripts/search_chunks.py "flight evidence" --source-path data/raw/travel_policy.pdf
-python scripts/search_chunks.py "receipt required" --section-path "2. Receipt and Evidence Requirements"
+python scripts/10_retrieve_context.py "meal cap Vienna" --doc-type xlsx
+python scripts/10_retrieve_context.py "flight evidence" --source-path data/raw/travel_policy.pdf
+python scripts/10_retrieve_context.py "receipt required" --section-path "2. Receipt and Evidence Requirements"
 ```
 
 Stored paths are project-relative POSIX-style paths, such as
@@ -88,7 +88,7 @@ Approximate similarity is calculated as `1 - cosine_distance`.
 
 ## Reranking
 
-`app/retrieval/rerank.py` reranks vector candidates with FlashRank.
+`app/retrieval/step02_rerank_chunks.py` reranks vector candidates with FlashRank.
 
 The configured model is:
 
@@ -106,13 +106,13 @@ RETRIEVAL_RERANK_K=5
 RETRIEVAL_CONTEXT_K=4
 ```
 
-`scripts/search_chunks.py` currently passes all retrieved candidates through
+`scripts/10_retrieve_context.py` currently passes all retrieved candidates through
 reranking and then lets context assembly select evidence blocks.
 
 ## Context Assembly
 
-`app/retrieval/context.py` converts retrieved or reranked chunks into evidence
-blocks.
+`app/retrieval/step03_assemble_context.py` converts retrieved or reranked chunks
+into evidence blocks.
 
 Each evidence block includes:
 

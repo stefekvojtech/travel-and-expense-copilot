@@ -31,9 +31,9 @@ numbered stage outputs
   -> data/processed/report.md
 
 query
-  -> app/retrieval/vector_store.py
-  -> app/retrieval/rerank.py
-  -> app/retrieval/context.py
+  -> app/retrieval/step01_search_chunks.py
+  -> app/retrieval/step02_rerank_chunks.py
+  -> app/retrieval/step03_assemble_context.py
   -> citation-ready evidence context
 ```
 
@@ -95,20 +95,21 @@ count verification.
 current numbered artifacts and warnings. The pipeline no longer writes
 `ingest_manifest.jsonl` or `ingest_warnings.jsonl`.
 
-`app/retrieval/vector_store.py` opens Chroma, embeds the query, retrieves chunks,
-and supports exact-match filters for `doc_type`, `source_path`, and
-`section_path`.
+`app/retrieval/step01_search_chunks.py` opens Chroma, embeds the query,
+retrieves chunks, and supports exact-match filters for `doc_type`,
+`source_path`, and `section_path`.
 
-`app/retrieval/rerank.py` reranks retrieved candidates with local FlashRank.
+`app/retrieval/step02_rerank_chunks.py` reranks retrieved candidates with local
+FlashRank.
 
-`app/retrieval/context.py` selects diverse chunks, applies token budgets, and
-formats evidence blocks with citation IDs and retrieval metadata.
+`app/retrieval/step03_assemble_context.py` selects diverse chunks, applies token
+budgets, and formats evidence blocks with citation IDs and retrieval metadata.
 
 ## Code Documentation Conventions
 
 Every Python module should start with a short top-level module docstring. In this
 project, a module means a single `.py` file, such as
-`app/ingest/step01_load_documents.py` or `scripts/search_chunks.py`.
+`app/ingest/step01_load_documents.py` or `scripts/10_retrieve_context.py`.
 
 Module docstrings should make the file understandable at a glance. They should
 describe the module's role in the pipeline, the artifacts it reads or writes, and
@@ -169,8 +170,8 @@ These boundaries are planned by project rules but not yet implemented:
 
 ## Current Limitations
 
-There is no final answer generator. `scripts/search_chunks.py` prints assembled
-context, not a user-facing policy answer.
+There is no final answer generator. `scripts/10_retrieve_context.py` prints
+assembled context, not a user-facing policy answer.
 
 There is no judge step, no confidence explanation, and no abstention flow beyond
 the retrieval context that a future answer generator can use.

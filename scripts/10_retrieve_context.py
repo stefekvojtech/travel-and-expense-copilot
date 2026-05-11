@@ -1,4 +1,4 @@
-"""Search local Chroma chunks and print assembled citation-ready context.
+"""Retrieve citation-ready context from local Chroma chunks.
 
 Search embeds the query, reranks candidates locally with FlashRank, and prints
 the evidence context selected for answer generation.
@@ -8,9 +8,9 @@ import argparse
 import sys
 
 from app.core.config import get_settings
-from app.retrieval.context import assemble_context
-from app.retrieval.rerank import rerank_chunks
-from app.retrieval.vector_store import RetrievalFilters, search_chunks
+from app.retrieval.step01_search_chunks import RetrievalFilters, search_chunks
+from app.retrieval.step02_rerank_chunks import rerank_chunks
+from app.retrieval.step03_assemble_context import assemble_context
 
 
 def main() -> None:
@@ -18,7 +18,7 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(
-        description="Search embedded policy chunks in the local Chroma vector store."
+        description="Retrieve citation-ready evidence context from embedded policy chunks."
     )
     parser.add_argument("query", nargs="?", help="Question or search phrase to embed and search.")
     parser.add_argument("--k", type=int, help="Number of chunks to return.")

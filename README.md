@@ -107,10 +107,10 @@ python scripts/04_embed_chunks.py
 python scripts/00_run_ingestion.py
 ```
 
-Search stays outside the corpus-build pipeline:
+Retrieval stays outside the corpus-build pipeline:
 
 ```powershell
-python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:00?"
+python scripts/10_retrieve_context.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
 The numbered stages always rebuild their own output folders. The full pipeline
