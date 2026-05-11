@@ -48,13 +48,6 @@ class RetrievedChunk:
         return 1 - self.cosine_distance
 
 
-@dataclass(frozen=True)
-class VectorStoreInfo:
-    collection_name: str
-    vector_store_path: str
-    chunk_count: int
-
-
 def search_chunks(
     settings: Settings,
     query: str,
@@ -84,26 +77,6 @@ def search_chunks(
         )
         for document, score in results
     ]
-
-
-def get_vector_store_info(settings: Settings) -> VectorStoreInfo:
-    """Read basic Chroma collection info without making an embedding API call."""
-    try:
-        import chromadb
-    except ImportError as exc:
-        raise RuntimeError(
-            "Retrieval requires chromadb. Run `python -m pip install -e .` "
-            "from the project root."
-        ) from exc
-
-    client = chromadb.PersistentClient(path=settings.vector_store_dir.as_posix())
-    collection = client.get_collection(settings.vector_collection_name)
-    return VectorStoreInfo(
-        collection_name=settings.vector_collection_name,
-        vector_store_path=settings.vector_store_dir.as_posix(),
-        chunk_count=collection.count(),
-    )
-
 
 def _open_chroma_vector_store(settings: Settings):
     try:

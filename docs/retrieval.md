@@ -49,12 +49,6 @@ The collection metadata is defined in `app/retrieval/chroma_config.py`:
 `search_chunks()` embeds the query with the configured OpenAI embedding model.
 That means normal search is a paid model call.
 
-To inspect Chroma without embedding a query:
-
-```powershell
-python scripts/search_chunks.py --dry-run
-```
-
 ## Retrieval Filters
 
 The first retrieval pass supports exact-match metadata filters:

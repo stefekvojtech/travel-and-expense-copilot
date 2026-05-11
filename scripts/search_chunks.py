@@ -1,7 +1,6 @@
 """Search local Chroma chunks and print assembled citation-ready context.
 
-Use `--dry-run` to inspect the vector store without embedding a query. Normal
-search embeds the query, reranks candidates locally with FlashRank, and prints
+Search embeds the query, reranks candidates locally with FlashRank, and prints
 the evidence context selected for answer generation.
 """
 
@@ -11,7 +10,7 @@ import sys
 from app.core.config import get_settings
 from app.retrieval.context import assemble_context
 from app.retrieval.rerank import rerank_chunks
-from app.retrieval.vector_store import RetrievalFilters, get_vector_store_info, search_chunks
+from app.retrieval.vector_store import RetrievalFilters, search_chunks
 
 
 def main() -> None:
@@ -26,24 +25,11 @@ def main() -> None:
     parser.add_argument("--doc-type", help="Filter by source document type, e.g. pdf, xlsx, image.")
     parser.add_argument("--source-path", help="Filter by project-relative source path.")
     parser.add_argument("--section-path", help="Filter by exact section path.")
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Inspect the Chroma collection without calling the embedding model.",
-    )
     args = parser.parse_args()
 
     settings = get_settings()
-    if args.dry_run:
-        info = get_vector_store_info(settings)
-        print(
-            f"Chroma collection `{info.collection_name}` contains {info.chunk_count} chunks "
-            f"at {info.vector_store_path}."
-        )
-        return
-
     if not args.query:
-        parser.error("query is required unless --dry-run is used")
+        parser.error("query is required")
 
     filters = RetrievalFilters(
         doc_type=args.doc_type,

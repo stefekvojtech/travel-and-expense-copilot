@@ -114,9 +114,9 @@ python scripts/search_chunks.py "Can I take a taxi from Prague airport after 21:
 ```
 
 The numbered stages always rebuild their own output folders. The full pipeline
-does the same, then embeds into Chroma. There is no incremental/force split and
-no dry-run embedding command. Stage 01 image loading can call OpenAI vision, and
-stage 04 embedding calls OpenAI embeddings.
+does the same, then embeds into Chroma. There is no incremental/force split.
+Stage 01 image loading can call OpenAI vision, and stage 04 embedding calls
+OpenAI embeddings.
 
 ## Supported Source Types
 

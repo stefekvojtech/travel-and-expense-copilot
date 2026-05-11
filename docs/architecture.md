@@ -112,8 +112,7 @@ project, a module means a single `.py` file, such as
 
 Module docstrings should make the file understandable at a glance. They should
 describe the module's role in the pipeline, the artifacts it reads or writes, and
-important boundaries such as paid OpenAI calls, dry-run behavior, or planned-only
-scaffolds.
+important boundaries such as paid OpenAI calls or planned-only scaffolds.
 
 Examples of the current convention:
 
