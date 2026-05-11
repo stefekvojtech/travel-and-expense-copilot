@@ -42,6 +42,7 @@ Start here, then go deeper as needed:
 - [Retrieval](docs/retrieval.md)
 - [Evaluation](docs/evaluation.md)
 - [API and UI Status](docs/api.md)
+- [Future Improvements](docs/future_improvements.md)
 
 `AGENTS.md` contains project rules and development constraints for coding agents.
 The docs in `docs/` explain the project for humans working in the repo.
