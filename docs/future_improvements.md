@@ -169,8 +169,22 @@ well across multiple searches without depending on raw score comparability.
 
 #### Hybrid Retrieval Considerations
 
-Travel and expense questions often include exact terms that vector search may not
-handle perfectly on its own:
+Hybrid retrieval is a strong future fit for this project, but it is not
+implemented yet. The current retrieval path is vector-only candidate generation
+followed by local reranking:
+
+```text
+query
+  -> OpenAI query embedding
+  -> Chroma vector search
+  -> FlashRank reranking
+  -> context assembly
+```
+
+FlashRank can improve the order of the chunks returned by Chroma, but it cannot
+recover a chunk that vector search never put into the candidate set. That matters
+for this domain because travel and expense questions often combine semantic
+policy wording with exact lookup terms that embeddings may blur:
 
 - city names
 - countries
@@ -182,10 +196,17 @@ handle perfectly on its own:
 - receipt or invoice terminology
 - policy section names
 
-The planner should eventually extract these as entities. Some entities can become
-metadata filters when the indexed metadata supports them. Others can become
-keyword constraints or separate full-text searches if a keyword search layer is
-added.
+Examples from the golden eval set include questions about `Vienna`, `Prague`,
+`Berlin`, `Zurich`, `Munich`, `22:00`, `0.42`, `35 EUR`, hotel caps, taxi
+thresholds, receipt evidence, and alcohol exclusions. These are not only
+semantic concepts. They are also exact tokens or structured values that should be
+easy to match directly.
+
+The existing ingestion pipeline already prepares useful structure for this. XLSX
+rows are chunked as row-level chunks, and chunk metadata can include fields such
+as `city`, `country`, `country_code`, `expense_category`, and `currency`. A
+future hybrid implementation should use that structure instead of treating every
+query as plain unstructured text.
 
 This suggests a future hybrid retrieval design:
 
@@ -202,8 +223,129 @@ combined candidates
   -> context assembly
 ```
 
-The current project uses local Chroma vector search only. Hybrid keyword search is
-not implemented yet.
+The current project uses local Chroma vector search only. Hybrid keyword search,
+expanded metadata filtering, candidate fusion, and hybrid retrieval evaluation
+are not implemented yet.
+
+##### Recommended Hybrid Architecture
+
+The first hybrid implementation should stay local-first and dependency-light:
+
+1. Keep Chroma as the semantic vector retriever.
+2. Add a local keyword index over `data/processed/03_chunks/*.jsonl`.
+3. Prefer SQLite FTS5 for the first keyword index because it is local, widely
+   available with Python, supports BM25-style scoring, and avoids adding a
+   search server.
+4. Store one keyword-search row per chunk, including `chunk_id`, `doc_id`,
+   `source_path`, `doc_type`, `section_path`, `title`, chunk text, and useful
+   scalar metadata.
+5. Rebuild the keyword index from chunk artifacts as part of a future retrieval
+   indexing step, not from the Chroma database. The chunk JSONL files should
+   remain the shared source of truth for both vector and keyword indexes.
+
+The planned retrieval flow should look like this:
+
+```text
+incoming prompt
+  -> optional query planner / entity extractor
+  -> focused retrieval intent
+  -> Chroma vector search
+  -> SQLite FTS keyword search
+  -> optional metadata-filtered exact lookup
+  -> merge and deduplicate candidates by chunk_id
+  -> rank fusion
+  -> FlashRank reranking
+  -> context assembly
+```
+
+Hybrid retrieval should be treated as candidate generation. The existing
+FlashRank reranker should remain the final relevance sorter before context
+assembly, at least for the first implementation.
+
+##### Metadata Filters Before Heavy Search Logic
+
+Before adding complex keyword behavior, expand the exact-match filter shape to
+cover metadata the project already creates:
+
+- `city`
+- `country`
+- `country_code`
+- `expense_category`
+- `currency`
+
+For table-driven questions such as hotel caps, meal caps, mileage rates, and taxi
+thresholds, metadata filters may produce a smaller and better candidate set than
+either plain vector search or plain keyword search.
+
+Filter extraction can start deterministic and conservative. For example:
+
+- detect known cities/countries from indexed metadata values
+- detect expense-category terms such as `hotel`, `meal`, `taxi`, `flight`,
+  `receipt`, `mileage`, `entertainment`, and `alcohol`
+- preserve exact numeric/time/currency tokens such as `22:00`, `35 EUR`, or
+  `0.42`
+
+This does not require an LLM. A later router can make this more flexible, but the
+first version should be transparent and easy to evaluate.
+
+##### Candidate Fusion
+
+Do not compare raw Chroma cosine distances and SQLite BM25 scores directly. They
+are not on the same scale. The first implementation should merge ranked result
+lists with a rank-based method such as Reciprocal Rank Fusion.
+
+The fused candidate record should preserve debug information:
+
+- chunk ID
+- source path
+- vector rank and score when present
+- keyword rank and score when present
+- metadata filters that matched
+- retrieval intent that produced the candidate
+- fused rank or fused score
+
+This debug data will matter later for evaluation, UI inspection, and confidence
+scoring.
+
+##### What Not To Do First
+
+Avoid these in the first hybrid version:
+
+- Do not add Elasticsearch, OpenSearch, or a managed search service.
+- Do not replace Chroma with a different vector database just to get hybrid
+  search.
+- Do not make an LLM choose final evidence before deterministic retrieval and
+  reranking.
+- Do not hardcode lookup behavior for the current demo spreadsheet rows.
+- Do not rely on raw score thresholds until retrieval evaluation shows stable
+  score behavior.
+
+The goal is better recall for grounded answers, not a large search platform.
+
+##### Evaluation Before And After Hybrid Search
+
+Hybrid retrieval should be implemented only with retrieval evaluation around it.
+The golden eval set already contains many cases where exact matching should help:
+
+- city caps: Vienna, Berlin, Zurich, Munich
+- taxi thresholds and times
+- private car mileage rate
+- receipt and evidence rules
+- alcohol and non-reimbursable exclusions
+- unsupported items that should lead to abstention
+
+The eval runner should compare vector-only retrieval against hybrid retrieval
+using at least:
+
+- required-source hit@k before reranking
+- required-source hit@k after reranking
+- required-source presence in assembled context
+- citation-source correctness
+- abstention behavior for unsupported items
+- whether metadata filters helped or incorrectly excluded relevant evidence
+
+Hybrid should be considered successful only if it improves exact lookup recall
+without noticeably reducing precision for semantic policy questions.
 
 #### Prompt Length Handling
 
