@@ -1,9 +1,9 @@
 """Load environment-backed settings and resolve project-local paths.
 
 This module centralizes configuration for ingestion, chunking, embedding,
-retrieval, and local artifact directories. Relative paths from `.env` are
-resolved from the repository root so scripts behave consistently from any
-working directory.
+retrieval, answer generation, and local artifact directories. Relative paths
+from `.env` are resolved from the repository root so scripts behave
+consistently from any working directory.
 """
 
 from __future__ import annotations
@@ -44,6 +44,7 @@ def _get_path(name: str) -> Path:
 class Settings:
     embedding_model: str
     vision_model: str
+    answer_model: str
     raw_data_dir: Path
     processed_data_dir: Path
     vector_store_dir: Path
@@ -65,6 +66,7 @@ def get_settings() -> Settings:
     return Settings(
         embedding_model=os.environ["EMBEDDING_MODEL"],
         vision_model=os.environ["VISION_MODEL"],
+        answer_model=os.getenv("ANSWER_MODEL", "gpt-5.5"),
         raw_data_dir=_get_path("RAW_DATA_DIR"),
         processed_data_dir=processed_data_dir,
         vector_store_dir=processed_data_dir / "04_vectorstore",

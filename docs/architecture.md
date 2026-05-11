@@ -1,8 +1,9 @@
 # Architecture
 
 This project is a local-first RAG demo for a Travel & Expense policy assistant.
-The current code stops at retrieval context assembly. It does not yet generate a
-final natural-language answer for users.
+The current code builds a searchable policy corpus, assembles citation-ready
+retrieval context, and can generate a first-pass grounded natural-language
+answer from that evidence.
 
 ## Implemented Flow
 
@@ -36,6 +37,12 @@ query
   -> app/retrieval/step03_assemble_context.py
   -> citation-ready evidence context
 
+query
+  -> app/agents/answer.py
+  -> retrieval pipeline
+  -> app/prompts/system.md + app/prompts/answer_fewshot.md
+  -> grounded answer with citations, confidence, and abstention state
+
 data/eval/golden_eval_set.jsonl
   -> app/eval/step01_run_retrieval_eval.py
   -> data/eval/20_retrieval_eval_results.jsonl
@@ -52,10 +59,14 @@ embedding.
 
 `app/retrieval/` owns local vector search, reranking, and context assembly.
 
+`app/agents/` owns the first answer-generation orchestration path.
+
+`app/prompts/` stores Markdown prompts for grounded answer generation.
+
 `app/eval/` owns evaluation runners and report generation.
 
-`app/api/`, `app/agents/`, `app/prompts/`, `app/tools/`, `app/ui/`, and
-`app/streaming/` currently exist only as empty scaffolds.
+`app/api/`, `app/tools/`, `app/ui/`, and `app/streaming/` currently exist only
+as empty scaffolds.
 
 `scripts/` contains the command-line entrypoints that call application modules.
 `scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
@@ -75,6 +86,10 @@ Script numbering is grouped by workflow band:
 
 Following that convention, the automated retrieval eval runner is
 `scripts/20_run_eval.py`.
+
+`scripts/30_ask.py` runs retrieval and OpenAI-backed answer generation. It uses
+the `30_*` band because it is a runtime/copilot workflow rather than corpus
+build, retrieval debug, or evaluation.
 
 ## Current Modules
 
@@ -123,6 +138,16 @@ FlashRank.
 
 `app/retrieval/step03_assemble_context.py` selects diverse chunks, applies token
 budgets, and formats evidence blocks with citation IDs and retrieval metadata.
+
+`app/agents/answer.py` orchestrates retrieve, rerank, assemble context, and
+generate answer. It calls OpenAI through `langchain-openai`, so normal execution
+performs a paid answer-generation model call in addition to the retrieval query
+embedding. The default answer model is `gpt-5.5` unless `ANSWER_MODEL` overrides
+it.
+
+`app/prompts/system.md` defines the grounded-answering contract.
+`app/prompts/answer_fewshot.md` defines the first answer JSON schema and
+citation/abstention examples.
 
 `app/eval/step01_run_retrieval_eval.py` reads the golden eval set, runs the
 current retrieval flow, checks whether required sources appear in retrieved,
@@ -185,8 +210,6 @@ a compact citation-oriented metadata set from normalized blocks.
 These boundaries are planned by project rules but not yet implemented:
 
 - API routes should live in `app/api/`.
-- Prompts should live in `app/prompts/`.
-- Agent logic should live in `app/agents/`.
 - Deterministic application tools can live in `app/tools/`.
 - UI code can live in `app/ui/`.
 - Streaming helpers can live in `app/streaming/`.
@@ -195,11 +218,11 @@ These boundaries are planned by project rules but not yet implemented:
 
 ## Current Limitations
 
-There is no final answer generator. `scripts/10_retrieve_context.py` prints
-assembled context, not a user-facing policy answer.
+The current answer generator is a first-pass script-level implementation. It has
+no streaming behavior, no route wrapper, no tool-calling loop, and no judge step.
 
-There is no judge step, no confidence explanation, and no abstention flow beyond
-the retrieval context that a future answer generator can use.
+There is no judge step and no independent confidence explanation beyond the
+answer model's structured `confidence` field.
 
 There is no API server, web UI, upload workflow, or streaming response panel yet.
 The corresponding directories are currently empty scaffolds.

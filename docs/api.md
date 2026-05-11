@@ -1,9 +1,9 @@
-# API and UI Status
+# API, UI, and Answer Status
 
 The API and UI are not yet developed.
 
-This file documents the intended boundaries so future work has a clear place to
-land.
+This file documents the current script-level answer path and the intended API/UI
+boundaries so future work has a clear place to land.
 
 ## Current State
 
@@ -19,14 +19,18 @@ There is no file-upload endpoint.
 
 There is no streaming answer endpoint.
 
-There is no answer-generation route.
+There is no answer-generation route. First-pass answer generation is available
+through `app/agents/answer.py` and `scripts/30_ask.py`.
 
-`app/agents/`, `app/prompts/`, `app/tools/`, `app/ui/`, and `app/streaming/`
-also exist as empty scaffolds.
+`app/tools/`, `app/ui/`, and `app/streaming/` exist as empty scaffolds.
+`app/agents/` and `app/prompts/` now contain the script-level grounded answer
+implementation.
 
 The current way to use the project is through scripts in `scripts/`.
 `python scripts/00_run_ingestion.py` rebuilds the corpus from raw files through
-Chroma embedding. Retrieval is run separately with `python scripts/10_retrieve_context.py`.
+Chroma embedding. Retrieval is run separately with
+`python scripts/10_retrieve_context.py`. First-pass grounded answers are run with
+`python scripts/30_ask.py`.
 
 ## Expected Future API Shape
 
@@ -88,7 +92,8 @@ Planned files:
 - `answer_fewshot.md`
 - `judge_fewshot.md`
 
-These files are not yet developed.
+`system.md` and `answer_fewshot.md` are implemented for the first answer path.
+Router and judge prompts are still planned.
 
 ## Expected Future Agent and Tool Layer
 

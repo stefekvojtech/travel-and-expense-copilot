@@ -9,8 +9,12 @@ The current user-facing entrypoint is:
 python scripts/10_retrieve_context.py "Can I take a taxi from Prague airport after 21:00?"
 ```
 
-This prints assembled evidence context. It does not yet generate a final grounded
-answer.
+This prints assembled evidence context. Grounded answer generation is available
+as a separate runtime entrypoint:
+
+```powershell
+python scripts/30_ask.py "Can I take a taxi from Prague airport after 21:00?"
+```
 
 ## Search Flow
 
@@ -23,6 +27,7 @@ question
   -> RerankedChunk records
   -> context assembly
   -> formatted evidence blocks with citation IDs
+  -> optional answer generation through app/agents/answer.py
 ```
 
 Retrieval modules are documented with top-level module docstrings. These
@@ -165,14 +170,12 @@ content:
 ...
 ```
 
-This output is intended to become the evidence input to a future answer-generation
-step.
+This output is the evidence input to `app/agents/answer.py`.
 
 ## Not Yet Developed
 
 The following retrieval-related features are planned but not currently developed:
 
-- final answer generation
 - citation validation against generated answers
 - confidence scoring
 - weak-evidence abstention
@@ -181,3 +184,7 @@ The following retrieval-related features are planned but not currently developed
 - inferred metadata filters from the user question
 - judge step for unsupported claims
 - deterministic tool use for arithmetic or policy-cap lookup
+
+The first answer-generation path returns a model-provided confidence field and
+abstention state, but there is no independent judge, citation validator, or
+deterministic confidence scorer yet.

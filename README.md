@@ -5,8 +5,9 @@ Local-first, grounded Travel & Expense Policy Copilot built in Python.
 This project is a learning/demo RAG system for practicing document ingestion,
 chunking, embeddings, retrieval, citations, deterministic tools, and evaluation.
 It is not a finished assistant yet. The current implementation builds and searches
-a local policy corpus; answer generation, API routes, UI, agent tools, judge flow,
-and answer-level evaluation are not yet developed.
+a local policy corpus and can generate first-pass grounded answers from retrieved
+evidence; API routes, UI, deterministic tools, judge flow, and answer-level
+evaluation are not yet developed.
 
 ## Current Status
 
@@ -20,6 +21,8 @@ Implemented:
 - Chroma vector retrieval
 - Local FlashRank reranking
 - Citation-ready context assembly
+- First-pass grounded answer generation from retrieved evidence
+- Prompt files for the grounded-answering contract and answer examples
 - A golden eval dataset in `data/eval/golden_eval_set.jsonl`
 - Retrieval eval runner with Markdown and JSONL outputs
 
@@ -27,9 +30,7 @@ Not yet developed:
 
 - FastAPI app and API routes
 - Browser UI
-- Final grounded answer generation
-- Prompt files under `app/prompts/`
-- Agent/tool layer under `app/agents/`
+- Deterministic tool layer under `app/tools/`
 - MCP server tools under `mcp_server/`
 - Answer-level eval runner
 - Judge/faithfulness flow
@@ -52,12 +53,12 @@ The docs in `docs/` explain the project for humans working in the repo.
 
 ```text
 app/
-  agents/               Empty scaffold for future agent logic
+  agents/               Answer orchestration and future agent logic
   api/                  Empty scaffold for future API routes
   core/                 Settings and project-root path resolution
   ingest/               Raw ingestion, loaders, chunking, embedding
   eval/                 Retrieval evaluation over golden examples
-  prompts/              Empty scaffold for future prompt files
+  prompts/              Prompt Markdown files
   retrieval/            Chroma search, FlashRank rerank, context assembly
   streaming/            Empty scaffold for future streaming behavior
   tools/                Empty scaffold for future deterministic tools
@@ -84,7 +85,9 @@ python -m pip install -e .
 ```
 
 Create a local `.env` from `.env.example` and set `OPENAI_API_KEY` if you intend
-to run OpenAI-backed image extraction, chunk embedding, or vector search.
+to run OpenAI-backed image extraction, chunk embedding, vector search, or answer
+generation. The default answer model is `gpt-5.5` unless `ANSWER_MODEL`
+overrides it.
 
 Relative paths in `.env` are resolved from the project root, not from the current
 terminal working directory.
@@ -110,11 +113,15 @@ python scripts/04_embed_chunks.py
 python scripts/00_run_ingestion.py
 ```
 
-Retrieval stays outside the corpus-build pipeline:
+Retrieval and answer generation stay outside the corpus-build pipeline:
 
 ```powershell
 python scripts/10_retrieve_context.py "Can I take a taxi from Prague airport after 21:00?"
+python scripts/30_ask.py "Can I take a taxi from Prague airport after 21:00?"
 ```
+
+`scripts/30_ask.py` performs paid OpenAI calls for query embedding and final
+answer generation.
 
 ## Script Numbering
 
@@ -127,9 +134,8 @@ Script numbers indicate the order and role of local workflow entrypoints:
 - `30_*` and above: future runtime, API, UI, or agent workflows if they need
   ordered command-line entrypoints
 
-The first automated eval runner should therefore be `scripts/20_run_eval.py`.
-It evaluates retrieval quality against `data/eval/golden_eval_set.jsonl` before
-answer generation is added.
+The first automated eval runner is `scripts/20_run_eval.py`. It evaluates
+retrieval quality against `data/eval/golden_eval_set.jsonl`.
 
 Retrieval evaluation writes:
 
@@ -178,10 +184,15 @@ block-level lineage remains in `data/processed/02_normalized_blocks/`.
 The local Chroma vector store lives under `data/processed/04_vectorstore/`. It uses
 cosine distance through collection metadata `{"hnsw:space": "cosine"}`.
 
+Grounded answer generation reads prompts from `app/prompts/`, calls the existing
+retrieval pipeline, and asks the configured `ANSWER_MODEL` to answer only from
+the assembled evidence context.
+
 ## Development Notes
 
 This project intentionally favors local/open-source components. OpenAI is used for
-embeddings and image vision extraction where configured.
+embeddings, image vision extraction, and first-pass answer generation where
+configured.
 
 Do not add a paid SaaS dependency unless the project explicitly needs it. Keep the
 future frontend plain HTML/CSS/JS and the backend Python.
