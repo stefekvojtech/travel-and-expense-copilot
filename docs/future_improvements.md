@@ -423,6 +423,49 @@ planning. Useful checks include whether each generated retrieval intent finds th
 expected source, whether merged results preserve relevant evidence, and whether
 oversplitting hurts precision.
 
+### Answer-Level Regression Evaluation
+
+The current eval runner is retrieval-focused. It checks whether the retrieval
+pipeline finds, reranks, and assembles the expected evidence for each golden
+question. That is useful for testing the evidence pipeline, but it is not the
+same as testing the final copilot answer from `scripts/30_ask.py`.
+
+A future answer-level eval runner should be treated as a regression test suite
+for final answer behavior, not as part of the normal user flow. It would run the
+full path:
+
+```text
+question
+  -> retrieval
+  -> reranking
+  -> context assembly
+  -> answer generation
+  -> answer validation / judge checks
+```
+
+The likely command could live in the `20_*` evaluation band, for example:
+
+```powershell
+python scripts/21_run_answer_eval.py
+```
+
+This should be useful after changing prompts, retrieval behavior, context
+assembly, abstention thresholds, deterministic tools, or judge logic. It should
+help catch regressions that retrieval-only eval cannot see, such as:
+
+- the right evidence was present, but the generated answer missed the policy
+  point
+- the answer cited evidence IDs that exist but do not support the specific claim
+- the answer failed to abstain for a `should_abstain` case
+- the answer performed arithmetic or cap logic incorrectly
+- confidence was inconsistent with the available evidence
+
+The first version does not need to be elaborate. It can start by running a small
+subset of golden examples through `app/agents/answer.py` and recording structured
+outputs for human inspection. Later versions can add deterministic checks for
+citation presence and abstention behavior, then an independent judge step for
+groundedness and claim support.
+
 ## UI
 
 The future UI can expose query-planning debug information in the debug panel:
