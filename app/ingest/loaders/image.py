@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from app.core.config import get_settings
+from app.core.openai_clients import build_openai_http_client
 from app.ingest.loaders.models import NormalizedSource, SourceBlock
 
 
@@ -70,10 +71,14 @@ def _extract_markdown_with_openai_vision(source_path: Path, vision_model: str) -
     except ImportError as exc:
         raise RuntimeError(
             "Image vision extraction requires langchain-openai. "
-            "Run `uv sync` after updating pyproject.toml."
+            "Run `python -m pip install -e .` from the project root."
         ) from exc
 
-    model = ChatOpenAI(model=vision_model, temperature=0)
+    model = ChatOpenAI(
+        model=vision_model,
+        temperature=0,
+        http_client=build_openai_http_client(),
+    )
     response = model.invoke(
         [
             {

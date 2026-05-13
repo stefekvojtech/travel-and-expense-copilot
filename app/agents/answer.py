@@ -17,6 +17,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 from app.core.config import ROOT_DIR, Settings
+from app.core.openai_clients import build_openai_http_client
 from app.retrieval.step01_search_chunks import RetrievalFilters, search_chunks
 from app.retrieval.step02_rerank_chunks import rerank_chunks
 from app.retrieval.step03_assemble_context import (
@@ -178,7 +179,10 @@ def _invoke_answer_model(
             "`python -m pip install -e .` from the project root."
         ) from exc
 
-    model = ChatOpenAI(model=settings.answer_model)
+    model = ChatOpenAI(
+        model=settings.answer_model,
+        http_client=build_openai_http_client(),
+    )
     structured_model = model.with_structured_output(
         AnswerModelOutput,
         include_raw=True,

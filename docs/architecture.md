@@ -68,6 +68,11 @@ data/eval/golden_eval_set.jsonl
 `app/core/config.py` owns configuration loading. It loads `.env` from the project
 root and resolves relative configured paths from the project root.
 
+`app/core/openai_clients.py` builds OpenAI HTTP clients for LangChain/OpenAI
+calls with environment proxy inheritance disabled. This keeps local shell proxy
+variables from breaking query embedding, answer generation, image extraction,
+or embedding rebuilds.
+
 `app/ingest/` owns ingestion, source normalization, block artifacts, chunking, and
 embedding.
 
@@ -121,6 +126,10 @@ build, retrieval debug, or evaluation.
 
 `app/core/config.py` defines the `Settings` dataclass and `get_settings()` cache.
 Required settings come from environment variables, usually via `.env`.
+
+`app/core/openai_clients.py` centralizes OpenAI HTTP client construction. The
+retrieval, answer, streaming, embedding, and image extraction modules use it
+when constructing LangChain OpenAI models or embeddings.
 
 `app/ingest/step01_load_documents.py` discovers raw files and writes
 loaded-document inspection JSONL plus readable previews. PDF, HTML, and TXT use
@@ -193,8 +202,8 @@ events.
 `app/ui/index.html`, `app/ui/styles.css`, and `app/ui/app.js` implement the
 minimal browser UI. The UI renders streamed answer deltas, citation and
 confidence metadata, retrieved evidence blocks, rerank scores, validation
-warnings, and assembled retrieval context. The file upload control is present
-but disabled until an upload route exists.
+warnings, assembled retrieval context, and clickable example questions. The
+file upload control is present but disabled until an upload route exists.
 
 `app/tools/currency.py` converts amounts between currencies for future claim
 evaluation. It first uses the `ExchangeRates` sheet in

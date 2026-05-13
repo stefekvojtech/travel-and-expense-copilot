@@ -19,6 +19,7 @@ from typing import Any
 from uuid import uuid4
 
 from app.core.config import Settings
+from app.core.openai_clients import build_openai_http_client
 from app.ingest.artifact_paths import chunks_dir
 from app.ingest.artifacts import ChunkArtifact, chunk_artifact_from_dict
 from app.retrieval.chroma_config import CHROMA_COLLECTION_METADATA
@@ -79,7 +80,10 @@ def _build_chroma_vector_store(settings: Settings, *, collection_name: str):
             "Run `python -m pip install -e .` from the project root."
         ) from exc
 
-    embeddings = OpenAIEmbeddings(model=settings.embedding_model)
+    embeddings = OpenAIEmbeddings(
+        model=settings.embedding_model,
+        http_client=build_openai_http_client(),
+    )
     return Chroma(
         collection_name=collection_name,
         embedding_function=embeddings,

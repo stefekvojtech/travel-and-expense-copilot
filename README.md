@@ -24,7 +24,7 @@ Implemented:
 - First-pass grounded answer generation from retrieved evidence
 - FastAPI health, chat, and streaming chat routes
 - Minimal plain HTML/CSS/JS browser UI with streaming answers and a retrieval
-  debug panel
+  debug panel and clickable example questions
 - Structured answer-output validation and fail-closed citation checks
 - Prompt files for the grounded-answering contract and answer examples
 - Deterministic currency conversion tool with local Finance workbook rates first
@@ -220,6 +220,8 @@ retrieval pipeline, and asks the configured `ANSWER_MODEL` to answer only from
 the assembled evidence context. The answer layer uses structured model output,
 validates citations against assembled evidence IDs, and abstains before answer
 generation when reranked evidence is below the current weak-evidence threshold.
+OpenAI HTTP clients are built with environment proxy inheritance disabled so
+local shell proxy settings do not break query embedding or answer generation.
 
 ## Development Notes
 

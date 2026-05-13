@@ -20,6 +20,7 @@ from app.agents.answer import (
     weak_evidence_reason,
 )
 from app.core.config import Settings
+from app.core.openai_clients import build_openai_http_client
 from app.retrieval.step01_search_chunks import RetrievalFilters
 from app.retrieval.step03_assemble_context import EvidenceBlock
 
@@ -75,7 +76,10 @@ def stream_grounded_answer_events(
 
     raw_text = ""
     emitted_answer = ""
-    model = ChatOpenAI(model=settings.answer_model)
+    model = ChatOpenAI(
+        model=settings.answer_model,
+        http_client=build_openai_http_client(),
+    )
     for chunk in model.stream(
         build_answer_messages(question, assembled_context.context_text)
     ):

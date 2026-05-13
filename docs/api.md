@@ -151,6 +151,7 @@ streaming API, and renders answer deltas as they arrive.
 Implemented UI elements:
 
 - chat input
+- clickable example question buttons
 - send button
 - file upload control, currently disabled because no upload route exists yet
 - streaming answer panel
@@ -167,6 +168,10 @@ Implemented debug fields:
 
 Tool-call display is not implemented because the answer path does not yet have a
 tool-calling loop.
+
+The UI is sized as a full-height app surface on desktop so the composer remains
+visible while the answer and debug panels scroll. On narrower screens, the debug
+panel moves below the chat panel.
 
 ## Still Not Implemented
 

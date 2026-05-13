@@ -16,6 +16,7 @@ const warningList = document.querySelector("#warningList");
 const contextText = document.querySelector("#contextText");
 const contextSection = document.querySelector("#contextSection");
 const toggleContextButton = document.querySelector("#toggleContextButton");
+const exampleButtons = document.querySelectorAll("[data-question]");
 
 let activeController = null;
 let streamedAnswer = "";
@@ -42,6 +43,14 @@ clearButton.addEventListener("click", () => {
 toggleContextButton.addEventListener("click", () => {
   contextSection.classList.toggle("is-hidden");
 });
+
+for (const button of exampleButtons) {
+  button.addEventListener("click", () => {
+    const question = button.dataset.question || "";
+    questionInput.value = question;
+    void streamQuestion(question);
+  });
+}
 
 async function streamQuestion(question) {
   if (activeController) {
@@ -261,6 +270,9 @@ function resetUi() {
 function setBusy(isBusy) {
   sendButton.disabled = isBusy;
   questionInput.disabled = isBusy;
+  for (const button of exampleButtons) {
+    button.disabled = isBusy;
+  }
 }
 
 function setStatus(text, isError) {
@@ -271,7 +283,8 @@ function setStatus(text, isError) {
 function showError(message) {
   setStatus("Error", true);
   debugStage.textContent = "Error";
-  answerText.textContent = message;
+  answerText.textContent = `The request failed before a final answer was returned.\n\n${message}`;
+  renderWarnings([message]);
 }
 
 function textElement(tagName, text) {
