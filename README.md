@@ -6,7 +6,7 @@ This project is a learning/demo RAG system for practicing document ingestion,
 chunking, embeddings, retrieval, citations, deterministic tools, and evaluation.
 It is not a finished assistant yet. The current implementation builds and searches
 a local policy corpus and can generate first-pass grounded answers from retrieved
-evidence through both CLI and FastAPI routes; UI, claim-evaluation tools, judge
+evidence through both CLI and FastAPI routes; UI, agent tool-calling, judge
 flow, and answer-level evaluation are not yet developed.
 
 ## Current Status
@@ -27,13 +27,14 @@ Implemented:
 - Prompt files for the grounded-answering contract and answer examples
 - Deterministic currency conversion tool with local Finance workbook rates first
   and Frankfurter API fallback
+- Deterministic claim eligibility and evidence completeness tools
 - A golden eval dataset in `data/eval/golden_eval_set.jsonl`
 - Retrieval eval runner with Markdown and JSONL outputs
 
 Not yet developed:
 
 - Browser UI
-- Claim eligibility and evidence completeness tools under `app/tools/`
+- Agent tool-calling loop for claim evaluation
 - MCP server tools under `mcp_server/`
 - Answer-level eval runner
 - Judge/faithfulness flow
@@ -47,6 +48,7 @@ Start here, then go deeper as needed:
 - [Retrieval](docs/retrieval.md)
 - [Evaluation](docs/evaluation.md)
 - [API and UI Status](docs/api.md)
+- [Deterministic Tools](docs/tools.md)
 - [Future Improvements](docs/future_improvements.md)
 
 `AGENTS.md` contains project rules and development constraints for coding agents.

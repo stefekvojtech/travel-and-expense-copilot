@@ -78,10 +78,11 @@ embedding.
 `app/streaming/` owns transport-agnostic server-sent event helpers for streaming
 grounded answers.
 
-`app/tools/` owns deterministic helper tools. It currently includes a currency
-conversion helper that prefers local Finance exchange rates from the workbook
-and uses Frankfurter only as a fallback. `app/ui/` currently exists only as an
-empty scaffold.
+`app/tools/` owns deterministic helper tools. It includes currency conversion,
+claim eligibility evaluation, and evidence completeness checking. These tools
+consume structured claim facts and retrieved policy facts; they do not retrieve
+policy or decide conversation flow. `app/ui/` currently exists only as an empty
+scaffold.
 
 `scripts/` contains the command-line entrypoints that call application modules.
 `scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
@@ -184,6 +185,14 @@ evaluation. It first uses the `ExchangeRates` sheet in
 `data/raw/per_diem_caps.xlsx`; if no usable company rate exists, it can fall
 back to Frankfurter's free exchange-rate API. It does not make reimbursement
 eligibility decisions and is not yet wired into the answer agent.
+
+`app/tools/models.py` defines shared typed claim and policy-fact models.
+`app/tools/evidence.py` checks whether required claim evidence is present and
+returns missing fields, manual-review reasons, and clarification questions.
+`app/tools/eligibility.py` applies deterministic claim arithmetic and policy
+facts to structured claim lines. It can include an evidence completeness result
+when evidence policy facts are supplied. These tools are not yet wired into the
+answer agent, API, or UI.
 
 `app/prompts/system.md` defines the grounded-answering contract.
 `app/prompts/answer_fewshot.md` defines the first answer JSON schema and
