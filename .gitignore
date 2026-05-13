@@ -9,3 +9,4 @@ AGENTS.md
 .venv/
 .uv-cache*/
 .cache/
+*.egg-info/
