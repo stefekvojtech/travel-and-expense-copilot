@@ -51,6 +51,12 @@ HTTP request
   -> app/agents/answer.py or app/streaming/chat.py
   -> JSON response or server-sent events
 
+Browser
+  -> app/main.py
+  -> app/ui/index.html + app/ui/app.js + app/ui/styles.css
+  -> POST /api/chat/stream
+  -> streaming answer and retrieval debug panel
+
 data/eval/golden_eval_set.jsonl
   -> app/eval/step01_run_retrieval_eval.py
   -> data/eval/20_retrieval_eval_results.jsonl
@@ -81,8 +87,12 @@ grounded answers.
 `app/tools/` owns deterministic helper tools. It includes currency conversion,
 claim eligibility evaluation, and evidence completeness checking. These tools
 consume structured claim facts and retrieved policy facts; they do not retrieve
-policy or decide conversation flow. `app/ui/` currently exists only as an empty
-scaffold.
+policy or decide conversation flow.
+
+`app/ui/` owns the static browser UI. FastAPI serves it under `/ui/`, and the
+root URL redirects there. The UI uses plain HTML/CSS/JS and consumes
+`POST /api/chat/stream` with the Fetch streaming API so it can send JSON request
+filters in the future while rendering server-sent events.
 
 `scripts/` contains the command-line entrypoints that call application modules.
 `scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
@@ -180,6 +190,12 @@ payload.
 `app/streaming/sse.py` formats event names and JSON payloads as server-sent
 events.
 
+`app/ui/index.html`, `app/ui/styles.css`, and `app/ui/app.js` implement the
+minimal browser UI. The UI renders streamed answer deltas, citation and
+confidence metadata, retrieved evidence blocks, rerank scores, validation
+warnings, and assembled retrieval context. The file upload control is present
+but disabled until an upload route exists.
+
 `app/tools/currency.py` converts amounts between currencies for future claim
 evaluation. It first uses the `ExchangeRates` sheet in
 `data/raw/per_diem_caps.xlsx`; if no usable company rate exists, it can fall
@@ -258,7 +274,6 @@ a compact citation-oriented metadata set from normalized blocks.
 
 These boundaries are planned by project rules but not yet implemented:
 
-- UI code can live in `app/ui/`.
 - MCP server code should live in `mcp_server/`.
 - Business logic should not be placed directly in API route files.
 
@@ -272,8 +287,8 @@ There is no judge step and no independent confidence explanation beyond the
 answer model's structured `confidence` field plus the deterministic
 weak-evidence cutoff.
 
-There is no web UI, upload workflow, or streaming response panel yet. The API
-can stream server-sent events, but there is not yet a browser client consuming
-them.
+The browser UI currently supports streaming chat and retrieval debugging. It
+does not have a working upload workflow; the file input is visible but disabled
+until an upload route exists.
 
 There is no answer-level eval runner yet.

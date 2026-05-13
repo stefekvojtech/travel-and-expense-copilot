@@ -1,9 +1,9 @@
 # API, UI, and Answer Status
 
-The project now has a first FastAPI backend for grounded answer generation. The
-browser UI, upload route, agent tool-calling loop, and judge flow are still not
-implemented. Standalone deterministic tools exist under `app/tools/`, but they
-are not wired into the API or answer agent.
+The project now has a first FastAPI backend for grounded answer generation and a
+minimal browser UI for streaming chat. The upload route, agent tool-calling
+loop, and judge flow are still not implemented. Standalone deterministic tools
+exist under `app/tools/`, but they are not wired into the API or answer agent.
 
 ## Current API
 
@@ -17,6 +17,12 @@ Run it locally with:
 
 ```powershell
 python -m uvicorn app.main:app --reload
+```
+
+Open the browser UI at:
+
+```text
+http://127.0.0.1:8000/ui/
 ```
 
 Implemented routes:
@@ -108,8 +114,8 @@ before emitting `answer_complete`. If final validation changes the streamed
 draft, the stream emits `answer_replaced` and the UI should trust the final
 `answer_complete` payload.
 
-`retrieval_complete` includes evidence blocks and assembled context for a future
-debug panel. `answer_complete` uses the same shape as `POST /api/chat`.
+`retrieval_complete` includes evidence blocks and assembled context for the
+browser debug panel. `answer_complete` uses the same shape as `POST /api/chat`.
 
 ## Current Answer Behavior
 
@@ -135,29 +141,35 @@ draft.
 
 ## Current UI Status
 
-There is no browser UI yet.
+The browser UI is implemented as static files in `app/ui/` and is served by
+FastAPI under `/ui/`. The app root `/` redirects to `/ui/`.
 
-The frontend should stay minimal and use plain HTML/CSS/JS.
+The frontend uses plain HTML/CSS/JS. It sends a JSON `POST` request to
+`/api/chat/stream`, reads the `text/event-stream` response with the Fetch
+streaming API, and renders answer deltas as they arrive.
 
-Required elements:
+Implemented UI elements:
 
 - chat input
 - send button
-- file upload
+- file upload control, currently disabled because no upload route exists yet
 - streaming answer panel
 
-Strongly preferred debug fields:
+Implemented debug fields:
 
 - retrieved chunks
 - rerank scores
 - citations
-- tool calls
 - confidence
-- judge result
+- validation warnings
+- assembled retrieval context
+- judge result placeholder, currently shown as not implemented
+
+Tool-call display is not implemented because the answer path does not yet have a
+tool-calling loop.
 
 ## Still Not Implemented
 
-- Browser UI
 - File upload route
 - Router prompt
 - Judge prompt and judge execution

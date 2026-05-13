@@ -6,8 +6,8 @@ This project is a learning/demo RAG system for practicing document ingestion,
 chunking, embeddings, retrieval, citations, deterministic tools, and evaluation.
 It is not a finished assistant yet. The current implementation builds and searches
 a local policy corpus and can generate first-pass grounded answers from retrieved
-evidence through both CLI and FastAPI routes; UI, agent tool-calling, judge
-flow, and answer-level evaluation are not yet developed.
+evidence through CLI, FastAPI routes, and a minimal browser UI; agent
+tool-calling, judge flow, and answer-level evaluation are not yet developed.
 
 ## Current Status
 
@@ -23,6 +23,8 @@ Implemented:
 - Citation-ready context assembly
 - First-pass grounded answer generation from retrieved evidence
 - FastAPI health, chat, and streaming chat routes
+- Minimal plain HTML/CSS/JS browser UI with streaming answers and a retrieval
+  debug panel
 - Structured answer-output validation and fail-closed citation checks
 - Prompt files for the grounded-answering contract and answer examples
 - Deterministic currency conversion tool with local Finance workbook rates first
@@ -33,7 +35,6 @@ Implemented:
 
 Not yet developed:
 
-- Browser UI
 - Agent tool-calling loop for claim evaluation
 - MCP server tools under `mcp_server/`
 - Answer-level eval runner
@@ -67,7 +68,7 @@ app/
   retrieval/            Chroma search, FlashRank rerank, context assembly
   streaming/            Server-sent event helpers and chat streaming orchestration
   tools/                Deterministic helper tools
-  ui/                   Empty scaffold for future plain HTML/CSS/JS UI
+  ui/                   Plain HTML/CSS/JS browser UI
 data/
   raw/                  Demo source documents
   processed/            Numbered generated artifacts and Chroma store
@@ -134,6 +135,12 @@ The same answer path is exposed through FastAPI:
 python -m uvicorn app.main:app --reload
 ```
 
+Open the local UI at:
+
+```text
+http://127.0.0.1:8000/ui/
+```
+
 Routes:
 
 - `GET /health`
@@ -142,8 +149,10 @@ Routes:
 
 `/api/chat` returns one validated JSON answer. `/api/chat/stream` returns
 server-sent events for retrieval progress, answer deltas, and the final
-validated answer payload. Both chat routes perform paid OpenAI calls for query
-embedding and final answer generation.
+validated answer payload. The browser UI uses the streaming route and displays
+retrieved evidence, rerank scores, citations, validation warnings, confidence,
+and the assembled context in its debug panel. Both chat routes and the UI
+perform paid OpenAI calls for query embedding and final answer generation.
 
 ## Script Numbering
 
