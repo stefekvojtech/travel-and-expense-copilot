@@ -6,7 +6,7 @@ This project is a learning/demo RAG system for practicing document ingestion,
 chunking, embeddings, retrieval, citations, deterministic tools, and evaluation.
 It is not a finished assistant yet. The current implementation builds and searches
 a local policy corpus and can generate first-pass grounded answers from retrieved
-evidence through both CLI and FastAPI routes; UI, deterministic tools, judge
+evidence through both CLI and FastAPI routes; UI, claim-evaluation tools, judge
 flow, and answer-level evaluation are not yet developed.
 
 ## Current Status
@@ -25,13 +25,15 @@ Implemented:
 - FastAPI health, chat, and streaming chat routes
 - Structured answer-output validation and fail-closed citation checks
 - Prompt files for the grounded-answering contract and answer examples
+- Deterministic currency conversion tool with local Finance workbook rates first
+  and Frankfurter API fallback
 - A golden eval dataset in `data/eval/golden_eval_set.jsonl`
 - Retrieval eval runner with Markdown and JSONL outputs
 
 Not yet developed:
 
 - Browser UI
-- Deterministic tool layer under `app/tools/`
+- Claim eligibility and evidence completeness tools under `app/tools/`
 - MCP server tools under `mcp_server/`
 - Answer-level eval runner
 - Judge/faithfulness flow
@@ -62,7 +64,7 @@ app/
   prompts/              Prompt Markdown files
   retrieval/            Chroma search, FlashRank rerank, context assembly
   streaming/            Server-sent event helpers and chat streaming orchestration
-  tools/                Empty scaffold for future deterministic tools
+  tools/                Deterministic helper tools
   ui/                   Empty scaffold for future plain HTML/CSS/JS UI
 data/
   raw/                  Demo source documents

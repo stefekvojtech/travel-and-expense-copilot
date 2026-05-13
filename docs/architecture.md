@@ -78,7 +78,10 @@ embedding.
 `app/streaming/` owns transport-agnostic server-sent event helpers for streaming
 grounded answers.
 
-`app/tools/` and `app/ui/` currently exist only as empty scaffolds.
+`app/tools/` owns deterministic helper tools. It currently includes a currency
+conversion helper that prefers local Finance exchange rates from the workbook
+and uses Frankfurter only as a fallback. `app/ui/` currently exists only as an
+empty scaffold.
 
 `scripts/` contains the command-line entrypoints that call application modules.
 `scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
@@ -176,6 +179,12 @@ payload.
 `app/streaming/sse.py` formats event names and JSON payloads as server-sent
 events.
 
+`app/tools/currency.py` converts amounts between currencies for future claim
+evaluation. It first uses the `ExchangeRates` sheet in
+`data/raw/per_diem_caps.xlsx`; if no usable company rate exists, it can fall
+back to Frankfurter's free exchange-rate API. It does not make reimbursement
+eligibility decisions and is not yet wired into the answer agent.
+
 `app/prompts/system.md` defines the grounded-answering contract.
 `app/prompts/answer_fewshot.md` defines the first answer JSON schema and
 citation/abstention examples.
@@ -240,7 +249,6 @@ a compact citation-oriented metadata set from normalized blocks.
 
 These boundaries are planned by project rules but not yet implemented:
 
-- Deterministic application tools can live in `app/tools/`.
 - UI code can live in `app/ui/`.
 - MCP server code should live in `mcp_server/`.
 - Business logic should not be placed directly in API route files.

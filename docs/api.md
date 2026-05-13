@@ -1,8 +1,9 @@
 # API, UI, and Answer Status
 
 The project now has a first FastAPI backend for grounded answer generation. The
-browser UI, upload route, deterministic tool layer, and judge flow are still not
-implemented.
+browser UI, upload route, claim-evaluation tool layer, and judge flow are still
+not implemented. A standalone deterministic currency conversion helper exists
+under `app/tools/`, but it is not wired into the API or answer agent.
 
 ## Current API
 
@@ -160,7 +161,7 @@ Strongly preferred debug fields:
 - File upload route
 - Router prompt
 - Judge prompt and judge execution
-- Deterministic tools under `app/tools/`
+- Claim eligibility and evidence completeness tools under `app/tools/`
 - Local MCP tools under `mcp_server/`
 - Answer-level eval runner
 
