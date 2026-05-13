@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Travel &amp; Expense Policy Copilot</title>
+    <link rel="stylesheet" href="/ui/styles.css">
+  </head>
+  <body>
+    <main class="shell" aria-label="Travel and expense copilot">
+      <section class="chat-pane" aria-label="Chat">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Local RAG demo</p>
+            <h1>Travel &amp; Expense Policy Copilot</h1>
+          </div>
+          <div class="runtime" id="runtimeStatus" role="status">Idle</div>
+        </header>
+
+        <section class="answer-stream" aria-live="polite" aria-label="Answer stream">
+          <div class="message user-message is-empty" id="questionEcho">
+            No question yet.
+          </div>
+          <article class="message answer-message">
+            <div class="answer-meta">
+              <span id="confidenceBadge" class="badge muted">Confidence pending</span>
+              <span id="citationCount" class="meta-text">No citations yet</span>
+            </div>
+            <div id="answerText" class="answer-text">No answer yet.</div>
+          </article>
+        </section>
+
+        <form class="composer" id="chatForm">
+          <label class="sr-only" for="questionInput">Question</label>
+          <textarea
+            id="questionInput"
+            name="question"
+            rows="3"
+            placeholder="Can I take a taxi from Prague airport after 21:00?"
+            autocomplete="off"
+            required
+          ></textarea>
+          <div class="composer-actions">
+            <label class="file-control">
+              <span>Source file</span>
+              <input id="fileInput" type="file" disabled>
+            </label>
+            <button type="button" class="secondary-button" id="clearButton">Clear</button>
+            <button type="submit" class="primary-button" id="sendButton">Send</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="debug-pane" aria-label="Retrieval debug panel">
+        <header class="debug-header">
+          <div>
+            <p class="eyebrow">Debug panel</p>
+            <h2>Retrieval Trace</h2>
+          </div>
+          <button type="button" class="secondary-button compact" id="toggleContextButton">Context</button>
+        </header>
+
+        <dl class="metrics">
+          <div>
+            <dt>Stage</dt>
+            <dd id="debugStage">Idle</dd>
+          </div>
+          <div>
+            <dt>Evidence</dt>
+            <dd id="debugEvidenceCount">0 chunks</dd>
+          </div>
+          <div>
+            <dt>Citations</dt>
+            <dd id="debugCitations">None</dd>
+          </div>
+          <div>
+            <dt>Judge</dt>
+            <dd id="debugJudge">Not implemented</dd>
+          </div>
+        </dl>
+
+        <section class="debug-section">
+          <h3>Retrieved Chunks</h3>
+          <div class="evidence-list" id="evidenceList">
+            <p class="empty-state">No evidence yet.</p>
+          </div>
+        </section>
+
+        <section class="debug-section">
+          <h3>Validation</h3>
+          <ul class="warning-list" id="warningList">
+            <li>No validation warnings yet.</li>
+          </ul>
+        </section>
+
+        <section class="debug-section context-section is-hidden" id="contextSection">
+          <h3>Assembled Context</h3>
+          <pre id="contextText">No context assembled yet.</pre>
+        </section>
+      </aside>
+    </main>
+
+    <script src="/ui/app.js" defer></script>
+  </body>
+</html>
