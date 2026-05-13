@@ -416,6 +416,59 @@ Future answer generation should use the assembled evidence context rather than
 answering directly from the user's question. Final answers should include
 citations, confidence, and abstention behavior when evidence is weak.
 
+## Receipt OCR and Claim Intake
+
+Receipt image upload and OCR post-processing are planned future work. The current
+image ingestion path extracts Markdown text from images for corpus indexing, but
+it does not normalize uploaded bills into structured receipt data for claim
+evaluation.
+
+The future receipt flow should support one or more uploaded bill images:
+
+```text
+receipt image or images
+  -> vision/OCR extraction
+  -> receipt post-processor
+  -> structured receipt records
+  -> claim eligibility evaluator
+  -> evidence completeness checker
+```
+
+Multiple images may represent separate receipts or multiple photos/pages of the
+same receipt. The first implementation should make that distinction explicit in
+the input instead of guessing silently.
+
+The post-processor should normalize extracted bill data into a clean Python
+structure with fields such as:
+
+- vendor
+- transaction date
+- receipt total
+- tax amount when visible
+- currency
+- payment method when visible
+- line items with description, amount, quantity, and category guesses
+- unclear fields and extraction warnings
+- source image path or upload ID
+
+This should stay separate from policy lookup. OCR extracts claim facts from the
+bill. Retrieval still provides policy evidence, and deterministic tools apply
+retrieved policy facts to the structured claim.
+
+Vision extraction uses paid model calls when implemented with OpenAI vision, so
+the upload/OCR path should be explicit and opt-in. A later version can consider a
+local OCR fallback, but the first version can use the existing OpenAI-backed
+image extraction pattern if the user approves the cost.
+
+Useful open design decisions:
+
+- whether extracted receipt records are temporary only or written to a local
+  inspection folder
+- whether the first UI/API accepts images directly or starts with a structured
+  JSON receipt input
+- how to represent confidence for unclear OCR fields
+- how to group multiple images into one claim versus multiple claims
+
 ## Evaluation
 
 Future evaluation should measure retrieval quality before and after query
