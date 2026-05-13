@@ -9,6 +9,7 @@ the retrieval modules and it does not implement the future judge step.
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from typing import Any, Literal
@@ -91,6 +92,22 @@ def answer_policy_question(
         question,
         assembled_context.context_text,
     )
+    return build_grounded_answer_from_model_output(
+        question=question,
+        assembled_context=assembled_context,
+        model_output=model_output,
+        raw_model_output=raw_output,
+    )
+
+
+def build_grounded_answer_from_model_output(
+    *,
+    question: str,
+    assembled_context: AssembledContext,
+    model_output: AnswerModelOutput,
+    raw_model_output: str | None,
+) -> GroundedAnswer:
+    """Validate parsed model output and return the final grounded answer."""
     validation_warnings = _validate_model_output(
         model_output,
         evidence_blocks=assembled_context.evidence_blocks,
@@ -103,7 +120,7 @@ def answer_policy_question(
                 "The answer model produced output that failed grounding "
                 "validation, so I am abstaining instead of returning it."
             ),
-            raw_model_output=raw_output,
+            raw_model_output=raw_model_output,
             validation_warnings=validation_warnings,
         )
 
@@ -115,7 +132,7 @@ def answer_policy_question(
         abstained=model_output.abstained,
         evidence_blocks=assembled_context.evidence_blocks,
         context_text=assembled_context.context_text,
-        raw_model_output=raw_output,
+        raw_model_output=raw_model_output,
         validation_warnings=[],
     )
 
@@ -166,15 +183,7 @@ def _invoke_answer_model(
         AnswerModelOutput,
         include_raw=True,
     )
-    response = structured_model.invoke(
-        [
-            {"role": "system", "content": _read_prompt("system.md")},
-            {
-                "role": "user",
-                "content": _build_answer_prompt(question, context_text),
-            },
-        ]
-    )
+    response = structured_model.invoke(build_answer_messages(question, context_text))
 
     if not isinstance(response, dict):
         raise AnswerGenerationError(
@@ -196,6 +205,52 @@ def _invoke_answer_model(
     return parsed, _raw_response_to_text(raw_response)
 
 
+def build_answer_messages(question: str, context_text: str) -> list[dict[str, str]]:
+    """Build the chat messages used by non-streaming and streaming answers."""
+    return [
+        {"role": "system", "content": _read_prompt("system.md")},
+        {
+            "role": "user",
+            "content": _build_answer_prompt(question, context_text),
+        },
+    ]
+
+
+def parse_answer_model_json(raw_text: str) -> AnswerModelOutput:
+    """Parse JSON text returned by a streamed answer model response."""
+    candidate = _strip_json_fences(raw_text.strip())
+    try:
+        payload = json.loads(candidate)
+    except json.JSONDecodeError as exc:
+        raise AnswerGenerationError(
+            f"Answer model returned invalid JSON: {exc.msg}."
+        ) from exc
+    return AnswerModelOutput.model_validate(payload)
+
+
+def build_abstention_answer(
+    *,
+    question: str,
+    assembled_context: AssembledContext,
+    reason: str,
+    raw_model_output: str | None = None,
+    validation_warnings: list[str] | None = None,
+) -> GroundedAnswer:
+    """Return a deterministic abstention answer for shared callers."""
+    return _build_abstention_answer(
+        question=question,
+        assembled_context=assembled_context,
+        reason=reason,
+        raw_model_output=raw_model_output,
+        validation_warnings=validation_warnings,
+    )
+
+
+def weak_evidence_reason(assembled_context: AssembledContext) -> str | None:
+    """Return a deterministic reason when retrieved evidence is too weak."""
+    return _weak_evidence_reason(assembled_context)
+
+
 def _build_answer_prompt(question: str, context_text: str) -> str:
     fewshot = _read_prompt("answer_fewshot.md")
     return (
@@ -206,6 +261,13 @@ def _build_answer_prompt(question: str, context_text: str) -> str:
         f"{context_text.strip()}\n\n"
         "Return only the JSON object for the current user question."
     )
+
+
+def _strip_json_fences(text: str) -> str:
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.IGNORECASE)
+        text = re.sub(r"\s*```$", "", text)
+    return text.strip()
 
 
 def _read_prompt(filename: str) -> str:

@@ -6,8 +6,8 @@ This project is a learning/demo RAG system for practicing document ingestion,
 chunking, embeddings, retrieval, citations, deterministic tools, and evaluation.
 It is not a finished assistant yet. The current implementation builds and searches
 a local policy corpus and can generate first-pass grounded answers from retrieved
-evidence; API routes, UI, deterministic tools, judge flow, and answer-level
-evaluation are not yet developed.
+evidence through both CLI and FastAPI routes; UI, deterministic tools, judge
+flow, and answer-level evaluation are not yet developed.
 
 ## Current Status
 
@@ -22,6 +22,7 @@ Implemented:
 - Local FlashRank reranking
 - Citation-ready context assembly
 - First-pass grounded answer generation from retrieved evidence
+- FastAPI health, chat, and streaming chat routes
 - Structured answer-output validation and fail-closed citation checks
 - Prompt files for the grounded-answering contract and answer examples
 - A golden eval dataset in `data/eval/golden_eval_set.jsonl`
@@ -29,7 +30,6 @@ Implemented:
 
 Not yet developed:
 
-- FastAPI app and API routes
 - Browser UI
 - Deterministic tool layer under `app/tools/`
 - MCP server tools under `mcp_server/`
@@ -55,13 +55,13 @@ The docs in `docs/` explain the project for humans working in the repo.
 ```text
 app/
   agents/               Answer orchestration and future agent logic
-  api/                  Empty scaffold for future API routes
+  api/                  FastAPI routes and Pydantic schemas
   core/                 Settings and project-root path resolution
   ingest/               Raw ingestion, loaders, chunking, embedding
   eval/                 Retrieval evaluation over golden examples
   prompts/              Prompt Markdown files
   retrieval/            Chroma search, FlashRank rerank, context assembly
-  streaming/            Empty scaffold for future streaming behavior
+  streaming/            Server-sent event helpers and chat streaming orchestration
   tools/                Empty scaffold for future deterministic tools
   ui/                   Empty scaffold for future plain HTML/CSS/JS UI
 data/
@@ -123,6 +123,23 @@ python scripts/30_ask.py "Can I take a taxi from Prague airport after 21:00?"
 
 `scripts/30_ask.py` performs paid OpenAI calls for query embedding and final
 answer generation.
+
+The same answer path is exposed through FastAPI:
+
+```powershell
+python -m uvicorn app.main:app --reload
+```
+
+Routes:
+
+- `GET /health`
+- `POST /api/chat`
+- `POST /api/chat/stream`
+
+`/api/chat` returns one validated JSON answer. `/api/chat/stream` returns
+server-sent events for retrieval progress, answer deltas, and the final
+validated answer payload. Both chat routes perform paid OpenAI calls for query
+embedding and final answer generation.
 
 ## Script Numbering
 

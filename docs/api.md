@@ -1,63 +1,140 @@
 # API, UI, and Answer Status
 
-The API and UI are not yet developed.
+The project now has a first FastAPI backend for grounded answer generation. The
+browser UI, upload route, deterministic tool layer, and judge flow are still not
+implemented.
 
-This file documents the current script-level answer path and the intended API/UI
-boundaries so future work has a clear place to land.
+## Current API
 
-## Current State
-
-`app/api/` exists as an empty scaffold, but it contains no route modules yet.
-
-There is no `app/main.py`.
-
-There is no FastAPI application.
-
-There is no browser UI.
-
-There is no file-upload endpoint.
-
-There is no streaming answer endpoint.
-
-There is no answer-generation route. First-pass answer generation is available
-through `app/agents/answer.py` and `scripts/30_ask.py`.
-
-`app/tools/`, `app/ui/`, and `app/streaming/` exist as empty scaffolds.
-`app/agents/` and `app/prompts/` now contain the script-level grounded answer
-implementation. That answer path uses structured model output, validates
-citations against assembled evidence IDs, fails closed on invalid model output,
-and abstains when evidence is below the weak-evidence threshold.
-
-The current way to use the project is through scripts in `scripts/`.
-`python scripts/00_run_ingestion.py` rebuilds the corpus from raw files through
-Chroma embedding. Retrieval is run separately with
-`python scripts/10_retrieve_context.py`. First-pass grounded answers are run with
-`python scripts/30_ask.py`.
-
-## Expected Future API Shape
-
-When implemented, API routes should live under:
+The FastAPI app entrypoint is:
 
 ```text
-app/api/
+app/main.py
 ```
 
-Business logic should remain in reusable modules, not directly inside route files.
-Routes should call ingestion, retrieval, answer generation, tools, and judge
-modules through small interfaces.
+Run it locally with:
 
-Likely future routes:
+```powershell
+python -m uvicorn app.main:app --reload
+```
 
-- health/status route
-- file upload route
-- chat or ask route
-- streaming answer route
-- debug retrieval route
-- source/citation inspection route
+Implemented routes:
 
-The exact route names are not decided yet.
+- `GET /health`
+- `POST /api/chat`
+- `POST /api/chat/stream`
 
-## Expected Future UI Shape
+Routes live in `app/api/`. Pydantic request and response models live in
+`app/api/schemas.py`. Route handlers stay thin and call reusable answer and
+streaming modules.
+
+## Health Route
+
+`GET /health` returns a minimal liveness response:
+
+```json
+{
+  "status": "ok",
+  "app": "travel-and-expense-copilot"
+}
+```
+
+It does not currently check Chroma, OpenAI credentials, or model availability.
+
+## Chat Route
+
+`POST /api/chat` runs the full grounded answer path:
+
+```text
+question
+  -> Chroma vector search
+  -> FlashRank reranking
+  -> citation-ready context assembly
+  -> OpenAI-backed answer generation
+  -> citation validation and weak-evidence checks
+  -> JSON response
+```
+
+Example request:
+
+```json
+{
+  "question": "Can I take a taxi from Prague airport after 21:00?",
+  "search_k": 12,
+  "filters": {
+    "doc_type": "pdf",
+    "source_path": null,
+    "section_path": null
+  }
+}
+```
+
+`search_k` and `filters` are optional. Filters support exact matches for
+`doc_type`, `source_path`, and `section_path`.
+
+The response includes:
+
+- `answer`
+- `citations`
+- `confidence`
+- `abstained`
+- `evidence_blocks`
+- `judge_result`
+- `debug`
+
+`judge_result` is currently always `null` because the judge flow is not
+implemented yet. `debug` includes the assembled context, raw model output when
+available, and validation warnings.
+
+## Streaming Chat Route
+
+`POST /api/chat/stream` runs the same grounded answer path and returns
+server-sent events with media type `text/event-stream`.
+
+Current event types:
+
+- `retrieval_started`
+- `retrieval_complete`
+- `answer_started`
+- `answer_delta`
+- `answer_replaced`
+- `answer_complete`
+- `error`
+
+`answer_delta` streams the current answer text from the model's JSON `answer`
+field as it is produced. The API still validates the final parsed model output
+before emitting `answer_complete`. If final validation changes the streamed
+draft, the stream emits `answer_replaced` and the UI should trust the final
+`answer_complete` payload.
+
+`retrieval_complete` includes evidence blocks and assembled context for a future
+debug panel. `answer_complete` uses the same shape as `POST /api/chat`.
+
+## Current Answer Behavior
+
+Answer generation is implemented in `app/agents/answer.py`. It reads prompts
+from:
+
+- `app/prompts/system.md`
+- `app/prompts/answer_fewshot.md`
+
+The answer path uses LangChain/OpenAI for the final model call. Normal chat
+execution performs paid OpenAI calls for the query embedding and final answer
+model. The default answer model is `gpt-5.5` unless `ANSWER_MODEL` overrides it.
+
+The non-streaming path uses LangChain structured output with the
+`AnswerModelOutput` Pydantic schema. The streaming path streams normal chat
+model chunks, parses the final JSON response with the same schema, and then runs
+the same citation validation.
+
+If evidence is missing or below the weak-evidence threshold, the answer layer
+abstains before calling the answer model. If model output fails validation, the
+answer layer returns a deterministic abstention instead of the unsupported
+draft.
+
+## Current UI Status
+
+There is no browser UI yet.
 
 The frontend should stay minimal and use plain HTML/CSS/JS.
 
@@ -77,54 +154,15 @@ Strongly preferred debug fields:
 - confidence
 - judge result
 
-No React, Vue, Next.js, or similar frontend framework is planned.
+## Still Not Implemented
 
-## Expected Future Prompt Files
-
-Prompt files should live under:
-
-```text
-app/prompts/
-```
-
-Planned files:
-
-- `system.md`
-- `router_fewshot.md`
-- `answer_fewshot.md`
-- `judge_fewshot.md`
-
-`system.md` and `answer_fewshot.md` are implemented for the first answer path.
-Router and judge prompts are still planned.
-
-## Expected Future Agent and Tool Layer
-
-Agent logic should live under:
-
-```text
-app/agents/
-```
-
-Direct Python or LangChain tools should eventually include:
-
-- `search_policy_corpus`
-- `fetch_source_window`
-- `explain_confidence`
-
-Local MCP server code should live under:
-
-```text
-mcp_server/
-```
-
-Planned MCP tools:
-
-- `compute_per_diem`
-- `policy_cap_lookup`
-- `sum_receipt_lines`
-- `normalize_currency`
-
-None of these tools are developed yet.
+- Browser UI
+- File upload route
+- Router prompt
+- Judge prompt and judge execution
+- Deterministic tools under `app/tools/`
+- Local MCP tools under `mcp_server/`
+- Answer-level eval runner
 
 ## Guardrails Not Yet Developed
 
@@ -136,8 +174,7 @@ Planned guardrails:
 - judge generated answers for unsupported claims
 - use deterministic tools for arithmetic instead of an LLM
 
-The current code has only partial groundwork. HTML loading strips `script` and
+The current code has partial groundwork. HTML loading strips `script` and
 `style`, the answer prompt says retrieved documents cannot override system
-behavior, and the answer layer has a deterministic weak-evidence abstention
-cutoff. Full sanitization, PII redaction, prompt-injection handling, judge
-review, and deterministic arithmetic tools are not implemented.
+behavior, and the answer layer has deterministic weak-evidence and
+citation-validation checks.

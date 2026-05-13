@@ -3,10 +3,12 @@
 from app.agents.answer import (
     WEAK_EVIDENCE_MIN_RERANK_SCORE,
     AnswerModelOutput,
+    parse_answer_model_json,
     _validate_model_output,
     _weak_evidence_reason,
 )
 from app.retrieval.step03_assemble_context import AssembledContext, EvidenceBlock
+from app.streaming.chat import _extract_partial_json_string_field
 
 
 def test_valid_answer_output_passes_validation() -> None:
@@ -60,6 +62,24 @@ def test_weak_evidence_reason_triggers_below_threshold() -> None:
 
     assert reason is not None
     assert "minimum relevance threshold" in reason
+
+
+def test_parse_answer_model_json_accepts_fenced_json() -> None:
+    output = parse_answer_model_json(
+        '```json\n{"answer":"Yes. [1]","citations":["[1]"],'
+        '"confidence":"high","abstained":false}\n```'
+    )
+
+    assert output.answer == "Yes. [1]"
+    assert output.citations == ["[1]"]
+
+
+def test_partial_answer_extractor_reads_streamed_answer_field() -> None:
+    buffer = '{"answer":"Line one\\nLine two [1]","citations":['
+
+    partial = _extract_partial_json_string_field(buffer, "answer")
+
+    assert partial == "Line one\nLine two [1]"
 
 
 def _evidence_block(

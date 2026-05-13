@@ -45,6 +45,12 @@ query
   -> citation and weak-evidence validation
   -> grounded answer with citations, confidence, and abstention state
 
+HTTP request
+  -> app/main.py
+  -> app/api/chat.py
+  -> app/agents/answer.py or app/streaming/chat.py
+  -> JSON response or server-sent events
+
 data/eval/golden_eval_set.jsonl
   -> app/eval/step01_run_retrieval_eval.py
   -> data/eval/20_retrieval_eval_results.jsonl
@@ -67,8 +73,12 @@ embedding.
 
 `app/eval/` owns evaluation runners and report generation.
 
-`app/api/`, `app/tools/`, `app/ui/`, and `app/streaming/` currently exist only
-as empty scaffolds.
+`app/api/` owns the FastAPI route layer and request/response schemas.
+
+`app/streaming/` owns transport-agnostic server-sent event helpers for streaming
+grounded answers.
+
+`app/tools/` and `app/ui/` currently exist only as empty scaffolds.
 
 `scripts/` contains the command-line entrypoints that call application modules.
 `scripts/01_load_documents.py` through `scripts/04_embed_chunks.py` run the
@@ -150,6 +160,22 @@ then validated against the assembled evidence citation IDs. If evidence is
 below the weak-evidence threshold, or if the model output fails validation, the
 answer layer abstains instead of returning an unsupported answer.
 
+`app/api/chat.py` exposes the implemented HTTP runtime routes. `GET /health`
+returns liveness only. `POST /api/chat` returns one validated grounded answer.
+`POST /api/chat/stream` returns server-sent events for retrieval progress,
+answer deltas, and the final validated answer payload.
+
+`app/api/schemas.py` defines the Pydantic request and response models used by
+the API routes.
+
+`app/streaming/chat.py` runs the same retrieval and answer-generation flow for
+streaming callers. It streams answer text from the model's JSON `answer` field,
+then parses and validates the final model JSON before emitting the final answer
+payload.
+
+`app/streaming/sse.py` formats event names and JSON payloads as server-sent
+events.
+
 `app/prompts/system.md` defines the grounded-answering contract.
 `app/prompts/answer_fewshot.md` defines the first answer JSON schema and
 citation/abstention examples.
@@ -214,24 +240,23 @@ a compact citation-oriented metadata set from normalized blocks.
 
 These boundaries are planned by project rules but not yet implemented:
 
-- API routes should live in `app/api/`.
 - Deterministic application tools can live in `app/tools/`.
 - UI code can live in `app/ui/`.
-- Streaming helpers can live in `app/streaming/`.
 - MCP server code should live in `mcp_server/`.
 - Business logic should not be placed directly in API route files.
 
 ## Current Limitations
 
-The current answer generator is a first-pass script-level implementation. It has
-no streaming behavior, no route wrapper, no tool-calling loop, no retry/repair
-loop for invalid model output, and no judge step.
+The current answer generator is a first-pass implementation. It has no
+tool-calling loop, no retry/repair loop for invalid model output, and no judge
+step.
 
 There is no judge step and no independent confidence explanation beyond the
 answer model's structured `confidence` field plus the deterministic
 weak-evidence cutoff.
 
-There is no API server, web UI, upload workflow, or streaming response panel yet.
-The corresponding directories are currently empty scaffolds.
+There is no web UI, upload workflow, or streaming response panel yet. The API
+can stream server-sent events, but there is not yet a browser client consuming
+them.
 
 There is no answer-level eval runner yet.
