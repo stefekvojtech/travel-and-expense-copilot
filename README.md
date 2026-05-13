@@ -92,8 +92,8 @@ python -m pip install -e .
 
 Create a local `.env` from `.env.example` and set `OPENAI_API_KEY` if you intend
 to run OpenAI-backed image extraction, chunk embedding, vector search, or answer
-generation. The default answer model is `gpt-5.5` unless `ANSWER_MODEL`
-overrides it.
+generation. Set `ANSWER_MODEL` explicitly in `.env`; the runtime no longer uses
+a built-in answer-model fallback.
 
 Relative paths in `.env` are resolved from the project root, not from the current
 terminal working directory.

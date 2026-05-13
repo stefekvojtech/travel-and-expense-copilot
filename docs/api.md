@@ -127,7 +127,8 @@ from:
 
 The answer path uses LangChain/OpenAI for the final model call. Normal chat
 execution performs paid OpenAI calls for the query embedding and final answer
-model. The default answer model is `gpt-5.5` unless `ANSWER_MODEL` overrides it.
+model. `ANSWER_MODEL` must be set in the environment; the runtime no longer
+falls back to a built-in answer-model default.
 
 The non-streaming path uses LangChain structured output with the
 `AnswerModelOutput` Pydantic schema. The streaming path streams normal chat

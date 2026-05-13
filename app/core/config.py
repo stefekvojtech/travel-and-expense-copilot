@@ -66,7 +66,7 @@ def get_settings() -> Settings:
     return Settings(
         embedding_model=os.environ["EMBEDDING_MODEL"],
         vision_model=os.environ["VISION_MODEL"],
-        answer_model=os.getenv("ANSWER_MODEL", "gpt-5.5"),
+        answer_model=os.environ["ANSWER_MODEL"],
         raw_data_dir=_get_path("RAW_DATA_DIR"),
         processed_data_dir=processed_data_dir,
         vector_store_dir=processed_data_dir / "04_vectorstore",
