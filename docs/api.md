@@ -181,6 +181,10 @@ The UI is sized as a full-height app surface on desktop so the composer remains
 visible while the answer and debug panels scroll. On narrower screens, the debug
 panel moves below the chat panel.
 
+On desktop, the debug panel keeps status details at the top, retrieved chunks in
+the middle, and assembled retrieval context always visible at the bottom with
+its own scrollbar.
+
 The example ribbon slowly scrolls on its own, pauses on hover or focus, supports
 left/right arrow buttons, and can be dragged horizontally.
 

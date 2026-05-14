@@ -49,7 +49,7 @@ button:disabled {
 
 .shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+  grid-template-columns: minmax(0, 1fr) minmax(430px, 500px);
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
@@ -360,10 +360,10 @@ textarea:focus {
 }
 
 .debug-pane {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(33dvh, 1fr) minmax(220px, 30dvh);
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   background: #fbfcfa;
 }
 
@@ -399,8 +399,17 @@ textarea:focus {
 }
 
 .debug-section {
+  min-height: 0;
   padding: 18px 16px;
   border-bottom: 1px solid var(--line);
+}
+
+.validation-section {
+  overflow: auto;
+}
+
+.evidence-section {
+  overflow: auto;
 }
 
 .evidence-list {
@@ -461,15 +470,20 @@ textarea:focus {
 }
 
 .context-section {
+  display: flex;
+  flex-direction: column;
   min-height: 0;
+  border-bottom: 0;
+  background: #f3f6f4;
 }
 
-.context-section.is-hidden {
-  display: none;
+.context-section h3 {
+  flex: 0 0 auto;
 }
 
 pre {
-  max-height: 320px;
+  flex: 1 1 auto;
+  max-height: none;
   margin: 0;
   overflow: auto;
   border: 1px solid var(--line);
@@ -508,7 +522,9 @@ pre {
   }
 
   .debug-pane {
+    display: flex;
     min-height: auto;
+    overflow: visible;
   }
 
   .primary-button {

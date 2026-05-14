@@ -13,8 +13,6 @@ const debugJudge = document.querySelector("#debugJudge");
 const evidenceList = document.querySelector("#evidenceList");
 const warningList = document.querySelector("#warningList");
 const contextText = document.querySelector("#contextText");
-const contextSection = document.querySelector("#contextSection");
-const toggleContextButton = document.querySelector("#toggleContextButton");
 const exampleRibbon = document.querySelector(".example-ribbon");
 const exampleViewport = document.querySelector("#exampleViewport");
 const exampleTrack = document.querySelector("#exampleTrack");
@@ -52,10 +50,6 @@ questionInput.addEventListener("keydown", (event) => {
   }
   event.preventDefault();
   form.requestSubmit();
-});
-
-toggleContextButton.addEventListener("click", () => {
-  contextSection.classList.toggle("is-hidden");
 });
 
 setupExampleRibbon();

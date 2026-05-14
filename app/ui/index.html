@@ -94,7 +94,6 @@
             <p class="eyebrow">Debug panel</p>
             <h2>Retrieval Trace</h2>
           </div>
-          <button type="button" class="secondary-button compact" id="toggleContextButton">Context</button>
         </header>
 
         <dl class="metrics">
@@ -116,21 +115,21 @@
           </div>
         </dl>
 
-        <section class="debug-section">
-          <h3>Retrieved Chunks</h3>
-          <div class="evidence-list" id="evidenceList">
-            <p class="empty-state">No evidence yet.</p>
-          </div>
-        </section>
-
-        <section class="debug-section">
+        <section class="debug-section validation-section">
           <h3>Validation</h3>
           <ul class="warning-list" id="warningList">
             <li>No validation warnings yet.</li>
           </ul>
         </section>
 
-        <section class="debug-section context-section is-hidden" id="contextSection">
+        <section class="debug-section evidence-section">
+          <h3>Retrieved Chunks</h3>
+          <div class="evidence-list" id="evidenceList">
+            <p class="empty-state">No evidence yet.</p>
+          </div>
+        </section>
+
+        <section class="debug-section context-section" id="contextSection">
           <h3>Assembled Context</h3>
           <pre id="contextText">No context assembled yet.</pre>
         </section>
