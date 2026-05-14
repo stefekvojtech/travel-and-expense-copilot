@@ -31,7 +31,8 @@ let exampleAutoScrollPaused = false;
 let exampleDragStartX = 0;
 let exampleDragStartScrollLeft = 0;
 let exampleDragging = false;
-let exampleSuppressClick = false;
+let exampleDidDrag = false;
+let examplePointerStartButton = null;
 let exampleLastFrameTime = 0;
 let exampleScrollPosition = 0;
 
@@ -351,17 +352,6 @@ function setupExampleRibbon() {
 
   duplicateExampleButtonsForLoop();
 
-  exampleTrack.addEventListener("click", (event) => {
-    const target = event.target instanceof Element ? event.target : null;
-    const button = target?.closest("[data-question]");
-    if (!button || exampleSuppressClick) {
-      exampleSuppressClick = false;
-      return;
-    }
-    appendQuestion(button.dataset.question || "");
-    questionInput.focus();
-  });
-
   exampleRibbon.addEventListener("mouseenter", () => {
     exampleAutoScrollPaused = true;
   });
@@ -406,7 +396,10 @@ function duplicateExampleButtonsForLoop() {
 }
 
 function startExampleDrag(event) {
+  const target = event.target instanceof Element ? event.target : null;
   exampleDragging = true;
+  exampleDidDrag = false;
+  examplePointerStartButton = target?.closest("[data-question]") || null;
   exampleAutoScrollPaused = true;
   exampleDragStartX = event.clientX;
   exampleScrollPosition = exampleViewport.scrollLeft;
@@ -422,16 +415,27 @@ function dragExamples(event) {
   event.preventDefault();
   const deltaX = event.clientX - exampleDragStartX;
   if (Math.abs(deltaX) > 6) {
-    exampleSuppressClick = true;
+    exampleDidDrag = true;
   }
   setExampleScrollPosition(exampleDragStartScrollLeft - deltaX);
 }
 
-function stopExampleDrag() {
+function stopExampleDrag(event) {
   if (!exampleDragging) {
     return;
   }
+
+  if (!exampleDidDrag && examplePointerStartButton) {
+    appendQuestion(examplePointerStartButton.dataset.question || "");
+    questionInput.focus();
+  }
+
+  if (event?.pointerId !== undefined && exampleViewport.hasPointerCapture(event.pointerId)) {
+    exampleViewport.releasePointerCapture(event.pointerId);
+  }
+
   exampleDragging = false;
+  examplePointerStartButton = null;
   exampleViewport.classList.remove("is-dragging");
   exampleAutoScrollPaused = exampleRibbon.matches(":hover") || exampleRibbon.matches(":focus-within");
 }
