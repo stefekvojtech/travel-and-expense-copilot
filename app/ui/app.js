@@ -11,6 +11,7 @@ const debugEvidenceCount = document.querySelector("#debugEvidenceCount");
 const debugCitations = document.querySelector("#debugCitations");
 const debugJudge = document.querySelector("#debugJudge");
 const evidenceList = document.querySelector("#evidenceList");
+const evidenceSection = document.querySelector(".evidence-section");
 const warningList = document.querySelector("#warningList");
 const contextText = document.querySelector("#contextText");
 const exampleRibbon = document.querySelector(".example-ribbon");
@@ -221,9 +222,10 @@ function handleStreamEvent(eventName, data) {
 
 function renderFinalAnswer(data) {
   streamedAnswer = data.answer || streamedAnswer;
-  answerText.textContent = streamedAnswer || "No answer returned.";
 
   const citations = data.citations || [];
+  renderAnswerWithCitations(streamedAnswer || "No answer returned.", citations);
+
   const confidence = data.confidence || "unknown";
   confidenceBadge.textContent = `Confidence ${confidence}`;
   confidenceBadge.className = `badge ${confidence}`;
@@ -248,6 +250,9 @@ function renderEvidence(blocks) {
     ...blocks.map((block) => {
       const item = document.createElement("article");
       item.className = "evidence-item";
+      if (block.citation_id) {
+        item.dataset.citationId = block.citation_id;
+      }
 
       const title = document.createElement("div");
       title.className = "evidence-title";
@@ -271,6 +276,83 @@ function renderEvidence(blocks) {
       return item;
     }),
   );
+}
+
+function renderAnswerWithCitations(answer, citations) {
+  const knownCitations = citations.filter(Boolean);
+  if (knownCitations.length === 0) {
+    answerText.textContent = answer;
+    return;
+  }
+
+  const citationPattern = new RegExp(
+    `\\[(${knownCitations.map(escapeRegex).join("|")})\\]`,
+    "g",
+  );
+  const nodes = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = citationPattern.exec(answer)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(document.createTextNode(answer.slice(lastIndex, match.index)));
+    }
+    nodes.push(createCitationButton(match[1]));
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < answer.length) {
+    nodes.push(document.createTextNode(answer.slice(lastIndex)));
+  }
+
+  answerText.replaceChildren(...nodes);
+}
+
+function createCitationButton(citationId) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "citation-link";
+  button.textContent = `[${citationId}]`;
+  button.dataset.citationId = citationId;
+  button.setAttribute("aria-label", `Highlight retrieved chunk ${citationId}`);
+  button.addEventListener("mouseenter", () => highlightEvidence(citationId, true));
+  button.addEventListener("mouseleave", () => highlightEvidence(citationId, false));
+  button.addEventListener("focus", () => highlightEvidence(citationId, true));
+  button.addEventListener("blur", () => highlightEvidence(citationId, false));
+  return button;
+}
+
+function highlightEvidence(citationId, shouldHighlight) {
+  const item = findEvidenceItem(citationId);
+  if (!item) {
+    return;
+  }
+
+  item.classList.toggle("is-citation-highlighted", shouldHighlight);
+  if (shouldHighlight) {
+    scrollEvidenceToTop(item);
+  }
+}
+
+function findEvidenceItem(citationId) {
+  return [...evidenceList.querySelectorAll(".evidence-item")].find(
+    (item) => item.dataset.citationId === citationId,
+  );
+}
+
+function scrollEvidenceToTop(item) {
+  if (!evidenceSection) {
+    item.scrollIntoView({ block: "start", behavior: "smooth" });
+    return;
+  }
+
+  evidenceSection.scrollTo({
+    top:
+      item.getBoundingClientRect().top -
+      evidenceSection.getBoundingClientRect().top +
+      evidenceSection.scrollTop,
+    behavior: "smooth",
+  });
 }
 
 function renderWarnings(warnings) {
@@ -321,6 +403,10 @@ function textElement(tagName, text) {
   const element = document.createElement(tagName);
   element.textContent = text;
   return element;
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function formatScore(value) {

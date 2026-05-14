@@ -231,6 +231,27 @@ h3 {
   line-height: 1.62;
 }
 
+.citation-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  margin: 0 1px;
+  border-radius: 6px;
+  padding: 1px 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.84em;
+  font-weight: 800;
+  vertical-align: baseline;
+}
+
+.citation-link:hover,
+.citation-link:focus {
+  background: var(--accent);
+  color: #ffffff;
+  outline: 0;
+}
+
 .composer {
   --composer-control-height: 48px;
   padding: 14px 28px;
@@ -450,6 +471,17 @@ textarea:focus {
   border-radius: 8px;
   padding: 12px;
   background: #ffffff;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+  scroll-margin-top: 0;
+}
+
+.evidence-item.is-citation-highlighted {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 3px rgb(30 111 159 / 16%);
 }
 
 .evidence-title {

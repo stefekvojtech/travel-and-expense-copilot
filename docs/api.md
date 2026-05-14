@@ -178,6 +178,10 @@ Implemented debug fields:
 - assembled retrieval context
 - judge result placeholder, currently shown as not implemented
 
+Citation markers in completed answers are interactive. Hovering or focusing a
+citation highlights the matching retrieved chunk and scrolls it to the top of
+the retrieved-chunks panel.
+
 Tool-call display is not implemented because the answer path does not yet have a
 tool-calling loop.
 
