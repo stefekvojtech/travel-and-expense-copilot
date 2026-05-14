@@ -53,7 +53,7 @@ It does not currently check Chroma, OpenAI credentials, or model availability.
 
 `GET /api/downloads/raw-data.zip` returns a ZIP archive of files from
 `data/raw/`, excluding local `AGENTS.md` instruction files. The browser UI links
-to this route with a download button in the top bar.
+to this route with a `Download source files` button in the debug panel header.
 
 ## Chat Route
 
