@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.chat import router as chat_router
+from app.api.downloads import router as downloads_router
 
 
 UI_DIRECTORY = Path(__file__).resolve().parent / "ui"
@@ -18,6 +19,7 @@ app = FastAPI(
     version="0.1.0",
 )
 app.include_router(chat_router)
+app.include_router(downloads_router)
 app.mount("/ui", StaticFiles(directory=UI_DIRECTORY, html=True), name="ui")
 
 

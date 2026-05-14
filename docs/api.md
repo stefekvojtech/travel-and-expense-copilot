@@ -30,6 +30,7 @@ Implemented routes:
 - `GET /health`
 - `POST /api/chat`
 - `POST /api/chat/stream`
+- `GET /api/downloads/raw-data.zip`
 
 Routes live in `app/api/`. Pydantic request and response models live in
 `app/api/schemas.py`. Route handlers stay thin and call reusable answer and
@@ -47,6 +48,12 @@ streaming modules.
 ```
 
 It does not currently check Chroma, OpenAI credentials, or model availability.
+
+## Raw Data Download Route
+
+`GET /api/downloads/raw-data.zip` returns a ZIP archive of files from
+`data/raw/`, excluding local `AGENTS.md` instruction files. The browser UI links
+to this route with a download button in the top bar.
 
 ## Chat Route
 
@@ -156,6 +163,7 @@ navy/blue color cues from the raw expense policy HTML.
 Implemented UI elements:
 
 - chat input
+- raw source ZIP download button
 - sideways scrolling example-question ribbon with buttons that insert text at
   the chat input cursor
 - send button
