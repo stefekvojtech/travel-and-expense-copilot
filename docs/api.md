@@ -149,6 +149,10 @@ The frontend uses plain HTML/CSS/JS. It sends a JSON `POST` request to
 `/api/chat/stream`, reads the `text/event-stream` response with the Fetch
 streaming API, and renders answer deltas as they arrive.
 
+The UI uses light Atlas Mobility Group branding from the demo source corpus,
+including the company name, Global Mobility & Finance ownership label, and the
+navy/blue color cues from the raw expense policy HTML.
+
 Implemented UI elements:
 
 - chat input

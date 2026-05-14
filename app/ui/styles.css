@@ -1,20 +1,22 @@
 :root {
   color-scheme: light;
-  --bg: #f6f7f3;
+  --bg: #f7f9fb;
   --surface: #ffffff;
-  --surface-alt: #eef2f1;
-  --line: #d7ded9;
-  --line-strong: #b7c4bd;
-  --text: #18201c;
-  --muted: #5f6e66;
-  --accent: #126b57;
-  --accent-strong: #0b4f41;
-  --accent-soft: #dcefe9;
+  --surface-alt: #eef4f8;
+  --line: #d7e0e8;
+  --line-strong: #aebfcd;
+  --text: #17212b;
+  --muted: #607080;
+  --accent: #1e6f9f;
+  --accent-strong: #0f3045;
+  --accent-soft: #e8f3fa;
+  --support: #236f42;
+  --support-soft: #e7f5ec;
   --warning: #9a4b12;
   --warning-soft: #fff0df;
   --danger: #a33434;
   --danger-soft: #fde8e8;
-  --shadow: 0 12px 36px rgb(22 37 30 / 10%);
+  --shadow: 0 12px 36px rgb(15 48 69 / 10%);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -78,9 +80,35 @@ button:disabled {
   border-bottom: 1px solid var(--line);
 }
 
+.topbar {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fcfe 100%);
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
+}
+
+.brand-mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: var(--accent-strong);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  box-shadow: inset 0 -3px 0 rgb(30 111 159 / 45%);
+}
+
 .eyebrow {
   margin: 0 0 4px;
-  color: var(--muted);
+  color: var(--accent);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -121,7 +149,7 @@ h3 {
   padding: 6px 10px;
   border-radius: 8px;
   background: var(--accent-soft);
-  color: var(--accent-strong);
+  color: var(--accent);
   font-size: 0.84rem;
   font-weight: 700;
   white-space: nowrap;
@@ -139,8 +167,8 @@ h3 {
 }
 
 .badge.high {
-  background: var(--accent-soft);
-  color: var(--accent-strong);
+  background: var(--support-soft);
+  color: var(--support);
 }
 
 .badge.muted {
@@ -168,7 +196,7 @@ h3 {
 .user-message {
   align-self: flex-end;
   max-width: min(760px, 88%);
-  background: var(--accent);
+  background: var(--accent-strong);
   color: #ffffff;
   white-space: pre-wrap;
 }
@@ -257,7 +285,7 @@ h3 {
   padding: 6px 10px;
   overflow: hidden;
   background: #ffffff;
-  color: var(--accent-strong);
+  color: var(--accent);
   font-size: 0.84rem;
   font-weight: 700;
   text-overflow: ellipsis;
@@ -277,7 +305,7 @@ h3 {
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   background: #ffffff;
-  color: var(--accent-strong);
+  color: var(--accent);
   font-size: 0.76rem;
 }
 
@@ -325,7 +353,7 @@ textarea:focus {
 
 .primary-button {
   margin-left: auto;
-  background: var(--accent);
+  background: var(--accent-strong);
   color: #ffffff;
 }
 
@@ -339,7 +367,7 @@ textarea:focus {
 }
 
 .primary-button:hover:not(:disabled) {
-  background: var(--accent-strong);
+  background: var(--accent);
 }
 
 .secondary-button {
@@ -350,7 +378,7 @@ textarea:focus {
 
 .secondary-button:hover:not(:disabled) {
   border-color: var(--accent);
-  color: var(--accent-strong);
+  color: var(--accent);
 }
 
 .secondary-button.compact {
@@ -364,7 +392,7 @@ textarea:focus {
   grid-template-rows: auto auto auto minmax(33dvh, 1fr) minmax(220px, 30dvh);
   min-height: 0;
   overflow: hidden;
-  background: #fbfcfa;
+  background: #fbfdff;
 }
 
 .metrics {
@@ -379,7 +407,7 @@ textarea:focus {
 .metrics div {
   min-width: 0;
   padding: 14px 16px;
-  background: #fbfcfa;
+  background: #fbfdff;
 }
 
 .metrics dt {
@@ -447,7 +475,7 @@ textarea:focus {
   margin: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
-  color: #2d3832;
+  color: #2b3945;
   font-size: 0.86rem;
   line-height: 1.45;
 }
@@ -474,7 +502,7 @@ textarea:focus {
   flex-direction: column;
   min-height: 0;
   border-bottom: 0;
-  background: #f3f6f4;
+  background: #f2f7fb;
 }
 
 .context-section h3 {
@@ -490,7 +518,7 @@ pre {
   border-radius: 8px;
   padding: 12px;
   background: #ffffff;
-  color: #2d3832;
+  color: #2b3945;
   font-size: 0.78rem;
   line-height: 1.45;
   white-space: pre-wrap;
