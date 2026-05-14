@@ -204,6 +204,7 @@ h3 {
 }
 
 .composer {
+  --composer-control-height: 48px;
   padding: 14px 28px;
   border-top: 1px solid var(--line);
   background: var(--surface-alt);
@@ -287,7 +288,7 @@ h3 {
 
 textarea {
   width: 100%;
-  min-height: 44px;
+  min-height: var(--composer-control-height);
   max-height: calc((1.45em * 12) + 24px);
   resize: none;
   border: 1px solid var(--line-strong);
@@ -307,12 +308,15 @@ textarea:focus {
 .composer-input-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  align-items: start;
   gap: 10px;
 }
 
 .primary-button,
 .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 38px;
   border-radius: 8px;
   padding: 9px 14px;
@@ -326,9 +330,11 @@ textarea:focus {
 }
 
 .composer-send {
+  align-self: start;
   width: auto;
   min-width: 72px;
-  min-height: 44px;
+  height: var(--composer-control-height);
+  min-height: var(--composer-control-height);
   margin-left: 0;
 }
 
