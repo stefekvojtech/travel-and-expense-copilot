@@ -161,7 +161,8 @@ Pressing `Enter` in the chat input sends the current question. Pressing
 `Shift+Enter` inserts a newline.
 
 The chat input starts as a single line, grows upward to 12 lines as text is
-entered, and then scrolls internally.
+entered, and then scrolls internally. The send button sits beside the input so
+the composer stays compact on smaller screens.
 
 Implemented debug fields:
 
