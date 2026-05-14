@@ -30,6 +30,14 @@ form.addEventListener("submit", (event) => {
   void streamQuestion(question);
 });
 
+questionInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || event.shiftKey) {
+    return;
+  }
+  event.preventDefault();
+  form.requestSubmit();
+});
+
 clearButton.addEventListener("click", () => {
   if (activeController) {
     activeController.abort();
@@ -47,9 +55,16 @@ toggleContextButton.addEventListener("click", () => {
 for (const button of exampleButtons) {
   button.addEventListener("click", () => {
     const question = button.dataset.question || "";
-    questionInput.value = question;
-    void streamQuestion(question);
+    appendQuestion(question);
+    questionInput.focus();
   });
+}
+
+function appendQuestion(question) {
+  const currentValue = questionInput.value.trimEnd();
+  questionInput.value = currentValue ? `${currentValue}\n${question}` : question;
+  questionInput.selectionStart = questionInput.value.length;
+  questionInput.selectionEnd = questionInput.value.length;
 }
 
 async function streamQuestion(question) {

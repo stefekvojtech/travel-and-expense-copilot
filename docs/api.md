@@ -152,10 +152,13 @@ streaming API, and renders answer deltas as they arrive.
 Implemented UI elements:
 
 - chat input
-- clickable example question buttons
+- clickable example question buttons that append text to the chat input
 - send button
 - file upload control, currently disabled because no upload route exists yet
 - streaming answer panel
+
+Pressing `Enter` in the chat input sends the current question. Pressing
+`Shift+Enter` inserts a newline.
 
 Implemented debug fields:
 
