@@ -355,13 +355,21 @@ function scrollEvidenceToTop(item) {
     return;
   }
 
+  const scrollPadding = getEvidenceScrollPadding();
   evidenceSection.scrollTo({
     top:
       item.getBoundingClientRect().top -
       evidenceSection.getBoundingClientRect().top +
-      evidenceSection.scrollTop,
+      evidenceSection.scrollTop -
+      scrollPadding,
     behavior: "smooth",
   });
+}
+
+function getEvidenceScrollPadding() {
+  const computedStyle = window.getComputedStyle(evidenceList);
+  const rowGap = parseFloat(computedStyle.rowGap);
+  return Number.isFinite(rowGap) ? rowGap : 0;
 }
 
 function renderWarnings(warnings) {
