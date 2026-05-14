@@ -152,8 +152,8 @@ streaming API, and renders answer deltas as they arrive.
 Implemented UI elements:
 
 - chat input
-- sideways scrolling example-question ribbon with buttons that append text to
-  the chat input
+- sideways scrolling example-question ribbon with buttons that insert text at
+  the chat input cursor
 - send button
 - file upload control, currently disabled because no upload route exists yet
 - streaming answer panel

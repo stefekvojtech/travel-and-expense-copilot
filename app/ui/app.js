@@ -69,11 +69,20 @@ toggleContextButton.addEventListener("click", () => {
 
 setupExampleRibbon();
 
-function appendQuestion(question) {
-  const currentValue = questionInput.value.trimEnd();
-  questionInput.value = currentValue ? `${currentValue}\n${question}` : question;
-  questionInput.selectionStart = questionInput.value.length;
-  questionInput.selectionEnd = questionInput.value.length;
+function insertQuestion(question) {
+  const currentValue = questionInput.value;
+  const selectionStart = questionInput.selectionStart ?? currentValue.length;
+  const selectionEnd = questionInput.selectionEnd ?? selectionStart;
+  const prefix = currentValue.slice(0, selectionStart);
+  const suffix = currentValue.slice(selectionEnd);
+  const insertion = `${prefix && !prefix.endsWith("\n") ? "\n" : ""}${question}${
+    suffix && !suffix.startsWith("\n") ? "\n" : ""
+  }`;
+
+  questionInput.value = `${prefix}${insertion}${suffix}`;
+  const cursorPosition = prefix.length + insertion.length;
+  questionInput.selectionStart = cursorPosition;
+  questionInput.selectionEnd = cursorPosition;
 }
 
 async function streamQuestion(question) {
@@ -426,7 +435,7 @@ function stopExampleDrag(event) {
   }
 
   if (!exampleDidDrag && examplePointerStartButton) {
-    appendQuestion(examplePointerStartButton.dataset.question || "");
+    insertQuestion(examplePointerStartButton.dataset.question || "");
     questionInput.focus();
   }
 
