@@ -45,6 +45,8 @@ form.addEventListener("submit", (event) => {
   void streamQuestion(question);
 });
 
+questionInput.addEventListener("input", resizeQuestionInput);
+
 questionInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || event.shiftKey) {
     return;
@@ -59,6 +61,7 @@ clearButton.addEventListener("click", () => {
     activeController = null;
   }
   questionInput.value = "";
+  resizeQuestionInput();
   resetUi();
   questionInput.focus();
 });
@@ -68,6 +71,7 @@ toggleContextButton.addEventListener("click", () => {
 });
 
 setupExampleRibbon();
+resizeQuestionInput();
 
 function insertQuestion(question) {
   const currentValue = questionInput.value;
@@ -83,6 +87,20 @@ function insertQuestion(question) {
   const cursorPosition = prefix.length + insertion.length;
   questionInput.selectionStart = cursorPosition;
   questionInput.selectionEnd = cursorPosition;
+  resizeQuestionInput();
+}
+
+function resizeQuestionInput() {
+  questionInput.style.height = "auto";
+  const computedStyle = window.getComputedStyle(questionInput);
+  const lineHeight = parseFloat(computedStyle.lineHeight);
+  const paddingTop = parseFloat(computedStyle.paddingTop);
+  const paddingBottom = parseFloat(computedStyle.paddingBottom);
+  const maxHeight = lineHeight * 12 + paddingTop + paddingBottom;
+  const nextHeight = Math.min(questionInput.scrollHeight, maxHeight);
+
+  questionInput.style.height = `${nextHeight}px`;
+  questionInput.style.overflowY = questionInput.scrollHeight > maxHeight ? "auto" : "hidden";
 }
 
 async function streamQuestion(question) {

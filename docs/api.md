@@ -161,6 +161,9 @@ Implemented UI elements:
 Pressing `Enter` in the chat input sends the current question. Pressing
 `Shift+Enter` inserts a newline.
 
+The chat input starts as a single line, grows upward to 12 lines as text is
+entered, and then scrolls internally.
+
 Implemented debug fields:
 
 - retrieved chunks
