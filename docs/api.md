@@ -155,7 +155,6 @@ Implemented UI elements:
 - sideways scrolling example-question ribbon with buttons that insert text at
   the chat input cursor
 - send button
-- file upload control, currently disabled because no upload route exists yet
 - streaming answer panel
 
 Pressing `Enter` in the chat input sends the current question. Pressing

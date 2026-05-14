@@ -312,23 +312,6 @@ textarea:focus {
   margin-top: 12px;
 }
 
-.file-control {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 38px;
-  padding: 8px 10px;
-  border: 1px dashed var(--line-strong);
-  border-radius: 8px;
-  color: var(--muted);
-  background: #ffffff;
-  font-size: 0.9rem;
-}
-
-.file-control input {
-  max-width: min(180px, 100%);
-}
-
 .primary-button,
 .secondary-button {
   min-height: 38px;
@@ -559,7 +542,6 @@ pre {
     max-width: 210px;
   }
 
-  .file-control,
   .primary-button,
   .secondary-button {
     width: 100%;

@@ -423,10 +423,15 @@ image ingestion path extracts Markdown text from images for corpus indexing, but
 it does not normalize uploaded bills into structured receipt data for claim
 evaluation.
 
+The current browser UI intentionally does not expose file upload. A future UI/API
+workflow can add explicit upload controls once the backend has a scoped intake
+route, clear cost warnings, and a defined storage policy for uploaded artifacts.
+
 The future receipt flow should support one or more uploaded bill images:
 
 ```text
 receipt image or images
+  -> local upload API
   -> vision/OCR extraction
   -> receipt post-processor
   -> structured receipt records
@@ -459,6 +464,18 @@ Vision extraction uses paid model calls when implemented with OpenAI vision, so
 the upload/OCR path should be explicit and opt-in. A later version can consider a
 local OCR fallback, but the first version can use the existing OpenAI-backed
 image extraction pattern if the user approves the cost.
+
+A future browser upload workflow should:
+
+- accept PNG/JPG/PDF receipt files through a dedicated API route
+- keep uploaded files local by default
+- show that OpenAI vision/OCR is a paid call before processing
+- stream extraction progress to the UI
+- display extracted receipt fields for user review before claim evaluation
+- link extracted fields back to source image regions or page references when
+  practical
+- avoid sending raw uploaded files to the answer model unless the user explicitly
+  starts the OCR/extraction flow
 
 Useful open design decisions:
 

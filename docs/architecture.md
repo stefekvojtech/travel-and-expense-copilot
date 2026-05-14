@@ -203,8 +203,7 @@ events.
 `app/ui/index.html`, `app/ui/styles.css`, and `app/ui/app.js` implement the
 minimal browser UI. The UI renders streamed answer deltas, citation and
 confidence metadata, retrieved evidence blocks, rerank scores, validation
-warnings, assembled retrieval context, and clickable example questions. The
-file upload control is present but disabled until an upload route exists.
+warnings, assembled retrieval context, and clickable example questions.
 
 `app/tools/currency.py` converts amounts between currencies for future claim
 evaluation. It first uses the `ExchangeRates` sheet in
@@ -298,7 +297,6 @@ answer model's structured `confidence` field plus the deterministic
 weak-evidence cutoff.
 
 The browser UI currently supports streaming chat and retrieval debugging. It
-does not have a working upload workflow; the file input is visible but disabled
-until an upload route exists.
+does not have a file upload workflow.
 
 There is no answer-level eval runner yet.

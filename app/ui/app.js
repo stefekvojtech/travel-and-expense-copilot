@@ -4,7 +4,6 @@ const questionEcho = document.querySelector("#questionEcho");
 const answerText = document.querySelector("#answerText");
 const runtimeStatus = document.querySelector("#runtimeStatus");
 const sendButton = document.querySelector("#sendButton");
-const clearButton = document.querySelector("#clearButton");
 const confidenceBadge = document.querySelector("#confidenceBadge");
 const citationCount = document.querySelector("#citationCount");
 const debugStage = document.querySelector("#debugStage");
@@ -53,17 +52,6 @@ questionInput.addEventListener("keydown", (event) => {
   }
   event.preventDefault();
   form.requestSubmit();
-});
-
-clearButton.addEventListener("click", () => {
-  if (activeController) {
-    activeController.abort();
-    activeController = null;
-  }
-  questionInput.value = "";
-  resizeQuestionInput();
-  resetUi();
-  questionInput.focus();
 });
 
 toggleContextButton.addEventListener("click", () => {
