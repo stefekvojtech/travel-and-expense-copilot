@@ -22,6 +22,9 @@ const exampleTrack = document.querySelector("#exampleTrack");
 const examplesBack = document.querySelector("#examplesBack");
 const examplesForward = document.querySelector("#examplesForward");
 
+const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
+const EXAMPLE_ARROW_NUDGE_PIXELS = 96;
+
 let activeController = null;
 let streamedAnswer = "";
 let exampleAutoScrollPaused = false;
@@ -30,6 +33,7 @@ let exampleDragStartScrollLeft = 0;
 let exampleDragging = false;
 let exampleSuppressClick = false;
 let exampleLastFrameTime = 0;
+let exampleScrollPosition = 0;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -345,13 +349,7 @@ function setupExampleRibbon() {
     return;
   }
 
-  const originalButtons = [...exampleTrack.querySelectorAll("[data-question]")];
-  for (const button of originalButtons) {
-    const clone = button.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    clone.tabIndex = -1;
-    exampleTrack.append(clone);
-  }
+  duplicateExampleButtonsForLoop();
 
   exampleTrack.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target : null;
@@ -383,17 +381,36 @@ function setupExampleRibbon() {
   exampleViewport.addEventListener("pointercancel", stopExampleDrag);
   exampleViewport.addEventListener("lostpointercapture", stopExampleDrag);
 
-  examplesBack.addEventListener("click", () => scrollExamplesBy(-exampleViewport.clientWidth * 0.7));
-  examplesForward.addEventListener("click", () => scrollExamplesBy(exampleViewport.clientWidth * 0.7));
+  examplesBack.addEventListener("click", () => scrollExamplesBy(-EXAMPLE_ARROW_NUDGE_PIXELS));
+  examplesForward.addEventListener("click", () => scrollExamplesBy(EXAMPLE_ARROW_NUDGE_PIXELS));
 
+  exampleScrollPosition = exampleViewport.scrollLeft;
+  rotateExampleScroll();
   requestAnimationFrame(autoScrollExamples);
+}
+
+function duplicateExampleButtonsForLoop() {
+  const originalButtons = [...exampleTrack.querySelectorAll("[data-question]")];
+  if (originalButtons.length === 0) {
+    return;
+  }
+
+  do {
+    for (const button of originalButtons) {
+      const clone = button.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      clone.tabIndex = -1;
+      exampleTrack.append(clone);
+    }
+  } while (exampleTrack.scrollWidth < exampleViewport.clientWidth * 2.5);
 }
 
 function startExampleDrag(event) {
   exampleDragging = true;
   exampleAutoScrollPaused = true;
   exampleDragStartX = event.clientX;
-  exampleDragStartScrollLeft = exampleViewport.scrollLeft;
+  exampleScrollPosition = exampleViewport.scrollLeft;
+  exampleDragStartScrollLeft = exampleScrollPosition;
   exampleViewport.classList.add("is-dragging");
   exampleViewport.setPointerCapture(event.pointerId);
 }
@@ -407,8 +424,7 @@ function dragExamples(event) {
   if (Math.abs(deltaX) > 6) {
     exampleSuppressClick = true;
   }
-  exampleViewport.scrollLeft = exampleDragStartScrollLeft - deltaX;
-  rotateExampleScroll();
+  setExampleScrollPosition(exampleDragStartScrollLeft - deltaX);
 }
 
 function stopExampleDrag() {
@@ -421,8 +437,7 @@ function stopExampleDrag() {
 }
 
 function scrollExamplesBy(distance) {
-  exampleViewport.scrollBy({ left: distance, behavior: "smooth" });
-  window.setTimeout(rotateExampleScroll, 260);
+  setExampleScrollPosition(exampleScrollPosition + distance);
 }
 
 function autoScrollExamples(timestamp) {
@@ -433,8 +448,7 @@ function autoScrollExamples(timestamp) {
   exampleLastFrameTime = timestamp;
 
   if (!exampleAutoScrollPaused && !exampleDragging) {
-    exampleViewport.scrollLeft += elapsed * 0.025;
-    rotateExampleScroll();
+    setExampleScrollPosition(exampleScrollPosition + elapsed * EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS);
   }
 
   requestAnimationFrame(autoScrollExamples);
@@ -445,9 +459,26 @@ function rotateExampleScroll() {
   if (midpoint <= 0) {
     return;
   }
-  if (exampleViewport.scrollLeft >= midpoint) {
-    exampleViewport.scrollLeft -= midpoint;
-  } else if (exampleViewport.scrollLeft < 0) {
-    exampleViewport.scrollLeft += midpoint;
+  exampleScrollPosition = normalizeExampleScrollPosition(exampleScrollPosition, midpoint);
+  exampleViewport.scrollLeft = exampleScrollPosition;
+}
+
+function setExampleScrollPosition(nextPosition) {
+  const midpoint = exampleTrack.scrollWidth / 2;
+  if (midpoint <= 0) {
+    return;
   }
+  exampleScrollPosition = normalizeExampleScrollPosition(nextPosition, midpoint);
+  exampleViewport.scrollLeft = exampleScrollPosition;
+}
+
+function normalizeExampleScrollPosition(position, midpoint) {
+  let normalizedPosition = position;
+  while (normalizedPosition >= midpoint) {
+    normalizedPosition -= midpoint;
+  }
+  while (normalizedPosition < 0) {
+    normalizedPosition += midpoint;
+  }
+  return normalizedPosition;
 }
