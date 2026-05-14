@@ -34,7 +34,9 @@ Implemented routes:
 
 Routes live in `app/api/`. Pydantic request and response models live in
 `app/api/schemas.py`. Route handlers stay thin and call reusable answer and
-streaming modules.
+streaming modules. Every new API endpoint should be added with focused endpoint
+tests under `tests/`; tests for paid or stateful paths should monkeypatch the
+retrieval/model layer instead of making real OpenAI, Chroma, or reranker calls.
 
 ## Health Route
 
