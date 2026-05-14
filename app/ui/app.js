@@ -251,7 +251,7 @@ function renderEvidence(blocks) {
       const item = document.createElement("article");
       item.className = "evidence-item";
       if (block.citation_id) {
-        item.dataset.citationId = block.citation_id;
+        item.dataset.citationKey = normalizeCitationKey(block.citation_id);
       }
 
       const title = document.createElement("div");
@@ -279,14 +279,17 @@ function renderEvidence(blocks) {
 }
 
 function renderAnswerWithCitations(answer, citations) {
-  const knownCitations = citations.filter(Boolean);
-  if (knownCitations.length === 0) {
+  const citationMarkers = buildCitationMarkers(citations);
+  if (citationMarkers.length === 0) {
     answerText.textContent = answer;
     return;
   }
 
+  const citationKeys = new Map(
+    citationMarkers.map((marker) => [marker, normalizeCitationKey(marker)]),
+  );
   const citationPattern = new RegExp(
-    `\\[(${knownCitations.map(escapeRegex).join("|")})\\]`,
+    `(${citationMarkers.map(escapeRegex).join("|")})`,
     "g",
   );
   const nodes = [];
@@ -297,7 +300,7 @@ function renderAnswerWithCitations(answer, citations) {
     if (match.index > lastIndex) {
       nodes.push(document.createTextNode(answer.slice(lastIndex, match.index)));
     }
-    nodes.push(createCitationButton(match[1]));
+    nodes.push(createCitationButton(match[1], citationKeys.get(match[1]) || match[1]));
     lastIndex = match.index + match[0].length;
   }
 
@@ -308,22 +311,28 @@ function renderAnswerWithCitations(answer, citations) {
   answerText.replaceChildren(...nodes);
 }
 
-function createCitationButton(citationId) {
+function buildCitationMarkers(citations) {
+  return [...new Set(citations.filter(Boolean).map((citation) => String(citation).trim()))]
+    .filter(Boolean)
+    .sort((left, right) => right.length - left.length);
+}
+
+function createCitationButton(citationMarker, citationKey) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "citation-link";
-  button.textContent = `[${citationId}]`;
-  button.dataset.citationId = citationId;
-  button.setAttribute("aria-label", `Highlight retrieved chunk ${citationId}`);
-  button.addEventListener("mouseenter", () => highlightEvidence(citationId, true));
-  button.addEventListener("mouseleave", () => highlightEvidence(citationId, false));
-  button.addEventListener("focus", () => highlightEvidence(citationId, true));
-  button.addEventListener("blur", () => highlightEvidence(citationId, false));
+  button.textContent = citationMarker;
+  button.dataset.citationKey = citationKey;
+  button.setAttribute("aria-label", `Highlight retrieved chunk ${citationMarker}`);
+  button.addEventListener("mouseenter", () => highlightEvidence(citationKey, true));
+  button.addEventListener("mouseleave", () => highlightEvidence(citationKey, false));
+  button.addEventListener("focus", () => highlightEvidence(citationKey, true));
+  button.addEventListener("blur", () => highlightEvidence(citationKey, false));
   return button;
 }
 
-function highlightEvidence(citationId, shouldHighlight) {
-  const item = findEvidenceItem(citationId);
+function highlightEvidence(citationKey, shouldHighlight) {
+  const item = findEvidenceItem(citationKey);
   if (!item) {
     return;
   }
@@ -334,9 +343,9 @@ function highlightEvidence(citationId, shouldHighlight) {
   }
 }
 
-function findEvidenceItem(citationId) {
+function findEvidenceItem(citationKey) {
   return [...evidenceList.querySelectorAll(".evidence-item")].find(
-    (item) => item.dataset.citationId === citationId,
+    (item) => item.dataset.citationKey === citationKey,
   );
 }
 
@@ -407,6 +416,10 @@ function textElement(tagName, text) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeCitationKey(value) {
+  return String(value).trim().replace(/^\[/, "").replace(/\]$/, "");
 }
 
 function formatScore(value) {
