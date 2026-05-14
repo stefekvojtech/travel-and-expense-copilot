@@ -16,10 +16,20 @@ const warningList = document.querySelector("#warningList");
 const contextText = document.querySelector("#contextText");
 const contextSection = document.querySelector("#contextSection");
 const toggleContextButton = document.querySelector("#toggleContextButton");
-const exampleButtons = document.querySelectorAll("[data-question]");
+const exampleRibbon = document.querySelector(".example-ribbon");
+const exampleViewport = document.querySelector("#exampleViewport");
+const exampleTrack = document.querySelector("#exampleTrack");
+const examplesBack = document.querySelector("#examplesBack");
+const examplesForward = document.querySelector("#examplesForward");
 
 let activeController = null;
 let streamedAnswer = "";
+let exampleAutoScrollPaused = false;
+let exampleDragStartX = 0;
+let exampleDragStartScrollLeft = 0;
+let exampleDragging = false;
+let exampleSuppressClick = false;
+let exampleLastFrameTime = 0;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -52,13 +62,7 @@ toggleContextButton.addEventListener("click", () => {
   contextSection.classList.toggle("is-hidden");
 });
 
-for (const button of exampleButtons) {
-  button.addEventListener("click", () => {
-    const question = button.dataset.question || "";
-    appendQuestion(question);
-    questionInput.focus();
-  });
-}
+setupExampleRibbon();
 
 function appendQuestion(question) {
   const currentValue = questionInput.value.trimEnd();
@@ -285,9 +289,6 @@ function resetUi() {
 function setBusy(isBusy) {
   sendButton.disabled = isBusy;
   questionInput.disabled = isBusy;
-  for (const button of exampleButtons) {
-    button.disabled = isBusy;
-  }
 }
 
 function setStatus(text, isError) {
@@ -337,4 +338,116 @@ function formatLocation(block) {
     parts.push(`row ${block.row_number}`);
   }
   return parts.length ? parts.join(" | ") : block.doc_type || "No location metadata";
+}
+
+function setupExampleRibbon() {
+  if (!exampleRibbon || !exampleViewport || !exampleTrack || !examplesBack || !examplesForward) {
+    return;
+  }
+
+  const originalButtons = [...exampleTrack.querySelectorAll("[data-question]")];
+  for (const button of originalButtons) {
+    const clone = button.cloneNode(true);
+    clone.setAttribute("aria-hidden", "true");
+    clone.tabIndex = -1;
+    exampleTrack.append(clone);
+  }
+
+  exampleTrack.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const button = target?.closest("[data-question]");
+    if (!button || exampleSuppressClick) {
+      exampleSuppressClick = false;
+      return;
+    }
+    appendQuestion(button.dataset.question || "");
+    questionInput.focus();
+  });
+
+  exampleRibbon.addEventListener("mouseenter", () => {
+    exampleAutoScrollPaused = true;
+  });
+  exampleRibbon.addEventListener("mouseleave", () => {
+    exampleAutoScrollPaused = false;
+  });
+  exampleRibbon.addEventListener("focusin", () => {
+    exampleAutoScrollPaused = true;
+  });
+  exampleRibbon.addEventListener("focusout", () => {
+    exampleAutoScrollPaused = false;
+  });
+
+  exampleViewport.addEventListener("pointerdown", startExampleDrag);
+  exampleViewport.addEventListener("pointermove", dragExamples);
+  exampleViewport.addEventListener("pointerup", stopExampleDrag);
+  exampleViewport.addEventListener("pointercancel", stopExampleDrag);
+  exampleViewport.addEventListener("lostpointercapture", stopExampleDrag);
+
+  examplesBack.addEventListener("click", () => scrollExamplesBy(-exampleViewport.clientWidth * 0.7));
+  examplesForward.addEventListener("click", () => scrollExamplesBy(exampleViewport.clientWidth * 0.7));
+
+  requestAnimationFrame(autoScrollExamples);
+}
+
+function startExampleDrag(event) {
+  exampleDragging = true;
+  exampleAutoScrollPaused = true;
+  exampleDragStartX = event.clientX;
+  exampleDragStartScrollLeft = exampleViewport.scrollLeft;
+  exampleViewport.classList.add("is-dragging");
+  exampleViewport.setPointerCapture(event.pointerId);
+}
+
+function dragExamples(event) {
+  if (!exampleDragging) {
+    return;
+  }
+  event.preventDefault();
+  const deltaX = event.clientX - exampleDragStartX;
+  if (Math.abs(deltaX) > 6) {
+    exampleSuppressClick = true;
+  }
+  exampleViewport.scrollLeft = exampleDragStartScrollLeft - deltaX;
+  rotateExampleScroll();
+}
+
+function stopExampleDrag() {
+  if (!exampleDragging) {
+    return;
+  }
+  exampleDragging = false;
+  exampleViewport.classList.remove("is-dragging");
+  exampleAutoScrollPaused = exampleRibbon.matches(":hover") || exampleRibbon.matches(":focus-within");
+}
+
+function scrollExamplesBy(distance) {
+  exampleViewport.scrollBy({ left: distance, behavior: "smooth" });
+  window.setTimeout(rotateExampleScroll, 260);
+}
+
+function autoScrollExamples(timestamp) {
+  if (!exampleLastFrameTime) {
+    exampleLastFrameTime = timestamp;
+  }
+  const elapsed = timestamp - exampleLastFrameTime;
+  exampleLastFrameTime = timestamp;
+
+  if (!exampleAutoScrollPaused && !exampleDragging) {
+    exampleViewport.scrollLeft += elapsed * 0.025;
+    rotateExampleScroll();
+  }
+
+  requestAnimationFrame(autoScrollExamples);
+}
+
+function rotateExampleScroll() {
+  const midpoint = exampleTrack.scrollWidth / 2;
+  if (midpoint <= 0) {
+    return;
+  }
+  if (exampleViewport.scrollLeft >= midpoint) {
+    exampleViewport.scrollLeft -= midpoint;
+  } else if (exampleViewport.scrollLeft < 0) {
+    exampleViewport.scrollLeft += midpoint;
+  }
 }

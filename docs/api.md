@@ -152,7 +152,8 @@ streaming API, and renders answer deltas as they arrive.
 Implemented UI elements:
 
 - chat input
-- clickable example question buttons that append text to the chat input
+- sideways scrolling example-question ribbon with buttons that append text to
+  the chat input
 - send button
 - file upload control, currently disabled because no upload route exists yet
 - streaming answer panel
@@ -176,6 +177,9 @@ tool-calling loop.
 The UI is sized as a full-height app surface on desktop so the composer remains
 visible while the answer and debug panels scroll. On narrower screens, the debug
 panel moves below the chat panel.
+
+The example ribbon slowly scrolls on its own, pauses on hover or focus, supports
+left/right arrow buttons, and can be dragged horizontally.
 
 ## Still Not Implemented
 

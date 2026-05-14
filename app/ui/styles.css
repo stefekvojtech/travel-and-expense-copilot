@@ -209,16 +209,48 @@ h3 {
   background: var(--surface-alt);
 }
 
-.example-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.example-ribbon {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 6px;
   margin-bottom: 10px;
 }
 
+.example-viewport {
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  cursor: grab;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 24px,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+}
+
+.example-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.example-viewport.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.example-track {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+  padding: 1px 0;
+}
+
 .example-button {
+  flex: 0 0 auto;
   min-height: 32px;
-  max-width: 100%;
+  max-width: 220px;
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   padding: 6px 10px;
@@ -232,6 +264,23 @@ h3 {
 }
 
 .example-button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ribbon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+}
+
+.ribbon-button:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
@@ -496,9 +545,17 @@ pre {
     flex-direction: column;
   }
 
-  .example-bar {
-    display: grid;
-    grid-template-columns: 1fr;
+  .example-ribbon {
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+  }
+
+  .ribbon-button {
+    width: 30px;
+    height: 30px;
+  }
+
+  .example-button {
+    max-width: 210px;
   }
 
   .file-control,
