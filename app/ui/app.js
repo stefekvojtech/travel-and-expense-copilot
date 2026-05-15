@@ -275,18 +275,19 @@ function renderEvidence(blocks) {
       const snippetWrapper = document.createElement("div");
       snippetWrapper.className = "evidence-text-wrap";
 
-      const expandButton = document.createElement("button");
-      expandButton.type = "button";
-      expandButton.className = "evidence-expand";
-      expandButton.textContent = "more";
-      expandButton.setAttribute("aria-expanded", "false");
-      expandButton.addEventListener("click", () => {
+      const expandLink = document.createElement("a");
+      expandLink.className = "evidence-expand";
+      expandLink.href = "#";
+      expandLink.textContent = "more";
+      expandLink.setAttribute("aria-expanded", "false");
+      expandLink.addEventListener("click", (event) => {
+        event.preventDefault();
         const isExpanded = item.classList.toggle("is-expanded");
-        expandButton.textContent = isExpanded ? "less" : "more";
-        expandButton.setAttribute("aria-expanded", String(isExpanded));
+        expandLink.textContent = isExpanded ? "less" : "more";
+        expandLink.setAttribute("aria-expanded", String(isExpanded));
       });
 
-      snippetWrapper.append(snippet, expandButton);
+      snippetWrapper.append(snippet, expandLink);
       item.append(title, meta, snippetWrapper);
       return item;
     }),

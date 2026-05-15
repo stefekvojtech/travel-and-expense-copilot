@@ -540,9 +540,24 @@ textarea:focus {
   line-height: 1.45;
 }
 
+.evidence-text-wrap::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 4.4em;
+  height: 1.45em;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0%), #ffffff 38%);
+  content: "";
+  pointer-events: none;
+}
+
 .evidence-item.is-expanded .evidence-text {
   display: block;
   -webkit-line-clamp: unset;
+}
+
+.evidence-item.is-expanded .evidence-text-wrap::after {
+  display: none;
 }
 
 .evidence-expand {
@@ -550,14 +565,14 @@ textarea:focus {
   right: 0;
   bottom: 0;
   min-height: 1.45em;
-  border: 0;
-  padding: 0 0 0 6px;
-  background: #ffffff;
+  padding-left: 6px;
+  background: transparent;
   color: var(--accent);
   font-size: 0.86rem;
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 2px;
+  z-index: 1;
 }
 
 .evidence-expand:hover,
@@ -567,7 +582,7 @@ textarea:focus {
 }
 
 .evidence-item.is-citation-highlighted .evidence-expand {
-  background: var(--accent-soft);
+  background: transparent;
 }
 
 .evidence-item.is-expanded .evidence-expand {
