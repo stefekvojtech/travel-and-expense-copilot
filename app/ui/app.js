@@ -494,9 +494,6 @@ function formatLocation(block) {
   if (block.page_label) {
     parts.push(`page ${block.page_label}`);
   }
-  if (block.sheet_label) {
-    parts.push(`sheet ${block.sheet_label}`);
-  }
   if (block.row_number !== null && block.row_number !== undefined) {
     parts.push(`row ${block.row_number}`);
   }
