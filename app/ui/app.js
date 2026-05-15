@@ -272,18 +272,22 @@ function renderEvidence(blocks) {
       const snippet = textElement("p", block.text || "");
       snippet.className = "evidence-text";
 
+      const snippetWrapper = document.createElement("div");
+      snippetWrapper.className = "evidence-text-wrap";
+
       const expandButton = document.createElement("button");
       expandButton.type = "button";
       expandButton.className = "evidence-expand";
-      expandButton.textContent = "Read more";
+      expandButton.textContent = "more";
       expandButton.setAttribute("aria-expanded", "false");
       expandButton.addEventListener("click", () => {
         const isExpanded = item.classList.toggle("is-expanded");
-        expandButton.textContent = isExpanded ? "Show less" : "Read more";
+        expandButton.textContent = isExpanded ? "less" : "more";
         expandButton.setAttribute("aria-expanded", String(isExpanded));
       });
 
-      item.append(title, meta, snippet, expandButton);
+      snippetWrapper.append(snippet, expandButton);
+      item.append(title, meta, snippetWrapper);
       return item;
     }),
   );
