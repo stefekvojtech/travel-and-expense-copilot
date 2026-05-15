@@ -542,7 +542,7 @@ textarea:focus {
   font: inherit;
 }
 
-.evidence-text-wrap::after {
+.evidence-item.has-overflowing-evidence .evidence-text-wrap::after {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -559,6 +559,10 @@ textarea:focus {
 }
 
 .evidence-item.is-expanded .evidence-text-wrap::after {
+  display: none;
+}
+
+.evidence-expand[hidden] {
   display: none;
 }
 

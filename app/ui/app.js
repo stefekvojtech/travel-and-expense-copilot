@@ -44,6 +44,9 @@ form.addEventListener("submit", (event) => {
 });
 
 questionInput.addEventListener("input", resizeQuestionInput);
+window.addEventListener("resize", () => {
+  requestAnimationFrame(syncEvidenceExpandLinks);
+});
 
 questionInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || event.shiftKey) {
@@ -285,6 +288,7 @@ function renderEvidence(blocks) {
         const isExpanded = item.classList.toggle("is-expanded");
         expandLink.textContent = isExpanded ? "less" : "more";
         expandLink.setAttribute("aria-expanded", String(isExpanded));
+        requestAnimationFrame(() => syncEvidenceExpandLink(item));
       });
 
       snippetWrapper.append(snippet, expandLink);
@@ -292,6 +296,7 @@ function renderEvidence(blocks) {
       return item;
     }),
   );
+  requestAnimationFrame(syncEvidenceExpandLinks);
 }
 
 function renderAnswerWithCitations(answer, citations) {
@@ -395,6 +400,27 @@ function renderWarnings(warnings) {
       textElement("li", warning),
     ),
   );
+}
+
+function syncEvidenceExpandLinks() {
+  for (const item of evidenceList.querySelectorAll(".evidence-item")) {
+    syncEvidenceExpandLink(item);
+  }
+}
+
+function syncEvidenceExpandLink(item) {
+  const text = item.querySelector(".evidence-text");
+  const expandLink = item.querySelector(".evidence-expand");
+  if (!text || !expandLink) {
+    return;
+  }
+
+  const isExpanded = item.classList.contains("is-expanded");
+  const isOverflowing = text.scrollHeight > text.clientHeight + 1;
+  const shouldShowLink = isExpanded || isOverflowing;
+
+  item.classList.toggle("has-overflowing-evidence", shouldShowLink);
+  expandLink.hidden = !shouldShowLink;
 }
 
 function resetUi() {

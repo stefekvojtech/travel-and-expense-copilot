@@ -181,7 +181,7 @@ the composer stays compact on smaller screens.
 Implemented debug fields:
 
 - retrieved chunks, with source filenames shown instead of full source paths
-  and an inline `more` control for expanding full chunk text
+  and an inline `more` control when chunk text is truncated
 - rerank scores
 - citations
 - confidence
