@@ -11,13 +11,10 @@
 
 - order: `1`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `41` sheet='README' section='Sheet: README'
+- tokens: `32` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 2}`
 
 ```text
-Sheet: README
-Row: 2
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Purpose
 column_2: Synthetic data source for local RAG and agentic reimbursement demo.
 ```
@@ -26,13 +23,10 @@ column_2: Synthetic data source for local RAG and agentic reimbursement demo.
 
 - order: `2`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `35` sheet='README' section='Sheet: README'
+- tokens: `26` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 3}`
 
 ```text
-Sheet: README
-Row: 3
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Version
 column_2: PDC-2026.2
 ```
@@ -41,13 +35,10 @@ column_2: PDC-2026.2
 
 - order: `3`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `36` sheet='README' section='Sheet: README'
+- tokens: `27` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 4}`
 
 ```text
-Sheet: README
-Row: 4
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Effective date
 column_2: 2026-01-01
 ```
@@ -56,13 +47,10 @@ column_2: 2026-01-01
 
 - order: `4`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `30` sheet='README' section='Sheet: README'
+- tokens: `21` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 5}`
 
 ```text
-Sheet: README
-Row: 5
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Owner
 column_2: Finance Operations
 ```
@@ -71,13 +59,10 @@ column_2: Finance Operations
 
 - order: `5`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `52` sheet='README' section='Sheet: README'
+- tokens: `43` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 6}`
 
 ```text
-Sheet: README
-Row: 6
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Source priority
 column_2: Use this workbook for numeric caps, thresholds, and deterministic lookups. Use PDF/HTML for narrative policy rules.
 ```
@@ -86,13 +71,10 @@ column_2: Use this workbook for numeric caps, thresholds, and deterministic look
 
 - order: `6`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `49` sheet='README' section='Sheet: README'
+- tokens: `40` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 7}`
 
 ```text
-Sheet: README
-Row: 7
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: RAG note
 column_2: Every sheet is intentionally structured differently so loaders must preserve sheet name, row context, and metadata.
 ```
@@ -101,13 +83,10 @@ column_2: Every sheet is intentionally structured differently so loaders must pr
 
 - order: `7`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `56` sheet='README' section='Sheet: README'
+- tokens: `47` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 8}`
 
 ```text
-Sheet: README
-Row: 8
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Recommended metadata
 column_2: doc_type=xlsx, source_name=per_diem_caps.xlsx, sheet=<sheet>, effective_date=2026-01-01
 ```
@@ -116,13 +95,10 @@ column_2: doc_type=xlsx, source_name=per_diem_caps.xlsx, sheet=<sheet>, effectiv
 
 - order: `8`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `28` sheet='README' section='Sheet: README'
+- tokens: `19` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 9}`
 
 ```text
-Sheet: README
-Row: 9
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Sheets
 column_2:
 ```
@@ -131,13 +107,10 @@ column_2:
 
 - order: `9`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `45` sheet='README' section='Sheet: README'
+- tokens: `36` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 10}`
 
 ```text
-Sheet: README
-Row: 10
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: PerDiemCaps
 column_2: Meal, hotel, taxi, and laundry caps by country/city.
 ```
@@ -146,13 +119,10 @@ column_2: Meal, hotel, taxi, and laundry caps by country/city.
 
 - order: `10`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `38` sheet='README' section='Sheet: README'
+- tokens: `29` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 11}`
 
 ```text
-Sheet: README
-Row: 11
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: TaxiRules
 column_2: After-hours thresholds and city-specific transport notes.
 ```
@@ -161,13 +131,10 @@ column_2: After-hours thresholds and city-specific transport notes.
 
 - order: `11`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `38` sheet='README' section='Sheet: README'
+- tokens: `29` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 12}`
 
 ```text
-Sheet: README
-Row: 12
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: MileageRates
 column_2: Private car mileage rates and approval thresholds.
 ```
@@ -176,13 +143,10 @@ column_2: Private car mileage rates and approval thresholds.
 
 - order: `12`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `37` sheet='README' section='Sheet: README'
+- tokens: `28` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 13}`
 
 ```text
-Sheet: README
-Row: 13
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: ExchangeRates
 column_2: Monthly finance exchange rates for claim conversion.
 ```
@@ -191,13 +155,10 @@ column_2: Monthly finance exchange rates for claim conversion.
 
 - order: `13`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `35` sheet='README' section='Sheet: README'
+- tokens: `26` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 14}`
 
 ```text
-Sheet: README
-Row: 14
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: ApprovalMatrix
 column_2: Numeric thresholds for approval routing.
 ```
@@ -206,13 +167,10 @@ column_2: Numeric thresholds for approval routing.
 
 - order: `14`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `38` sheet='README' section='Sheet: README'
+- tokens: `29` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 15}`
 
 ```text
-Sheet: README
-Row: 15
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: ClaimExamples
 column_2: Worked examples with formulas for reimbursement logic.
 ```
@@ -221,13 +179,10 @@ column_2: Worked examples with formulas for reimbursement logic.
 
 - order: `15`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `37` sheet='README' section='Sheet: README'
+- tokens: `28` sheet='README' section='Sheet: README'
 - metadata: `{"row_number": 16}`
 
 ```text
-Sheet: README
-Row: 16
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: PolicyTags
 column_2: Metadata tags useful for filtering and retrieval.
 ```
@@ -236,13 +191,10 @@ column_2: Metadata tags useful for filtering and retrieval.
 
 - order: `16`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `111` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `99` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 2, "country_code": "AT", "country": "Austria", "city": "Vienna", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 2
-
 country_code: AT
 country: Austria
 city: Vienna
@@ -262,13 +214,10 @@ effective_date: 2026-01-01
 
 - order: `17`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `112` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `100` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 3, "country_code": "AT", "country": "Austria", "city": "Graz", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 3
-
 country_code: AT
 country: Austria
 city: Graz
@@ -288,13 +237,10 @@ effective_date: 2026-01-01
 
 - order: `18`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `106` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `94` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 4, "country_code": "AT", "country": "Austria", "city": "Linz", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 4
-
 country_code: AT
 country: Austria
 city: Linz
@@ -314,13 +260,10 @@ effective_date: 2026-01-01
 
 - order: `19`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `116` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `104` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 5, "country_code": "CZ", "country": "Czechia", "city": "Prague", "currency": "CZK"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 5
-
 country_code: CZ
 country: Czechia
 city: Prague
@@ -340,13 +283,10 @@ effective_date: 2026-01-01
 
 - order: `20`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `115` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `103` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 6, "country_code": "CZ", "country": "Czechia", "city": "Brno", "currency": "CZK"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 6
-
 country_code: CZ
 country: Czechia
 city: Brno
@@ -366,13 +306,10 @@ effective_date: 2026-01-01
 
 - order: `21`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `116` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `104` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 7, "country_code": "CZ", "country": "Czechia", "city": "Ostrava", "currency": "CZK"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 7
-
 country_code: CZ
 country: Czechia
 city: Ostrava
@@ -392,13 +329,10 @@ effective_date: 2026-01-01
 
 - order: `22`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `110` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `98` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 8, "country_code": "DE", "country": "Germany", "city": "Berlin", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 8
-
 country_code: DE
 country: Germany
 city: Berlin
@@ -418,13 +352,10 @@ effective_date: 2026-01-01
 
 - order: `23`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `108` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `96` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 9, "country_code": "DE", "country": "Germany", "city": "Munich", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 9
-
 country_code: DE
 country: Germany
 city: Munich
@@ -444,13 +375,10 @@ effective_date: 2026-01-01
 
 - order: `24`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `109` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `97` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 10, "country_code": "DE", "country": "Germany", "city": "Frankfurt", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 10
-
 country_code: DE
 country: Germany
 city: Frankfurt
@@ -470,13 +398,10 @@ effective_date: 2026-01-01
 
 - order: `25`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `115` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `103` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 11, "country_code": "CH", "country": "Switzerland", "city": "Zurich", "currency": "CHF"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 11
-
 country_code: CH
 country: Switzerland
 city: Zurich
@@ -496,13 +421,10 @@ effective_date: 2026-01-01
 
 - order: `26`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `107` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `95` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 12, "country_code": "CH", "country": "Switzerland", "city": "Basel", "currency": "CHF"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 12
-
 country_code: CH
 country: Switzerland
 city: Basel
@@ -522,13 +444,10 @@ effective_date: 2026-01-01
 
 - order: `27`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `110` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `98` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 13, "country_code": "NL", "country": "Netherlands", "city": "Amsterdam", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 13
-
 country_code: NL
 country: Netherlands
 city: Amsterdam
@@ -548,13 +467,10 @@ effective_date: 2026-01-01
 
 - order: `28`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `111` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `99` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 14, "country_code": "FR", "country": "France", "city": "Paris", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 14
-
 country_code: FR
 country: France
 city: Paris
@@ -574,13 +490,10 @@ effective_date: 2026-01-01
 
 - order: `29`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `111` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `99` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 15, "country_code": "GB", "country": "United Kingdom", "city": "London", "currency": "GBP"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 15
-
 country_code: GB
 country: United Kingdom
 city: London
@@ -600,13 +513,10 @@ effective_date: 2026-01-01
 
 - order: `30`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `115` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `103` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 16, "country_code": "US", "country": "United States", "city": "New York", "currency": "USD"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 16
-
 country_code: US
 country: United States
 city: New York
@@ -626,13 +536,10 @@ effective_date: 2026-01-01
 
 - order: `31`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `114` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `102` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 17, "country_code": "US", "country": "United States", "city": "Houston", "currency": "USD"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 17
-
 country_code: US
 country: United States
 city: Houston
@@ -652,13 +559,10 @@ effective_date: 2026-01-01
 
 - order: `32`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `109` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `97` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 18, "country_code": "PL", "country": "Poland", "city": "Warsaw", "currency": "PLN"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 18
-
 country_code: PL
 country: Poland
 city: Warsaw
@@ -678,13 +582,10 @@ effective_date: 2026-01-01
 
 - order: `33`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `115` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `103` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 19, "country_code": "HU", "country": "Hungary", "city": "Budapest", "currency": "HUF"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 19
-
 country_code: HU
 country: Hungary
 city: Budapest
@@ -704,13 +605,10 @@ effective_date: 2026-01-01
 
 - order: `34`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `112` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `100` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 20, "country_code": "IT", "country": "Italy", "city": "Milan", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 20
-
 country_code: IT
 country: Italy
 city: Milan
@@ -730,13 +628,10 @@ effective_date: 2026-01-01
 
 - order: `35`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `110` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
+- tokens: `98` sheet='PerDiemCaps' section='Sheet: PerDiemCaps'
 - metadata: `{"row_number": 21, "country_code": "ES", "country": "Spain", "city": "Madrid", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 21
-
 country_code: ES
 country: Spain
 city: Madrid
@@ -756,13 +651,10 @@ effective_date: 2026-01-01
 
 - order: `36`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `102` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `92` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 2, "country_code": "AT", "city": "Vienna"}`
 
 ```text
-Sheet: TaxiRules
-Row: 2
-
 country_code: AT
 city: Vienna
 default_after_hours_threshold: 22:00
@@ -777,13 +669,10 @@ audit_note: Before 22:00 route evidence and exception reason are important.
 
 - order: `37`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `98` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `88` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 3, "country_code": "CZ", "city": "Prague"}`
 
 ```text
-Sheet: TaxiRules
-Row: 3
-
 country_code: CZ
 city: Prague
 default_after_hours_threshold: 21:00
@@ -798,13 +687,10 @@ audit_note: 20:30 is not after-hours in Prague under default rule.
 
 - order: `38`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `84` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `74` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 4, "country_code": "CZ", "city": "Brno"}`
 
 ```text
-Sheet: TaxiRules
-Row: 4
-
 country_code: CZ
 city: Brno
 default_after_hours_threshold: 21:00
@@ -819,13 +705,10 @@ audit_note: Brno taxi claims often fail when business purpose is missing.
 
 - order: `39`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `78` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `68` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 5, "country_code": "DE", "city": "Berlin"}`
 
 ```text
-Sheet: TaxiRules
-Row: 5
-
 country_code: DE
 city: Berlin
 default_after_hours_threshold: 22:00
@@ -840,13 +723,10 @@ audit_note: Public transit is expected unless exception applies.
 
 - order: `40`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `77` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `67` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 6, "country_code": "DE", "city": "Munich"}`
 
 ```text
-Sheet: TaxiRules
-Row: 6
-
 country_code: DE
 city: Munich
 default_after_hours_threshold: 22:00
@@ -861,13 +741,10 @@ audit_note: Airport rides above EUR 90 require explanation.
 
 - order: `41`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `79` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `69` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 7, "country_code": "CH", "city": "Zurich"}`
 
 ```text
-Sheet: TaxiRules
-Row: 7
-
 country_code: CH
 city: Zurich
 default_after_hours_threshold: 22:30
@@ -882,13 +759,10 @@ audit_note: High taxi costs are reviewed against public transit options.
 
 - order: `42`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `78` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `68` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 8, "country_code": "FR", "city": "Paris"}`
 
 ```text
-Sheet: TaxiRules
-Row: 8
-
 country_code: FR
 city: Paris
 default_after_hours_threshold: 22:00
@@ -903,13 +777,10 @@ audit_note: Taxi receipts must include vendor and date.
 
 - order: `43`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `83` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `73` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 9, "country_code": "GB", "city": "London"}`
 
 ```text
-Sheet: TaxiRules
-Row: 9
-
 country_code: GB
 city: London
 default_after_hours_threshold: 22:30
@@ -924,13 +795,10 @@ audit_note: Black cab receipt without route needs manual route entry.
 
 - order: `44`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `78` sheet='TaxiRules' section='Sheet: TaxiRules'
+- tokens: `68` sheet='TaxiRules' section='Sheet: TaxiRules'
 - metadata: `{"row_number": 10, "country_code": "US", "city": "New York"}`
 
 ```text
-Sheet: TaxiRules
-Row: 10
-
 country_code: US
 city: New York
 default_after_hours_threshold: 22:00
@@ -945,13 +813,10 @@ audit_note: Tips above 20% require explanation in US cities.
 
 - order: `45`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `77` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `66` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 2, "country_code": "AT", "country": "Austria", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 2
-
 country_code: AT
 country: Austria
 currency: EUR
@@ -966,13 +831,10 @@ notes: Private mileage includes fuel, wear, and standard insurance.
 
 - order: `46`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `80` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `69` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 3, "country_code": "CZ", "country": "Czechia", "currency": "CZK"}`
 
 ```text
-Sheet: MileageRates
-Row: 3
-
 country_code: CZ
 country: Czechia
 currency: CZK
@@ -987,13 +849,10 @@ notes: Use local payroll/tax rate if different from Finance rate.
 
 - order: `47`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `75` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `64` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 4, "country_code": "DE", "country": "Germany", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 4
-
 country_code: DE
 country: Germany
 currency: EUR
@@ -1008,13 +867,10 @@ notes: Long-distance private car trips need manager approval.
 
 - order: `48`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `76` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `65` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 5, "country_code": "CH", "country": "Switzerland", "currency": "CHF"}`
 
 ```text
-Sheet: MileageRates
-Row: 5
-
 country_code: CH
 country: Switzerland
 currency: CHF
@@ -1029,13 +885,10 @@ notes: Parking can be claimed separately with business purpose.
 
 - order: `49`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `75` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `64` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 6, "country_code": "NL", "country": "Netherlands", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 6
-
 country_code: NL
 country: Netherlands
 currency: EUR
@@ -1050,13 +903,10 @@ notes: Bike mileage is not covered in this workbook.
 
 - order: `50`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `79` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `68` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 7, "country_code": "FR", "country": "France", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 7
-
 country_code: FR
 country: France
 currency: EUR
@@ -1071,13 +921,10 @@ notes: Tolls reimbursable with receipt if route was business-related.
 
 - order: `51`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `79` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `68` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 8, "country_code": "GB", "country": "United Kingdom", "currency": "GBP"}`
 
 ```text
-Sheet: MileageRates
-Row: 8
-
 country_code: GB
 country: United Kingdom
 currency: GBP
@@ -1092,13 +939,10 @@ notes: Use local HMRC-compliant value if Finance updates rate.
 
 - order: `52`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `77` sheet='MileageRates' section='Sheet: MileageRates'
+- tokens: `66` sheet='MileageRates' section='Sheet: MileageRates'
 - metadata: `{"row_number": 9, "country_code": "US", "country": "United States", "currency": "USD"}`
 
 ```text
-Sheet: MileageRates
-Row: 9
-
 country_code: US
 country: United States
 currency: USD
@@ -1113,13 +957,10 @@ notes: Use IRS-compliant rate if Finance updates rate.
 
 - order: `53`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `38` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `28` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 2, "currency": "EUR"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 2
-
 month: 2026-01
 currency: EUR
 eur_rate: 1
@@ -1131,13 +972,10 @@ notes: Base currency
 
 - order: `54`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `48` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `38` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 3, "currency": "CZK"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 3
-
 month: 2026-01
 currency: CZK
 eur_rate: 0.04
@@ -1149,13 +987,10 @@ notes: 25 CZK = 1 EUR equivalent
 
 - order: `55`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `45` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `35` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 4, "currency": "CHF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 4
-
 month: 2026-01
 currency: CHF
 eur_rate: 1.06
@@ -1167,13 +1002,10 @@ notes: Use for Swiss caps and claims
 
 - order: `56`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `42` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `32` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 5, "currency": "GBP"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 5
-
 month: 2026-01
 currency: GBP
 eur_rate: 1.17
@@ -1185,13 +1017,10 @@ notes: Use for UK claims
 
 - order: `57`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `42` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `32` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 6, "currency": "USD"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 6
-
 month: 2026-01
 currency: USD
 eur_rate: 0.92
@@ -1203,13 +1032,10 @@ notes: Use for US claims
 
 - order: `58`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `43` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `33` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 7, "currency": "PLN"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 7
-
 month: 2026-01
 currency: PLN
 eur_rate: 0.23
@@ -1221,13 +1047,10 @@ notes: Use for Poland claims
 
 - order: `59`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `44` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `34` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 8, "currency": "HUF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 8
-
 month: 2026-01
 currency: HUF
 eur_rate: 0.0026
@@ -1239,13 +1062,10 @@ notes: Use for Hungary claims
 
 - order: `60`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `38` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `28` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 9, "currency": "EUR"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 9
-
 month: 2026-02
 currency: EUR
 eur_rate: 1
@@ -1257,13 +1077,10 @@ notes: Base currency
 
 - order: `61`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `43` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `33` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 10, "currency": "CZK"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 10
-
 month: 2026-02
 currency: CZK
 eur_rate: 0.0396
@@ -1275,13 +1092,10 @@ notes: Monthly conversion rate
 
 - order: `62`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `42` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `32` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 11, "currency": "CHF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 11
-
 month: 2026-02
 currency: CHF
 eur_rate: 1.05
@@ -1293,13 +1107,10 @@ notes: Monthly conversion rate
 
 - order: `63`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `41` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `31` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 12, "currency": "GBP"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 12
-
 month: 2026-02
 currency: GBP
 eur_rate: 1.16
@@ -1311,13 +1122,10 @@ notes: Monthly conversion rate
 
 - order: `64`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `41` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `31` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 13, "currency": "USD"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 13
-
 month: 2026-02
 currency: USD
 eur_rate: 0.93
@@ -1329,13 +1137,10 @@ notes: Monthly conversion rate
 
 - order: `65`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `42` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `32` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 14, "currency": "PLN"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 14
-
 month: 2026-02
 currency: PLN
 eur_rate: 0.231
@@ -1347,13 +1152,10 @@ notes: Monthly conversion rate
 
 - order: `66`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `43` sheet='ExchangeRates' section='Sheet: ExchangeRates'
+- tokens: `33` sheet='ExchangeRates' section='Sheet: ExchangeRates'
 - metadata: `{"row_number": 15, "currency": "HUF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 15
-
 month: 2026-02
 currency: HUF
 eur_rate: 0.00255
@@ -1365,13 +1167,10 @@ notes: Monthly conversion rate
 
 - order: `67`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `63` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `53` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 2, "currency": "EUR"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 2
-
 scenario: Client entertainment total
 threshold: 120
 currency: EUR
@@ -1385,13 +1184,10 @@ notes: Requires attendee list and business purpose.
 
 - order: `68`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `57` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `47` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 3, "currency": "EUR"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 3
-
 scenario: Missing receipt declaration
 threshold: 25
 currency: EUR
@@ -1405,13 +1201,10 @@ notes: Repeated missing evidence can trigger manual review.
 
 - order: `69`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `64` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `54` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 4, "currency": "N/A"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 4
-
 scenario: Hotel above city cap
 threshold: 0
 currency: N/A
@@ -1425,13 +1218,10 @@ notes: Document lack of reasonable alternatives.
 
 - order: `70`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `62` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `52` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 5, "currency": "km"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 5
-
 scenario: Private car one-way distance
 threshold: 150
 currency: km
@@ -1445,13 +1235,10 @@ notes: Applies unless plant visit exception is documented.
 
 - order: `71`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `58` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `48` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 6, "currency": "hours"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 6
-
 scenario: Business class flight duration
 threshold: 6
 currency: hours
@@ -1465,13 +1252,10 @@ notes: Also requires business reason.
 
 - order: `72`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `60` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `50` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 7, "currency": "days"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 7
-
 scenario: Late expense submission
 threshold: 90
 currency: days
@@ -1485,13 +1269,10 @@ notes: Claims older than 90 days normally rejected.
 
 - order: `73`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `59` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
+- tokens: `49` sheet='ApprovalMatrix' section='Sheet: ApprovalMatrix'
 - metadata: `{"row_number": 8, "currency": "EUR"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 8
-
 scenario: Team celebration per person
 threshold: 50
 currency: EUR
@@ -1505,13 +1286,10 @@ notes: Not normal travel expense category.
 
 - order: `74`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `102` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `92` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 2, "country_code": "AT", "city": "Vienna", "expense_category": "Dinner", "currency": "EUR"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 2
-
 claim_id: C-001
 city: Vienna
 country_code: AT
@@ -1532,13 +1310,10 @@ notes: Wine excluded; food portion 32 EUR below cap.
 
 - order: `75`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `95` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `85` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 3, "country_code": "DE", "city": "Berlin", "expense_category": "Hotel", "currency": "EUR"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 3
-
 claim_id: C-002
 city: Berlin
 country_code: DE
@@ -1559,13 +1334,10 @@ notes: Within cap.
 
 - order: `76`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `105` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `95` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 4, "country_code": "CZ", "city": "Prague", "expense_category": "Taxi", "currency": "CZK"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 4
-
 claim_id: C-003
 city: Prague
 country_code: CZ
@@ -1586,13 +1358,10 @@ notes: Eligibility depends on time threshold and exception reason.
 
 - order: `77`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `109` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `99` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 5, "country_code": "CH", "city": "Zurich", "expense_category": "Hotel", "currency": "CHF"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 5
-
 claim_id: C-004
 city: Zurich
 country_code: CH
@@ -1613,13 +1382,10 @@ notes: Above cap without approval; reimbursable hint capped.
 
 - order: `78`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `109` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `99` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 6, "country_code": "GB", "city": "London", "expense_category": "Dinner", "currency": "GBP"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 6
-
 claim_id: C-005
 city: London
 country_code: GB
@@ -1640,13 +1406,10 @@ notes: Above meal cap; excess requires approval.
 
 - order: `79`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `101` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `91` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 7, "country_code": "US", "city": "New York", "expense_category": "Dinner", "currency": "USD"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 7
-
 claim_id: C-006
 city: New York
 country_code: US
@@ -1667,13 +1430,10 @@ notes: Within cap.
 
 - order: `80`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `104` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `94` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 8, "country_code": "AT", "city": "Vienna", "expense_category": "Client dinner", "currency": "EUR"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 8
-
 claim_id: C-007
 city: Vienna
 country_code: AT
@@ -1694,13 +1454,10 @@ notes: Pre-approved client entertainment can include alcohol if attendee list ex
 
 - order: `81`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `106` sheet='ClaimExamples' section='Sheet: ClaimExamples'
+- tokens: `96` sheet='ClaimExamples' section='Sheet: ClaimExamples'
 - metadata: `{"row_number": 9, "country_code": "CZ", "city": "Brno", "expense_category": "Hotel", "currency": "CZK"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 9
-
 claim_id: C-008
 city: Brno
 country_code: CZ
@@ -1721,13 +1478,10 @@ notes: Above cap; needs approval or documented shortage.
 
 - order: `82`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `75` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `65` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 2, "country": "AT", "city": "Vienna", "expense_category": "meals"}`
 
 ```text
-Sheet: PolicyTags
-Row: 2
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: PerDiemCaps
 doc_type: xlsx
@@ -1742,13 +1496,10 @@ notes: Use for meal and hotel cap questions.
 
 - order: `83`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `71` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `61` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 3, "country": "DE", "city": "Berlin", "expense_category": "hotel"}`
 
 ```text
-Sheet: PolicyTags
-Row: 3
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: PerDiemCaps
 doc_type: xlsx
@@ -1763,13 +1514,10 @@ notes: Use for hotel cap questions.
 
 - order: `84`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `72` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `62` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 4, "country": "CZ", "city": "Prague", "expense_category": "taxi"}`
 
 ```text
-Sheet: PolicyTags
-Row: 4
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: TaxiRules
 doc_type: xlsx
@@ -1784,13 +1532,10 @@ notes: Use for taxi after-hours checks.
 
 - order: `85`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `66` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `56` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 5, "country": "AT", "expense_category": "mileage"}`
 
 ```text
-Sheet: PolicyTags
-Row: 5
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: MileageRates
 doc_type: xlsx
@@ -1805,13 +1550,10 @@ notes: Use for private car mileage rate.
 
 - order: `86`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `57` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `47` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 6, "expense_category": "receipts"}`
 
 ```text
-Sheet: PolicyTags
-Row: 6
-
 source_name: expense_policy.html
 sheet_or_section: Receipts
 doc_type: html
@@ -1826,13 +1568,10 @@ notes: Use for evidence and missing receipt questions.
 
 - order: `87`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `58` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `48` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 7, "expense_category": "meals"}`
 
 ```text
-Sheet: PolicyTags
-Row: 7
-
 source_name: expense_policy.html
 sheet_or_section: Meals
 doc_type: html
@@ -1847,13 +1586,10 @@ notes: Use for alcohol, tips, and meal eligibility.
 
 - order: `88`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `62` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `52` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 8, "expense_category": "flights"}`
 
 ```text
-Sheet: PolicyTags
-Row: 8
-
 source_name: travel_policy.pdf
 sheet_or_section: Flights
 doc_type: pdf
@@ -1868,13 +1604,10 @@ notes: Use for flight class, boarding pass, and air travel logistics.
 
 - order: `89`
 - strategy: `xlsx_row_as_chunk`
-- tokens: `55` sheet='PolicyTags' section='Sheet: PolicyTags'
+- tokens: `45` sheet='PolicyTags' section='Sheet: PolicyTags'
 - metadata: `{"row_number": 9, "expense_category": "approval"}`
 
 ```text
-Sheet: PolicyTags
-Row: 9
-
 source_name: travel_policy.pdf
 sheet_or_section: Approval Matrix
 doc_type: pdf

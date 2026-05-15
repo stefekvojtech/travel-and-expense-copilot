@@ -272,7 +272,7 @@ function renderEvidence(blocks) {
         textElement("span", `Similarity ${formatNumber(block.approximate_cosine_similarity)}`),
       );
 
-      const snippet = textElement("p", formatEvidenceText(block));
+      const snippet = textElement("p", block.text || "");
       snippet.className = "evidence-text";
 
       const snippetWrapper = document.createElement("div");
@@ -498,14 +498,6 @@ function formatLocation(block) {
     parts.push(`row ${block.row_number}`);
   }
   return parts.length ? parts.join(" | ") : block.doc_type || "No location metadata";
-}
-
-function formatEvidenceText(block) {
-  const text = block.text || "";
-  if (block.doc_type !== "xlsx") {
-    return text;
-  }
-  return text.replace(/^Sheet:\s*[^\r\n]+\r?\nRow:\s*[^\r\n]+\r?\n\s*/i, "");
 }
 
 function formatSourceName(sourcePath) {

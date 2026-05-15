@@ -34,9 +34,6 @@ Columns: Atlas Mobility Group - Per Diem Caps Workbook 2026, column_2
 - metadata: `{"row_number": 2, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Purpose", "column_2": "Synthetic data source for local RAG and agentic reimbursement demo."}}`
 
 ```text
-Sheet: README
-Row: 2
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Purpose
 column_2: Synthetic data source for local RAG and agentic reimbursement demo.
 ```
@@ -48,9 +45,6 @@ column_2: Synthetic data source for local RAG and agentic reimbursement demo.
 - metadata: `{"row_number": 3, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Version", "column_2": "PDC-2026.2"}}`
 
 ```text
-Sheet: README
-Row: 3
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Version
 column_2: PDC-2026.2
 ```
@@ -62,9 +56,6 @@ column_2: PDC-2026.2
 - metadata: `{"row_number": 4, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Effective date", "column_2": "2026-01-01"}}`
 
 ```text
-Sheet: README
-Row: 4
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Effective date
 column_2: 2026-01-01
 ```
@@ -76,9 +67,6 @@ column_2: 2026-01-01
 - metadata: `{"row_number": 5, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Owner", "column_2": "Finance Operations"}}`
 
 ```text
-Sheet: README
-Row: 5
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Owner
 column_2: Finance Operations
 ```
@@ -90,9 +78,6 @@ column_2: Finance Operations
 - metadata: `{"row_number": 6, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Source priority", "column_2": "Use this workbook for numeric caps, thresholds, and deterministic lookups. Use PDF/HTML for narrative policy rules."}}`
 
 ```text
-Sheet: README
-Row: 6
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Source priority
 column_2: Use this workbook for numeric caps, thresholds, and deterministic lookups. Use PDF/HTML for narrative policy rules.
 ```
@@ -104,9 +89,6 @@ column_2: Use this workbook for numeric caps, thresholds, and deterministic look
 - metadata: `{"row_number": 7, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "RAG note", "column_2": "Every sheet is intentionally structured differently so loaders must preserve sheet name, row context, and metadata."}}`
 
 ```text
-Sheet: README
-Row: 7
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: RAG note
 column_2: Every sheet is intentionally structured differently so loaders must preserve sheet name, row context, and metadata.
 ```
@@ -118,9 +100,6 @@ column_2: Every sheet is intentionally structured differently so loaders must pr
 - metadata: `{"row_number": 8, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Recommended metadata", "column_2": "doc_type=xlsx, source_name=per_diem_caps.xlsx, sheet=<sheet>, effective_date=2026-01-01"}}`
 
 ```text
-Sheet: README
-Row: 8
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Recommended metadata
 column_2: doc_type=xlsx, source_name=per_diem_caps.xlsx, sheet=<sheet>, effective_date=2026-01-01
 ```
@@ -132,9 +111,6 @@ column_2: doc_type=xlsx, source_name=per_diem_caps.xlsx, sheet=<sheet>, effectiv
 - metadata: `{"row_number": 9, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "Sheets", "column_2": ""}}`
 
 ```text
-Sheet: README
-Row: 9
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: Sheets
 column_2:
 ```
@@ -146,9 +122,6 @@ column_2:
 - metadata: `{"row_number": 10, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "PerDiemCaps", "column_2": "Meal, hotel, taxi, and laundry caps by country/city."}}`
 
 ```text
-Sheet: README
-Row: 10
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: PerDiemCaps
 column_2: Meal, hotel, taxi, and laundry caps by country/city.
 ```
@@ -160,9 +133,6 @@ column_2: Meal, hotel, taxi, and laundry caps by country/city.
 - metadata: `{"row_number": 11, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "TaxiRules", "column_2": "After-hours thresholds and city-specific transport notes."}}`
 
 ```text
-Sheet: README
-Row: 11
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: TaxiRules
 column_2: After-hours thresholds and city-specific transport notes.
 ```
@@ -174,9 +144,6 @@ column_2: After-hours thresholds and city-specific transport notes.
 - metadata: `{"row_number": 12, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "MileageRates", "column_2": "Private car mileage rates and approval thresholds."}}`
 
 ```text
-Sheet: README
-Row: 12
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: MileageRates
 column_2: Private car mileage rates and approval thresholds.
 ```
@@ -188,9 +155,6 @@ column_2: Private car mileage rates and approval thresholds.
 - metadata: `{"row_number": 13, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "ExchangeRates", "column_2": "Monthly finance exchange rates for claim conversion."}}`
 
 ```text
-Sheet: README
-Row: 13
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: ExchangeRates
 column_2: Monthly finance exchange rates for claim conversion.
 ```
@@ -202,9 +166,6 @@ column_2: Monthly finance exchange rates for claim conversion.
 - metadata: `{"row_number": 14, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "ApprovalMatrix", "column_2": "Numeric thresholds for approval routing."}}`
 
 ```text
-Sheet: README
-Row: 14
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: ApprovalMatrix
 column_2: Numeric thresholds for approval routing.
 ```
@@ -216,9 +177,6 @@ column_2: Numeric thresholds for approval routing.
 - metadata: `{"row_number": 15, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "ClaimExamples", "column_2": "Worked examples with formulas for reimbursement logic."}}`
 
 ```text
-Sheet: README
-Row: 15
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: ClaimExamples
 column_2: Worked examples with formulas for reimbursement logic.
 ```
@@ -230,9 +188,6 @@ column_2: Worked examples with formulas for reimbursement logic.
 - metadata: `{"row_number": 16, "column_headers": ["Atlas Mobility Group - Per Diem Caps Workbook 2026", "column_2"], "row_values": {"Atlas Mobility Group - Per Diem Caps Workbook 2026": "PolicyTags", "column_2": "Metadata tags useful for filtering and retrieval."}}`
 
 ```text
-Sheet: README
-Row: 16
-
 Atlas Mobility Group - Per Diem Caps Workbook 2026: PolicyTags
 column_2: Metadata tags useful for filtering and retrieval.
 ```
@@ -264,9 +219,6 @@ Columns: country_code, country, city, currency, meal_cap_breakfast, meal_cap_lun
 - metadata: `{"row_number": 2, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "AT", "country": "Austria", "city": "Vienna", "currency": "EUR", "meal_cap_breakfast": "12", "meal_cap_lunch": "24", "meal_cap_dinner": "35", "meal_cap_daily": "71", "hotel_cap_per_night": "160", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Dinner cap excludes alcohol unless client entertainment was pre-approved.", "effective_date": "2026-01-01"}, "country_code": "AT", "country": "Austria", "city": "Vienna", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 2
-
 country_code: AT
 country: Austria
 city: Vienna
@@ -289,9 +241,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 3, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "AT", "country": "Austria", "city": "Graz", "currency": "EUR", "meal_cap_breakfast": "10", "meal_cap_lunch": "22", "meal_cap_dinner": "32", "meal_cap_daily": "64", "hotel_cap_per_night": "135", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Lower hotel cap than Vienna; airport taxi needs route evidence.", "effective_date": "2026-01-01"}, "country_code": "AT", "country": "Austria", "city": "Graz", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 3
-
 country_code: AT
 country: Austria
 city: Graz
@@ -314,9 +263,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 4, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "AT", "country": "Austria", "city": "Linz", "currency": "EUR", "meal_cap_breakfast": "10", "meal_cap_lunch": "21", "meal_cap_dinner": "31", "meal_cap_daily": "62", "hotel_cap_per_night": "125", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Standard Austrian regional cap.", "effective_date": "2026-01-01"}, "country_code": "AT", "country": "Austria", "city": "Linz", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 4
-
 country_code: AT
 country: Austria
 city: Linz
@@ -339,9 +285,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 5, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "CZ", "country": "Czechia", "city": "Prague", "currency": "CZK", "meal_cap_breakfast": "250", "meal_cap_lunch": "500", "meal_cap_dinner": "700", "meal_cap_daily": "1450", "hotel_cap_per_night": "3000", "taxi_allowed_after": "21:00", "laundry_after_nights": "5", "notes": "Caps stored in local currency; convert with Finance monthly rate.", "effective_date": "2026-01-01"}, "country_code": "CZ", "country": "Czechia", "city": "Prague", "currency": "CZK"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 5
-
 country_code: CZ
 country: Czechia
 city: Prague
@@ -364,9 +307,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 6, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "CZ", "country": "Czechia", "city": "Brno", "currency": "CZK", "meal_cap_breakfast": "220", "meal_cap_lunch": "450", "meal_cap_dinner": "620", "meal_cap_daily": "1290", "hotel_cap_per_night": "2500", "taxi_allowed_after": "21:00", "laundry_after_nights": "5", "notes": "Taxi before 21:00 requires exception reason.", "effective_date": "2026-01-01"}, "country_code": "CZ", "country": "Czechia", "city": "Brno", "currency": "CZK"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 6
-
 country_code: CZ
 country: Czechia
 city: Brno
@@ -389,9 +329,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 7, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "CZ", "country": "Czechia", "city": "Ostrava", "currency": "CZK", "meal_cap_breakfast": "200", "meal_cap_lunch": "420", "meal_cap_dinner": "580", "meal_cap_daily": "1200", "hotel_cap_per_night": "2300", "taxi_allowed_after": "21:00", "laundry_after_nights": "5", "notes": "Regional rate; hotel above cap needs manager approval.", "effective_date": "2026-01-01"}, "country_code": "CZ", "country": "Czechia", "city": "Ostrava", "currency": "CZK"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 7
-
 country_code: CZ
 country: Czechia
 city: Ostrava
@@ -414,9 +351,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 8, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "DE", "country": "Germany", "city": "Berlin", "currency": "EUR", "meal_cap_breakfast": "14", "meal_cap_lunch": "28", "meal_cap_dinner": "40", "meal_cap_daily": "82", "hotel_cap_per_night": "180", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Conference hotel above cap can be approved with evidence.", "effective_date": "2026-01-01"}, "country_code": "DE", "country": "Germany", "city": "Berlin", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 8
-
 country_code: DE
 country: Germany
 city: Berlin
@@ -439,9 +373,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 9, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "DE", "country": "Germany", "city": "Munich", "currency": "EUR", "meal_cap_breakfast": "15", "meal_cap_lunch": "30", "meal_cap_dinner": "45", "meal_cap_daily": "90", "hotel_cap_per_night": "210", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Higher lodging cap due to market rates.", "effective_date": "2026-01-01"}, "country_code": "DE", "country": "Germany", "city": "Munich", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 9
-
 country_code: DE
 country: Germany
 city: Munich
@@ -464,9 +395,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 10, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "DE", "country": "Germany", "city": "Frankfurt", "currency": "EUR", "meal_cap_breakfast": "14", "meal_cap_lunch": "29", "meal_cap_dinner": "42", "meal_cap_daily": "85", "hotel_cap_per_night": "190", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Airport taxi must include route or booking proof.", "effective_date": "2026-01-01"}, "country_code": "DE", "country": "Germany", "city": "Frankfurt", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 10
-
 country_code: DE
 country: Germany
 city: Frankfurt
@@ -489,9 +417,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 11, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "CH", "country": "Switzerland", "city": "Zurich", "currency": "CHF", "meal_cap_breakfast": "18", "meal_cap_lunch": "36", "meal_cap_dinner": "55", "meal_cap_daily": "109", "hotel_cap_per_night": "240", "taxi_allowed_after": "22:30", "laundry_after_nights": "4", "notes": "Caps are CHF; report in source currency and convert to EUR.", "effective_date": "2026-01-01"}, "country_code": "CH", "country": "Switzerland", "city": "Zurich", "currency": "CHF"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 11
-
 country_code: CH
 country: Switzerland
 city: Zurich
@@ -514,9 +439,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 12, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "CH", "country": "Switzerland", "city": "Basel", "currency": "CHF", "meal_cap_breakfast": "16", "meal_cap_lunch": "33", "meal_cap_dinner": "50", "meal_cap_daily": "99", "hotel_cap_per_night": "210", "taxi_allowed_after": "22:30", "laundry_after_nights": "4", "notes": "Client entertainment requires attendee list.", "effective_date": "2026-01-01"}, "country_code": "CH", "country": "Switzerland", "city": "Basel", "currency": "CHF"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 12
-
 country_code: CH
 country: Switzerland
 city: Basel
@@ -539,9 +461,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 13, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "NL", "country": "Netherlands", "city": "Amsterdam", "currency": "EUR", "meal_cap_breakfast": "13", "meal_cap_lunch": "27", "meal_cap_dinner": "39", "meal_cap_daily": "79", "hotel_cap_per_night": "175", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Taxi from Schiphol usually requires business reason.", "effective_date": "2026-01-01"}, "country_code": "NL", "country": "Netherlands", "city": "Amsterdam", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 13
-
 country_code: NL
 country: Netherlands
 city: Amsterdam
@@ -564,9 +483,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 14, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "FR", "country": "France", "city": "Paris", "currency": "EUR", "meal_cap_breakfast": "15", "meal_cap_lunch": "32", "meal_cap_dinner": "46", "meal_cap_daily": "93", "hotel_cap_per_night": "220", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Hotel above cap often reviewed manually during trade fairs.", "effective_date": "2026-01-01"}, "country_code": "FR", "country": "France", "city": "Paris", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 14
-
 country_code: FR
 country: France
 city: Paris
@@ -589,9 +505,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 15, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "GB", "country": "United Kingdom", "city": "London", "currency": "GBP", "meal_cap_breakfast": "13", "meal_cap_lunch": "30", "meal_cap_dinner": "48", "meal_cap_daily": "91", "hotel_cap_per_night": "210", "taxi_allowed_after": "22:30", "laundry_after_nights": "4", "notes": "Caps are GBP; use monthly Finance exchange rate.", "effective_date": "2026-01-01"}, "country_code": "GB", "country": "United Kingdom", "city": "London", "currency": "GBP"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 15
-
 country_code: GB
 country: United Kingdom
 city: London
@@ -614,9 +527,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 16, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "US", "country": "United States", "city": "New York", "currency": "USD", "meal_cap_breakfast": "18", "meal_cap_lunch": "36", "meal_cap_dinner": "60", "meal_cap_daily": "114", "hotel_cap_per_night": "280", "taxi_allowed_after": "22:00", "laundry_after_nights": "4", "notes": "Tips are reimbursable within reason but must be itemized.", "effective_date": "2026-01-01"}, "country_code": "US", "country": "United States", "city": "New York", "currency": "USD"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 16
-
 country_code: US
 country: United States
 city: New York
@@ -639,9 +549,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 17, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "US", "country": "United States", "city": "Houston", "currency": "USD", "meal_cap_breakfast": "15", "meal_cap_lunch": "30", "meal_cap_dinner": "48", "meal_cap_daily": "93", "hotel_cap_per_night": "210", "taxi_allowed_after": "22:00", "laundry_after_nights": "4", "notes": "Rental car is common for plant visits but still needs business purpose.", "effective_date": "2026-01-01"}, "country_code": "US", "country": "United States", "city": "Houston", "currency": "USD"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 17
-
 country_code: US
 country: United States
 city: Houston
@@ -664,9 +571,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 18, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "PL", "country": "Poland", "city": "Warsaw", "currency": "PLN", "meal_cap_breakfast": "50", "meal_cap_lunch": "95", "meal_cap_dinner": "140", "meal_cap_daily": "285", "hotel_cap_per_night": "520", "taxi_allowed_after": "21:30", "laundry_after_nights": "5", "notes": "Local taxi apps accepted with route evidence.", "effective_date": "2026-01-01"}, "country_code": "PL", "country": "Poland", "city": "Warsaw", "currency": "PLN"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 18
-
 country_code: PL
 country: Poland
 city: Warsaw
@@ -689,9 +593,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 19, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "HU", "country": "Hungary", "city": "Budapest", "currency": "HUF", "meal_cap_breakfast": "4500", "meal_cap_lunch": "9000", "meal_cap_dinner": "13000", "meal_cap_daily": "26500", "hotel_cap_per_night": "48000", "taxi_allowed_after": "21:30", "laundry_after_nights": "5", "notes": "Cash receipts must show vendor and date.", "effective_date": "2026-01-01"}, "country_code": "HU", "country": "Hungary", "city": "Budapest", "currency": "HUF"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 19
-
 country_code: HU
 country: Hungary
 city: Budapest
@@ -714,9 +615,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 20, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "IT", "country": "Italy", "city": "Milan", "currency": "EUR", "meal_cap_breakfast": "14", "meal_cap_lunch": "30", "meal_cap_dinner": "44", "meal_cap_daily": "88", "hotel_cap_per_night": "205", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "City tax reimbursable when shown on hotel folio.", "effective_date": "2026-01-01"}, "country_code": "IT", "country": "Italy", "city": "Milan", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 20
-
 country_code: IT
 country: Italy
 city: Milan
@@ -739,9 +637,6 @@ effective_date: 2026-01-01
 - metadata: `{"row_number": 21, "column_headers": ["country_code", "country", "city", "currency", "meal_cap_breakfast", "meal_cap_lunch", "meal_cap_dinner", "meal_cap_daily", "hotel_cap_per_night", "taxi_allowed_after", "laundry_after_nights", "notes", "effective_date"], "row_values": {"country_code": "ES", "country": "Spain", "city": "Madrid", "currency": "EUR", "meal_cap_breakfast": "12", "meal_cap_lunch": "26", "meal_cap_dinner": "38", "meal_cap_daily": "76", "hotel_cap_per_night": "165", "taxi_allowed_after": "22:00", "laundry_after_nights": "5", "notes": "Late dinner is normal locally but alcohol still excluded.", "effective_date": "2026-01-01"}, "country_code": "ES", "country": "Spain", "city": "Madrid", "currency": "EUR"}`
 
 ```text
-Sheet: PerDiemCaps
-Row: 21
-
 country_code: ES
 country: Spain
 city: Madrid
@@ -784,9 +679,6 @@ Columns: country_code, city, default_after_hours_threshold, airport_to_city_allo
 - metadata: `{"row_number": 2, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "AT", "city": "Vienna", "default_after_hours_threshold": "22:00", "airport_to_city_allowed": "Yes if luggage, late arrival, or public transport disruption", "home_to_office_allowed": "No, unless approved overtime after 22:00 or safety issue", "requires_route_evidence": "Yes", "exception_keywords": "luggage; late arrival; safety; strike; disruption", "audit_note": "Before 22:00 route evidence and exception reason are important."}, "country_code": "AT", "city": "Vienna"}`
 
 ```text
-Sheet: TaxiRules
-Row: 2
-
 country_code: AT
 city: Vienna
 default_after_hours_threshold: 22:00
@@ -804,9 +696,6 @@ audit_note: Before 22:00 route evidence and exception reason are important.
 - metadata: `{"row_number": 3, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "CZ", "city": "Prague", "default_after_hours_threshold": "21:00", "airport_to_city_allowed": "Yes if after threshold or public transport not practical", "home_to_office_allowed": "No, unless overtime after 22:00 or safety issue", "requires_route_evidence": "Yes", "exception_keywords": "luggage; unsafe; disruption; late return", "audit_note": "20:30 is not after-hours in Prague under default rule."}, "country_code": "CZ", "city": "Prague"}`
 
 ```text
-Sheet: TaxiRules
-Row: 3
-
 country_code: CZ
 city: Prague
 default_after_hours_threshold: 21:00
@@ -824,9 +713,6 @@ audit_note: 20:30 is not after-hours in Prague under default rule.
 - metadata: `{"row_number": 4, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "CZ", "city": "Brno", "default_after_hours_threshold": "21:00", "airport_to_city_allowed": "Yes if after threshold or public transport not practical", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "plant visit; luggage; unsafe", "audit_note": "Brno taxi claims often fail when business purpose is missing."}, "country_code": "CZ", "city": "Brno"}`
 
 ```text
-Sheet: TaxiRules
-Row: 4
-
 country_code: CZ
 city: Brno
 default_after_hours_threshold: 21:00
@@ -844,9 +730,6 @@ audit_note: Brno taxi claims often fail when business purpose is missing.
 - metadata: `{"row_number": 5, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "DE", "city": "Berlin", "default_after_hours_threshold": "22:00", "airport_to_city_allowed": "Yes for late arrivals and heavy luggage", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "trade fair; late arrival; strike", "audit_note": "Public transit is expected unless exception applies."}, "country_code": "DE", "city": "Berlin"}`
 
 ```text
-Sheet: TaxiRules
-Row: 5
-
 country_code: DE
 city: Berlin
 default_after_hours_threshold: 22:00
@@ -864,9 +747,6 @@ audit_note: Public transit is expected unless exception applies.
 - metadata: `{"row_number": 6, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "DE", "city": "Munich", "default_after_hours_threshold": "22:00", "airport_to_city_allowed": "Yes if after threshold or luggage", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "airport; luggage; client equipment", "audit_note": "Airport rides above EUR 90 require explanation."}, "country_code": "DE", "city": "Munich"}`
 
 ```text
-Sheet: TaxiRules
-Row: 6
-
 country_code: DE
 city: Munich
 default_after_hours_threshold: 22:00
@@ -884,9 +764,6 @@ audit_note: Airport rides above EUR 90 require explanation.
 - metadata: `{"row_number": 7, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "CH", "city": "Zurich", "default_after_hours_threshold": "22:30", "airport_to_city_allowed": "Yes if after threshold or client equipment", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "late arrival; equipment; safety", "audit_note": "High taxi costs are reviewed against public transit options."}, "country_code": "CH", "city": "Zurich"}`
 
 ```text
-Sheet: TaxiRules
-Row: 7
-
 country_code: CH
 city: Zurich
 default_after_hours_threshold: 22:30
@@ -904,9 +781,6 @@ audit_note: High taxi costs are reviewed against public transit options.
 - metadata: `{"row_number": 8, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "FR", "city": "Paris", "default_after_hours_threshold": "22:00", "airport_to_city_allowed": "Yes if after threshold, luggage, or strike", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "strike; unsafe; luggage", "audit_note": "Taxi receipts must include vendor and date."}, "country_code": "FR", "city": "Paris"}`
 
 ```text
-Sheet: TaxiRules
-Row: 8
-
 country_code: FR
 city: Paris
 default_after_hours_threshold: 22:00
@@ -924,9 +798,6 @@ audit_note: Taxi receipts must include vendor and date.
 - metadata: `{"row_number": 9, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "GB", "city": "London", "default_after_hours_threshold": "22:30", "airport_to_city_allowed": "Yes if after threshold, safety issue, or rail strike", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "rail strike; safety; equipment", "audit_note": "Black cab receipt without route needs manual route entry."}, "country_code": "GB", "city": "London"}`
 
 ```text
-Sheet: TaxiRules
-Row: 9
-
 country_code: GB
 city: London
 default_after_hours_threshold: 22:30
@@ -944,9 +815,6 @@ audit_note: Black cab receipt without route needs manual route entry.
 - metadata: `{"row_number": 10, "column_headers": ["country_code", "city", "default_after_hours_threshold", "airport_to_city_allowed", "home_to_office_allowed", "requires_route_evidence", "exception_keywords", "audit_note"], "row_values": {"country_code": "US", "city": "New York", "default_after_hours_threshold": "22:00", "airport_to_city_allowed": "Yes, route evidence required", "home_to_office_allowed": "No", "requires_route_evidence": "Yes", "exception_keywords": "late arrival; client materials", "audit_note": "Tips above 20% require explanation in US cities."}, "country_code": "US", "city": "New York"}`
 
 ```text
-Sheet: TaxiRules
-Row: 10
-
 country_code: US
 city: New York
 default_after_hours_threshold: 22:00
@@ -984,9 +852,6 @@ Columns: country_code, country, currency, private_car_rate_per_km, electric_car_
 - metadata: `{"row_number": 2, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "AT", "country": "Austria", "currency": "EUR", "private_car_rate_per_km": "0.42", "electric_car_rate_per_km": "0.45", "preapproval_distance_one_way_km": "150", "fuel_claim_separate_allowed": "No", "notes": "Private mileage includes fuel, wear, and standard insurance."}, "country_code": "AT", "country": "Austria", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 2
-
 country_code: AT
 country: Austria
 currency: EUR
@@ -1004,9 +869,6 @@ notes: Private mileage includes fuel, wear, and standard insurance.
 - metadata: `{"row_number": 3, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "CZ", "country": "Czechia", "currency": "CZK", "private_car_rate_per_km": "6.2", "electric_car_rate_per_km": "6.8", "preapproval_distance_one_way_km": "150", "fuel_claim_separate_allowed": "No", "notes": "Use local payroll/tax rate if different from Finance rate."}, "country_code": "CZ", "country": "Czechia", "currency": "CZK"}`
 
 ```text
-Sheet: MileageRates
-Row: 3
-
 country_code: CZ
 country: Czechia
 currency: CZK
@@ -1024,9 +886,6 @@ notes: Use local payroll/tax rate if different from Finance rate.
 - metadata: `{"row_number": 4, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "DE", "country": "Germany", "currency": "EUR", "private_car_rate_per_km": "0.38", "electric_car_rate_per_km": "0.42", "preapproval_distance_one_way_km": "150", "fuel_claim_separate_allowed": "No", "notes": "Long-distance private car trips need manager approval."}, "country_code": "DE", "country": "Germany", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 4
-
 country_code: DE
 country: Germany
 currency: EUR
@@ -1044,9 +903,6 @@ notes: Long-distance private car trips need manager approval.
 - metadata: `{"row_number": 5, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "CH", "country": "Switzerland", "currency": "CHF", "private_car_rate_per_km": "0.7", "electric_car_rate_per_km": "0.72", "preapproval_distance_one_way_km": "120", "fuel_claim_separate_allowed": "No", "notes": "Parking can be claimed separately with business purpose."}, "country_code": "CH", "country": "Switzerland", "currency": "CHF"}`
 
 ```text
-Sheet: MileageRates
-Row: 5
-
 country_code: CH
 country: Switzerland
 currency: CHF
@@ -1064,9 +920,6 @@ notes: Parking can be claimed separately with business purpose.
 - metadata: `{"row_number": 6, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "NL", "country": "Netherlands", "currency": "EUR", "private_car_rate_per_km": "0.34", "electric_car_rate_per_km": "0.38", "preapproval_distance_one_way_km": "120", "fuel_claim_separate_allowed": "No", "notes": "Bike mileage is not covered in this workbook."}, "country_code": "NL", "country": "Netherlands", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 6
-
 country_code: NL
 country: Netherlands
 currency: EUR
@@ -1084,9 +937,6 @@ notes: Bike mileage is not covered in this workbook.
 - metadata: `{"row_number": 7, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "FR", "country": "France", "currency": "EUR", "private_car_rate_per_km": "0.4", "electric_car_rate_per_km": "0.44", "preapproval_distance_one_way_km": "150", "fuel_claim_separate_allowed": "No", "notes": "Tolls reimbursable with receipt if route was business-related."}, "country_code": "FR", "country": "France", "currency": "EUR"}`
 
 ```text
-Sheet: MileageRates
-Row: 7
-
 country_code: FR
 country: France
 currency: EUR
@@ -1104,9 +954,6 @@ notes: Tolls reimbursable with receipt if route was business-related.
 - metadata: `{"row_number": 8, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "GB", "country": "United Kingdom", "currency": "GBP", "private_car_rate_per_km": "0.45", "electric_car_rate_per_km": "0.45", "preapproval_distance_one_way_km": "150", "fuel_claim_separate_allowed": "No", "notes": "Use local HMRC-compliant value if Finance updates rate."}, "country_code": "GB", "country": "United Kingdom", "currency": "GBP"}`
 
 ```text
-Sheet: MileageRates
-Row: 8
-
 country_code: GB
 country: United Kingdom
 currency: GBP
@@ -1124,9 +971,6 @@ notes: Use local HMRC-compliant value if Finance updates rate.
 - metadata: `{"row_number": 9, "column_headers": ["country_code", "country", "currency", "private_car_rate_per_km", "electric_car_rate_per_km", "preapproval_distance_one_way_km", "fuel_claim_separate_allowed", "notes"], "row_values": {"country_code": "US", "country": "United States", "currency": "USD", "private_car_rate_per_km": "0.67", "electric_car_rate_per_km": "0.67", "preapproval_distance_one_way_km": "150", "fuel_claim_separate_allowed": "No", "notes": "Use IRS-compliant rate if Finance updates rate."}, "country_code": "US", "country": "United States", "currency": "USD"}`
 
 ```text
-Sheet: MileageRates
-Row: 9
-
 country_code: US
 country: United States
 currency: USD
@@ -1164,9 +1008,6 @@ Columns: month, currency, eur_rate, source, notes
 - metadata: `{"row_number": 2, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "EUR", "eur_rate": "1", "source": "Finance monthly table", "notes": "Base currency"}, "currency": "EUR"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 2
-
 month: 2026-01
 currency: EUR
 eur_rate: 1
@@ -1181,9 +1022,6 @@ notes: Base currency
 - metadata: `{"row_number": 3, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "CZK", "eur_rate": "0.04", "source": "Finance monthly table", "notes": "25 CZK = 1 EUR equivalent"}, "currency": "CZK"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 3
-
 month: 2026-01
 currency: CZK
 eur_rate: 0.04
@@ -1198,9 +1036,6 @@ notes: 25 CZK = 1 EUR equivalent
 - metadata: `{"row_number": 4, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "CHF", "eur_rate": "1.06", "source": "Finance monthly table", "notes": "Use for Swiss caps and claims"}, "currency": "CHF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 4
-
 month: 2026-01
 currency: CHF
 eur_rate: 1.06
@@ -1215,9 +1050,6 @@ notes: Use for Swiss caps and claims
 - metadata: `{"row_number": 5, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "GBP", "eur_rate": "1.17", "source": "Finance monthly table", "notes": "Use for UK claims"}, "currency": "GBP"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 5
-
 month: 2026-01
 currency: GBP
 eur_rate: 1.17
@@ -1232,9 +1064,6 @@ notes: Use for UK claims
 - metadata: `{"row_number": 6, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "USD", "eur_rate": "0.92", "source": "Finance monthly table", "notes": "Use for US claims"}, "currency": "USD"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 6
-
 month: 2026-01
 currency: USD
 eur_rate: 0.92
@@ -1249,9 +1078,6 @@ notes: Use for US claims
 - metadata: `{"row_number": 7, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "PLN", "eur_rate": "0.23", "source": "Finance monthly table", "notes": "Use for Poland claims"}, "currency": "PLN"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 7
-
 month: 2026-01
 currency: PLN
 eur_rate: 0.23
@@ -1266,9 +1092,6 @@ notes: Use for Poland claims
 - metadata: `{"row_number": 8, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-01", "currency": "HUF", "eur_rate": "0.0026", "source": "Finance monthly table", "notes": "Use for Hungary claims"}, "currency": "HUF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 8
-
 month: 2026-01
 currency: HUF
 eur_rate: 0.0026
@@ -1283,9 +1106,6 @@ notes: Use for Hungary claims
 - metadata: `{"row_number": 9, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "EUR", "eur_rate": "1", "source": "Finance monthly table", "notes": "Base currency"}, "currency": "EUR"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 9
-
 month: 2026-02
 currency: EUR
 eur_rate: 1
@@ -1300,9 +1120,6 @@ notes: Base currency
 - metadata: `{"row_number": 10, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "CZK", "eur_rate": "0.0396", "source": "Finance monthly table", "notes": "Monthly conversion rate"}, "currency": "CZK"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 10
-
 month: 2026-02
 currency: CZK
 eur_rate: 0.0396
@@ -1317,9 +1134,6 @@ notes: Monthly conversion rate
 - metadata: `{"row_number": 11, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "CHF", "eur_rate": "1.05", "source": "Finance monthly table", "notes": "Monthly conversion rate"}, "currency": "CHF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 11
-
 month: 2026-02
 currency: CHF
 eur_rate: 1.05
@@ -1334,9 +1148,6 @@ notes: Monthly conversion rate
 - metadata: `{"row_number": 12, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "GBP", "eur_rate": "1.16", "source": "Finance monthly table", "notes": "Monthly conversion rate"}, "currency": "GBP"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 12
-
 month: 2026-02
 currency: GBP
 eur_rate: 1.16
@@ -1351,9 +1162,6 @@ notes: Monthly conversion rate
 - metadata: `{"row_number": 13, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "USD", "eur_rate": "0.93", "source": "Finance monthly table", "notes": "Monthly conversion rate"}, "currency": "USD"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 13
-
 month: 2026-02
 currency: USD
 eur_rate: 0.93
@@ -1368,9 +1176,6 @@ notes: Monthly conversion rate
 - metadata: `{"row_number": 14, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "PLN", "eur_rate": "0.231", "source": "Finance monthly table", "notes": "Monthly conversion rate"}, "currency": "PLN"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 14
-
 month: 2026-02
 currency: PLN
 eur_rate: 0.231
@@ -1385,9 +1190,6 @@ notes: Monthly conversion rate
 - metadata: `{"row_number": 15, "column_headers": ["month", "currency", "eur_rate", "source", "notes"], "row_values": {"month": "2026-02", "currency": "HUF", "eur_rate": "0.00255", "source": "Finance monthly table", "notes": "Monthly conversion rate"}, "currency": "HUF"}`
 
 ```text
-Sheet: ExchangeRates
-Row: 15
-
 month: 2026-02
 currency: HUF
 eur_rate: 0.00255
@@ -1422,9 +1224,6 @@ Columns: scenario, threshold, currency, approval_required, approver, source_prio
 - metadata: `{"row_number": 2, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Client entertainment total", "threshold": "120", "currency": "EUR", "approval_required": "Yes if above threshold", "approver": "Cost center owner or Sales VP", "source_priority": "Travel Policy PDF + Expense Policy HTML", "notes": "Requires attendee list and business purpose."}, "currency": "EUR"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 2
-
 scenario: Client entertainment total
 threshold: 120
 currency: EUR
@@ -1441,9 +1240,6 @@ notes: Requires attendee list and business purpose.
 - metadata: `{"row_number": 3, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Missing receipt declaration", "threshold": "25", "currency": "EUR", "approval_required": "Yes if above threshold", "approver": "Line manager", "source_priority": "Expense Policy HTML", "notes": "Repeated missing evidence can trigger manual review."}, "currency": "EUR"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 3
-
 scenario: Missing receipt declaration
 threshold: 25
 currency: EUR
@@ -1460,9 +1256,6 @@ notes: Repeated missing evidence can trigger manual review.
 - metadata: `{"row_number": 4, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Hotel above city cap", "threshold": "0", "currency": "N/A", "approval_required": "Yes if above applicable city cap", "approver": "Cost center owner", "source_priority": "PerDiemCaps + Travel Policy PDF", "notes": "Document lack of reasonable alternatives."}, "currency": "N/A"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 4
-
 scenario: Hotel above city cap
 threshold: 0
 currency: N/A
@@ -1479,9 +1272,6 @@ notes: Document lack of reasonable alternatives.
 - metadata: `{"row_number": 5, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Private car one-way distance", "threshold": "150", "currency": "km", "approval_required": "Yes if above threshold", "approver": "Line manager", "source_priority": "Expense Policy HTML + MileageRates", "notes": "Applies unless plant visit exception is documented."}, "currency": "km"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 5
-
 scenario: Private car one-way distance
 threshold: 150
 currency: km
@@ -1498,9 +1288,6 @@ notes: Applies unless plant visit exception is documented.
 - metadata: `{"row_number": 6, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Business class flight duration", "threshold": "6", "currency": "hours", "approval_required": "Yes if intercontinental and above duration", "approver": "Cost center owner", "source_priority": "Travel Policy PDF", "notes": "Also requires business reason."}, "currency": "hours"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 6
-
 scenario: Business class flight duration
 threshold: 6
 currency: hours
@@ -1517,9 +1304,6 @@ notes: Also requires business reason.
 - metadata: `{"row_number": 7, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Late expense submission", "threshold": "90", "currency": "days", "approval_required": "Yes for exception", "approver": "Finance Operations", "source_priority": "Expense Policy HTML + Travel Policy PDF", "notes": "Claims older than 90 days normally rejected."}, "currency": "days"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 7
-
 scenario: Late expense submission
 threshold: 90
 currency: days
@@ -1536,9 +1320,6 @@ notes: Claims older than 90 days normally rejected.
 - metadata: `{"row_number": 8, "column_headers": ["scenario", "threshold", "currency", "approval_required", "approver", "source_priority", "notes"], "row_values": {"scenario": "Team celebration per person", "threshold": "50", "currency": "EUR", "approval_required": "Yes if above threshold", "approver": "Line manager or morale budget owner", "source_priority": "Expense Policy HTML", "notes": "Not normal travel expense category."}, "currency": "EUR"}`
 
 ```text
-Sheet: ApprovalMatrix
-Row: 8
-
 scenario: Team celebration per person
 threshold: 50
 currency: EUR
@@ -1575,9 +1356,6 @@ Columns: claim_id, city, country_code, category, source_amount, currency, alcoho
 - metadata: `{"row_number": 2, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-001", "city": "Vienna", "country_code": "AT", "category": "Dinner", "source_amount": "40", "currency": "EUR", "alcohol_amount": "8", "preapproved": "No", "cap_reference": "Dinner cap", "cap_amount": "35", "fx_to_eur": "1", "converted_amount_eur": "40", "reimbursable_hint": "32", "notes": "Wine excluded; food portion 32 EUR below cap."}, "country_code": "AT", "city": "Vienna", "expense_category": "Dinner", "currency": "EUR"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 2
-
 claim_id: C-001
 city: Vienna
 country_code: AT
@@ -1601,9 +1379,6 @@ notes: Wine excluded; food portion 32 EUR below cap.
 - metadata: `{"row_number": 3, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-002", "city": "Berlin", "country_code": "DE", "category": "Hotel", "source_amount": "175", "currency": "EUR", "alcohol_amount": "0", "preapproved": "N/A", "cap_reference": "Hotel cap", "cap_amount": "180", "fx_to_eur": "1", "converted_amount_eur": "175", "reimbursable_hint": "175", "notes": "Within cap."}, "country_code": "DE", "city": "Berlin", "expense_category": "Hotel", "currency": "EUR"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 3
-
 claim_id: C-002
 city: Berlin
 country_code: DE
@@ -1627,9 +1402,6 @@ notes: Within cap.
 - metadata: `{"row_number": 4, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-003", "city": "Prague", "country_code": "CZ", "category": "Taxi", "source_amount": "650", "currency": "CZK", "alcohol_amount": "0", "preapproved": "No", "cap_reference": "Taxi after-hours", "cap_amount": "0", "fx_to_eur": "0.04", "converted_amount_eur": "26", "reimbursable_hint": "26", "notes": "Eligibility depends on time threshold and exception reason."}, "country_code": "CZ", "city": "Prague", "expense_category": "Taxi", "currency": "CZK"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 4
-
 claim_id: C-003
 city: Prague
 country_code: CZ
@@ -1653,9 +1425,6 @@ notes: Eligibility depends on time threshold and exception reason.
 - metadata: `{"row_number": 5, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-004", "city": "Zurich", "country_code": "CH", "category": "Hotel", "source_amount": "260", "currency": "CHF", "alcohol_amount": "0", "preapproved": "No", "cap_reference": "Hotel cap", "cap_amount": "240", "fx_to_eur": "1.06", "converted_amount_eur": "275.6", "reimbursable_hint": "254.4", "notes": "Above cap without approval; reimbursable hint capped."}, "country_code": "CH", "city": "Zurich", "expense_category": "Hotel", "currency": "CHF"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 5
-
 claim_id: C-004
 city: Zurich
 country_code: CH
@@ -1679,9 +1448,6 @@ notes: Above cap without approval; reimbursable hint capped.
 - metadata: `{"row_number": 6, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-005", "city": "London", "country_code": "GB", "category": "Dinner", "source_amount": "62", "currency": "GBP", "alcohol_amount": "0", "preapproved": "No", "cap_reference": "Dinner cap", "cap_amount": "48", "fx_to_eur": "1.17", "converted_amount_eur": "72.53999999999999", "reimbursable_hint": "56.16", "notes": "Above meal cap; excess requires approval."}, "country_code": "GB", "city": "London", "expense_category": "Dinner", "currency": "GBP"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 6
-
 claim_id: C-005
 city: London
 country_code: GB
@@ -1705,9 +1471,6 @@ notes: Above meal cap; excess requires approval.
 - metadata: `{"row_number": 7, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-006", "city": "New York", "country_code": "US", "category": "Dinner", "source_amount": "58", "currency": "USD", "alcohol_amount": "0", "preapproved": "No", "cap_reference": "Dinner cap", "cap_amount": "60", "fx_to_eur": "0.92", "converted_amount_eur": "53.36", "reimbursable_hint": "53.36", "notes": "Within cap."}, "country_code": "US", "city": "New York", "expense_category": "Dinner", "currency": "USD"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 7
-
 claim_id: C-006
 city: New York
 country_code: US
@@ -1731,9 +1494,6 @@ notes: Within cap.
 - metadata: `{"row_number": 8, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-007", "city": "Vienna", "country_code": "AT", "category": "Client dinner", "source_amount": "150", "currency": "EUR", "alcohol_amount": "20", "preapproved": "Yes", "cap_reference": "Entertainment threshold", "cap_amount": "120", "fx_to_eur": "1", "converted_amount_eur": "150", "reimbursable_hint": "150", "notes": "Pre-approved client entertainment can include alcohol if attendee list exists."}, "country_code": "AT", "city": "Vienna", "expense_category": "Client dinner", "currency": "EUR"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 8
-
 claim_id: C-007
 city: Vienna
 country_code: AT
@@ -1757,9 +1517,6 @@ notes: Pre-approved client entertainment can include alcohol if attendee list ex
 - metadata: `{"row_number": 9, "column_headers": ["claim_id", "city", "country_code", "category", "source_amount", "currency", "alcohol_amount", "preapproved", "cap_reference", "cap_amount", "fx_to_eur", "converted_amount_eur", "reimbursable_hint", "notes"], "row_values": {"claim_id": "C-008", "city": "Brno", "country_code": "CZ", "category": "Hotel", "source_amount": "2800", "currency": "CZK", "alcohol_amount": "0", "preapproved": "No", "cap_reference": "Hotel cap", "cap_amount": "2500", "fx_to_eur": "0.04", "converted_amount_eur": "112", "reimbursable_hint": "100", "notes": "Above cap; needs approval or documented shortage."}, "country_code": "CZ", "city": "Brno", "expense_category": "Hotel", "currency": "CZK"}`
 
 ```text
-Sheet: ClaimExamples
-Row: 9
-
 claim_id: C-008
 city: Brno
 country_code: CZ
@@ -1803,9 +1560,6 @@ Columns: source_name, sheet_or_section, doc_type, country, city, expense_categor
 - metadata: `{"row_number": 2, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "per_diem_caps.xlsx", "sheet_or_section": "PerDiemCaps", "doc_type": "xlsx", "country": "AT", "city": "Vienna", "expense_category": "meals", "recommended_filter": "country=AT, city=Vienna, expense_category=meals", "notes": "Use for meal and hotel cap questions."}, "country": "AT", "city": "Vienna", "expense_category": "meals"}`
 
 ```text
-Sheet: PolicyTags
-Row: 2
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: PerDiemCaps
 doc_type: xlsx
@@ -1823,9 +1577,6 @@ notes: Use for meal and hotel cap questions.
 - metadata: `{"row_number": 3, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "per_diem_caps.xlsx", "sheet_or_section": "PerDiemCaps", "doc_type": "xlsx", "country": "DE", "city": "Berlin", "expense_category": "hotel", "recommended_filter": "country=DE, city=Berlin, expense_category=hotel", "notes": "Use for hotel cap questions."}, "country": "DE", "city": "Berlin", "expense_category": "hotel"}`
 
 ```text
-Sheet: PolicyTags
-Row: 3
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: PerDiemCaps
 doc_type: xlsx
@@ -1843,9 +1594,6 @@ notes: Use for hotel cap questions.
 - metadata: `{"row_number": 4, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "per_diem_caps.xlsx", "sheet_or_section": "TaxiRules", "doc_type": "xlsx", "country": "CZ", "city": "Prague", "expense_category": "taxi", "recommended_filter": "country=CZ, city=Prague, expense_category=taxi", "notes": "Use for taxi after-hours checks."}, "country": "CZ", "city": "Prague", "expense_category": "taxi"}`
 
 ```text
-Sheet: PolicyTags
-Row: 4
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: TaxiRules
 doc_type: xlsx
@@ -1863,9 +1611,6 @@ notes: Use for taxi after-hours checks.
 - metadata: `{"row_number": 5, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "per_diem_caps.xlsx", "sheet_or_section": "MileageRates", "doc_type": "xlsx", "country": "AT", "city": "", "expense_category": "mileage", "recommended_filter": "country=AT, expense_category=mileage", "notes": "Use for private car mileage rate."}, "country": "AT", "expense_category": "mileage"}`
 
 ```text
-Sheet: PolicyTags
-Row: 5
-
 source_name: per_diem_caps.xlsx
 sheet_or_section: MileageRates
 doc_type: xlsx
@@ -1883,9 +1628,6 @@ notes: Use for private car mileage rate.
 - metadata: `{"row_number": 6, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "expense_policy.html", "sheet_or_section": "Receipts", "doc_type": "html", "country": "", "city": "", "expense_category": "receipts", "recommended_filter": "expense_category=receipts", "notes": "Use for evidence and missing receipt questions."}, "expense_category": "receipts"}`
 
 ```text
-Sheet: PolicyTags
-Row: 6
-
 source_name: expense_policy.html
 sheet_or_section: Receipts
 doc_type: html
@@ -1903,9 +1645,6 @@ notes: Use for evidence and missing receipt questions.
 - metadata: `{"row_number": 7, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "expense_policy.html", "sheet_or_section": "Meals", "doc_type": "html", "country": "", "city": "", "expense_category": "meals", "recommended_filter": "expense_category=meals", "notes": "Use for alcohol, tips, and meal eligibility."}, "expense_category": "meals"}`
 
 ```text
-Sheet: PolicyTags
-Row: 7
-
 source_name: expense_policy.html
 sheet_or_section: Meals
 doc_type: html
@@ -1923,9 +1662,6 @@ notes: Use for alcohol, tips, and meal eligibility.
 - metadata: `{"row_number": 8, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "travel_policy.pdf", "sheet_or_section": "Flights", "doc_type": "pdf", "country": "", "city": "", "expense_category": "flights", "recommended_filter": "expense_category=flights", "notes": "Use for flight class, boarding pass, and air travel logistics."}, "expense_category": "flights"}`
 
 ```text
-Sheet: PolicyTags
-Row: 8
-
 source_name: travel_policy.pdf
 sheet_or_section: Flights
 doc_type: pdf
@@ -1943,9 +1679,6 @@ notes: Use for flight class, boarding pass, and air travel logistics.
 - metadata: `{"row_number": 9, "column_headers": ["source_name", "sheet_or_section", "doc_type", "country", "city", "expense_category", "recommended_filter", "notes"], "row_values": {"source_name": "travel_policy.pdf", "sheet_or_section": "Approval Matrix", "doc_type": "pdf", "country": "", "city": "", "expense_category": "approval", "recommended_filter": "expense_category=approval", "notes": "Use for pre-approval authority."}, "expense_category": "approval"}`
 
 ```text
-Sheet: PolicyTags
-Row: 9
-
 source_name: travel_policy.pdf
 sheet_or_section: Approval Matrix
 doc_type: pdf

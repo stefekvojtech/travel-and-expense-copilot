@@ -27,14 +27,18 @@
     Taxi is not normally reimbursable.
 
 - NO → 3. Is the transfer after the policy cutoff time?
+
   - YES → 4. What is the city cutoff time?  
     - Vienna 22:00  
     - Berlin 22:00  
     - Prague 21:00  
+
     ✅ Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.
+
   - NO → 5. Is there a documented safety concern, service disruption, or no practical connection?
+
     - YES  
-      ✔ Taxi may be reimbursable with explanation and supporting details.
+      ✔️ Taxi may be reimbursable with explanation and supporting details.
     - NO  
       ❌ Taxi is not reimbursable.  
       Use public transport.
@@ -51,6 +55,6 @@
 
 ---
 
-ℹ Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
+ℹ️ Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
 ```
 ```

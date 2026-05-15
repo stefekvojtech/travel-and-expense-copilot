@@ -1,6 +1,6 @@
 # Ingestion Pipeline Report
 
-- generated_at: `2026-05-11T18:03:56.743192+00:00`
+- generated_at: `2026-05-15T22:51:28.455021+00:00`
 - output_dir: `data/processed`
 - documents_loaded: `6`
 - blocks_normalized: `255`

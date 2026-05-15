@@ -19,9 +19,10 @@
 Quick reference guide for business travel expenses
 
 ## 1 CARD USE
-- Use the corporate travel card only for approved business travel expenses.
+Use the corporate travel card only for approved business travel expenses.
 
-### PERMITTED CATEGORIES:
+**PERMITTED CATEGORIES:**
+
 - Flights
 - Rail
 - Hotel
