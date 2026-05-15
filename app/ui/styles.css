@@ -97,10 +97,6 @@ button:disabled {
   place-items: center;
   width: 42px;
   height: 42px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #ffffff;
-  box-shadow: 0 8px 18px rgb(15 48 69 / 14%);
 }
 
 .brand-logo {
