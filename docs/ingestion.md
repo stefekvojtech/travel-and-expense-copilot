@@ -115,8 +115,10 @@ tracks section paths from headings.
 
 XLSX normalization uses OpenPyXL with `read_only=True` and `data_only=True`.
 Sheets are converted into a sheet heading, a table header block, and row-level
-`table_row` blocks. Common row fields such as country, city, category, expense
-category, and currency are copied into metadata when present.
+`table_row` blocks whose text contains only cell field/value lines. Sheet and
+row location are kept as structured metadata instead of being repeated in the
+row text. Common row fields such as country, city, category, expense category,
+and currency are copied into metadata when present.
 
 TXT normalization reads UTF-8 text, cleans paragraph whitespace, and stores the
 file as one plain-text block.

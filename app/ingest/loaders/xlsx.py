@@ -63,7 +63,7 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
             row_values = _row_values(headers, row)
             blocks.append(
                 SourceBlock(
-                    text=_row_block_text(sheet.title, row_index, row_values),
+                    text=_row_block_text(row_values),
                     block_type="table_row",
                     section_path=section,
                     sheet=sheet.title,
@@ -81,7 +81,7 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
             row_values = _row_values(headers, non_empty_rows[0])
             blocks.append(
                 SourceBlock(
-                    text=_row_block_text(sheet.title, 1, row_values),
+                    text=_row_block_text(row_values),
                     block_type="table_row",
                     section_path=section,
                     sheet=sheet.title,
@@ -124,20 +124,11 @@ def _headers_text(headers: list[str]) -> str:
     return "Columns: " + ", ".join(headers)
 
 
-def _row_block_text(
-    sheet_title: str,
-    row_index: int,
-    row_values: dict[str, str],
-) -> str:
+def _row_block_text(row_values: dict[str, str]) -> str:
     lines = [
-        f"Sheet: {sheet_title}",
-        f"Row: {row_index}",
-        "",
-    ]
-    lines.extend(
         f"{header}: {value}" if value else f"{header}:"
         for header, value in row_values.items()
-    )
+    ]
     return "\n".join(lines)
 
 
