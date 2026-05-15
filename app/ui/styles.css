@@ -527,6 +527,9 @@ textarea:focus {
 
 .evidence-text-wrap {
   position: relative;
+  color: #2b3945;
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 .evidence-text {
@@ -535,9 +538,8 @@ textarea:focus {
   margin: 0;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
-  color: #2b3945;
-  font-size: 0.86rem;
-  line-height: 1.45;
+  color: inherit;
+  font: inherit;
 }
 
 .evidence-text-wrap::after {
@@ -566,12 +568,12 @@ textarea:focus {
   bottom: 0;
   min-height: 1.45em;
   padding-left: 6px;
-  background: transparent;
+  background: #ffffff;
   color: var(--accent);
-  font-size: 0.86rem;
-  font-weight: 800;
+  font: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
+  white-space: nowrap;
   z-index: 1;
 }
 
@@ -582,14 +584,7 @@ textarea:focus {
 }
 
 .evidence-item.is-citation-highlighted .evidence-expand {
-  background: transparent;
-}
-
-.evidence-item.is-expanded .evidence-expand {
-  position: static;
-  margin-top: 4px;
-  padding-left: 0;
-  background: transparent;
+  background: var(--accent-soft);
 }
 
 .empty-state {
