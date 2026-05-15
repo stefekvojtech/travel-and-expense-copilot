@@ -180,7 +180,7 @@ the composer stays compact on smaller screens.
 
 Implemented debug fields:
 
-- retrieved chunks
+- retrieved chunks, with source filenames shown instead of full source paths
 - rerank scores
 - citations
 - confidence

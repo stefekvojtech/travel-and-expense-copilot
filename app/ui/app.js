@@ -264,7 +264,7 @@ function renderEvidence(blocks) {
       const meta = document.createElement("div");
       meta.className = "evidence-meta";
       meta.append(
-        textElement("span", block.source_path || "Unknown source"),
+        textElement("span", formatSourceName(block.source_path)),
         textElement("span", formatLocation(block)),
         textElement("span", `Similarity ${formatNumber(block.approximate_cosine_similarity)}`),
       );
@@ -459,6 +459,14 @@ function formatLocation(block) {
     parts.push(`row ${block.row_number}`);
   }
   return parts.length ? parts.join(" | ") : block.doc_type || "No location metadata";
+}
+
+function formatSourceName(sourcePath) {
+  if (!sourcePath) {
+    return "Unknown source";
+  }
+  const normalizedPath = String(sourcePath).replaceAll("\\", "/");
+  return normalizedPath.split("/").filter(Boolean).pop() || normalizedPath;
 }
 
 function setupExampleRibbon() {
