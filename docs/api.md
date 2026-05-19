@@ -188,11 +188,9 @@ Implemented debug fields:
 - retrieved chunks, with source filenames shown instead of full source paths
   and an inline `more` control when chunk text is truncated
 - rerank scores
-- citations
 - confidence
 - validation warnings
 - assembled retrieval context
-- judge result placeholder, currently shown as not implemented
 
 Citation markers in completed answers are interactive. Hovering or focusing a
 citation highlights the matching retrieved chunk and scrolls it to the top of
@@ -205,9 +203,9 @@ The UI is sized as a full-height app surface on desktop so the composer remains
 visible while the answer and debug panels scroll. On narrower screens, the debug
 panel moves below the chat panel.
 
-On desktop, the debug panel keeps status details at the top, retrieved chunks in
-the middle, and assembled retrieval context always visible at the bottom with
-its own scrollbar.
+On desktop, the debug panel keeps validation details at the top, retrieved
+chunks in the middle, and assembled retrieval context always visible at the
+bottom with its own scrollbar.
 
 The example ribbon loops with a transform-based virtual offset, slowly scrolls
 on its own, pauses on hover or focus, supports left/right arrow buttons, and can

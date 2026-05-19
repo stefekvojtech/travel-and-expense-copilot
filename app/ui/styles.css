@@ -444,41 +444,10 @@ textarea:focus {
 
 .debug-pane {
   display: grid;
-  grid-template-rows: auto auto auto minmax(33dvh, 1fr) minmax(220px, 30dvh);
+  grid-template-rows: auto auto minmax(33dvh, 1fr) minmax(220px, 30dvh);
   min-height: 0;
   overflow: hidden;
   background: #fbfdff;
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  margin: 0;
-  border-bottom: 1px solid var(--line);
-  background: var(--line);
-}
-
-.metrics div {
-  min-width: 0;
-  padding: 14px 16px;
-  background: #fbfdff;
-}
-
-.metrics dt {
-  margin-bottom: 5px;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-.metrics dd {
-  margin: 0;
-  overflow-wrap: anywhere;
-  font-size: 0.9rem;
-  font-weight: 700;
 }
 
 .debug-section {
@@ -730,7 +699,4 @@ pre {
     gap: 8px;
   }
 
-  .metrics {
-    grid-template-columns: 1fr;
-  }
 }

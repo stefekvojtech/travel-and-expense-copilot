@@ -6,9 +6,6 @@ const runtimeStatus = document.querySelector("#runtimeStatus");
 const sendButton = document.querySelector("#sendButton");
 const confidenceBadge = document.querySelector("#confidenceBadge");
 const citationCount = document.querySelector("#citationCount");
-const debugEvidenceCount = document.querySelector("#debugEvidenceCount");
-const debugCitations = document.querySelector("#debugCitations");
-const debugJudge = document.querySelector("#debugJudge");
 const evidenceList = document.querySelector("#evidenceList");
 const evidenceSection = document.querySelector(".evidence-section");
 const warningList = document.querySelector("#warningList");
@@ -236,8 +233,6 @@ function renderFinalAnswer(data) {
   confidenceBadge.textContent = `Confidence ${confidence}`;
   confidenceBadge.className = `badge ${confidence}`;
   citationCount.textContent = citations.length === 1 ? "1 citation" : `${citations.length} citations`;
-  debugCitations.textContent = citations.length ? citations.join(", ") : "None";
-  debugJudge.textContent = data.judge_result ? "Available" : "Not implemented";
 
   renderEvidence(data.evidence_blocks || []);
   renderWarnings(data.debug?.validation_warnings || []);
@@ -245,8 +240,6 @@ function renderFinalAnswer(data) {
 }
 
 function renderEvidence(blocks) {
-  debugEvidenceCount.textContent = blocks.length === 1 ? "1 chunk" : `${blocks.length} chunks`;
-
   if (blocks.length === 0) {
     evidenceList.innerHTML = '<p class="empty-state">No evidence blocks returned.</p>';
     return;
@@ -434,9 +427,6 @@ function resetUi() {
   confidenceBadge.textContent = "Confidence pending";
   confidenceBadge.className = "badge muted";
   citationCount.textContent = "No citations yet";
-  debugEvidenceCount.textContent = "0 chunks";
-  debugCitations.textContent = "None";
-  debugJudge.textContent = "Not implemented";
   evidenceList.innerHTML = '<p class="empty-state">No evidence yet.</p>';
   renderWarnings([]);
   contextText.textContent = "No context assembled yet.";
