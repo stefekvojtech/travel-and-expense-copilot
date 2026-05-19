@@ -168,6 +168,8 @@ Implemented UI elements:
 - raw source ZIP download button
 - sideways scrolling example-question ribbon with buttons that insert text at
   the chat input cursor
+- rotating chat-input placeholder that randomly reuses the ribbon's example
+  questions
 - send button
 - streaming answer panel
 
@@ -204,8 +206,9 @@ On desktop, the debug panel keeps status details at the top, retrieved chunks in
 the middle, and assembled retrieval context always visible at the bottom with
 its own scrollbar.
 
-The example ribbon slowly scrolls on its own, pauses on hover or focus, supports
-left/right arrow buttons, and can be dragged horizontally.
+The example ribbon loops with a transform-based virtual offset, slowly scrolls
+on its own, pauses on hover or focus, supports left/right arrow buttons, and can
+be dragged horizontally.
 
 ## Still Not Implemented
 

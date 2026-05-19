@@ -553,9 +553,8 @@ function setupExampleRibbon() {
 
   requestAnimationFrame(() => {
     measureExampleLoopWidth();
-    setExampleScrollPosition(exampleLoopWidth);
+    setExampleScrollPosition(0);
   });
-  rotateExampleScroll();
   requestAnimationFrame(autoScrollExamples);
 }
 
@@ -581,7 +580,6 @@ function startExampleDrag(event) {
   examplePointerStartButton = target?.closest("[data-question]") || null;
   exampleAutoScrollPaused = true;
   exampleDragStartX = event.clientX;
-  exampleScrollPosition = exampleViewport.scrollLeft;
   exampleDragStartScrollLeft = exampleScrollPosition;
   exampleViewport.classList.add("is-dragging");
   exampleViewport.setPointerCapture(event.pointerId);
@@ -642,7 +640,7 @@ function rotateExampleScroll() {
     return;
   }
   exampleScrollPosition = normalizeExampleScrollPosition(exampleScrollPosition);
-  exampleViewport.scrollLeft = exampleScrollPosition;
+  renderExampleTrackPosition();
 }
 
 function setExampleScrollPosition(nextPosition) {
@@ -650,20 +648,14 @@ function setExampleScrollPosition(nextPosition) {
     return;
   }
   exampleScrollPosition = normalizeExampleScrollPosition(nextPosition);
-  exampleViewport.scrollLeft = exampleScrollPosition;
+  renderExampleTrackPosition();
 }
 
 function normalizeExampleScrollPosition(position) {
-  let normalizedPosition = position;
-  const lowerBound = exampleLoopWidth;
-  const upperBound = exampleLoopWidth * 2;
-  while (normalizedPosition >= upperBound) {
-    normalizedPosition -= exampleLoopWidth;
+  if (exampleLoopWidth <= 0) {
+    return 0;
   }
-  while (normalizedPosition < lowerBound) {
-    normalizedPosition += exampleLoopWidth;
-  }
-  return normalizedPosition;
+  return ((position % exampleLoopWidth) + exampleLoopWidth) % exampleLoopWidth;
 }
 
 function measureExampleLoopWidth() {
@@ -672,6 +664,11 @@ function measureExampleLoopWidth() {
     return;
   }
   exampleLoopWidth = firstClone.offsetLeft;
+  rotateExampleScroll();
+}
+
+function renderExampleTrackPosition() {
+  exampleTrack.style.transform = `translate3d(${-exampleScrollPosition}px, 0, 0)`;
 }
 
 function setupRotatingPlaceholder() {
