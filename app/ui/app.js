@@ -22,9 +22,12 @@ const examplesForward = document.querySelector("#examplesForward");
 
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
 const EXAMPLE_ARROW_NUDGE_PIXELS = 96;
+const PLACEHOLDER_ROTATION_MS = 5000;
+const PLACEHOLDER_FADE_MS = 180;
 
 let activeController = null;
 let streamedAnswer = "";
+let exampleQuestions = [];
 let exampleAutoScrollPaused = false;
 let exampleDragStartX = 0;
 let exampleDragStartScrollLeft = 0;
@@ -33,6 +36,9 @@ let exampleDidDrag = false;
 let examplePointerStartButton = null;
 let exampleLastFrameTime = 0;
 let exampleScrollPosition = 0;
+let exampleLoopWidth = 0;
+let placeholderQuestion = "";
+let placeholderTimerId = 0;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -45,6 +51,8 @@ form.addEventListener("submit", (event) => {
 
 questionInput.addEventListener("input", resizeQuestionInput);
 window.addEventListener("resize", () => {
+  measureExampleLoopWidth();
+  rotateExampleScroll();
   requestAnimationFrame(syncEvidenceExpandLinks);
 });
 
@@ -57,6 +65,7 @@ questionInput.addEventListener("keydown", (event) => {
 });
 
 setupExampleRibbon();
+setupRotatingPlaceholder();
 resizeQuestionInput();
 
 function insertQuestion(question) {
@@ -513,7 +522,12 @@ function setupExampleRibbon() {
     return;
   }
 
-  duplicateExampleButtonsForLoop();
+  const originalButtons = [...exampleTrack.querySelectorAll("[data-question]")];
+  exampleQuestions = originalButtons
+    .map((button) => button.dataset.question || "")
+    .filter(Boolean);
+
+  duplicateExampleButtonsForLoop(originalButtons);
 
   exampleRibbon.addEventListener("mouseenter", () => {
     exampleAutoScrollPaused = true;
@@ -537,25 +551,27 @@ function setupExampleRibbon() {
   examplesBack.addEventListener("click", () => scrollExamplesBy(-EXAMPLE_ARROW_NUDGE_PIXELS));
   examplesForward.addEventListener("click", () => scrollExamplesBy(EXAMPLE_ARROW_NUDGE_PIXELS));
 
-  exampleScrollPosition = exampleViewport.scrollLeft;
+  requestAnimationFrame(() => {
+    measureExampleLoopWidth();
+    setExampleScrollPosition(exampleLoopWidth);
+  });
   rotateExampleScroll();
   requestAnimationFrame(autoScrollExamples);
 }
 
-function duplicateExampleButtonsForLoop() {
-  const originalButtons = [...exampleTrack.querySelectorAll("[data-question]")];
+function duplicateExampleButtonsForLoop(originalButtons) {
   if (originalButtons.length === 0) {
     return;
   }
 
-  do {
+  while (exampleTrack.children.length < originalButtons.length * 5) {
     for (const button of originalButtons) {
       const clone = button.cloneNode(true);
       clone.setAttribute("aria-hidden", "true");
       clone.tabIndex = -1;
       exampleTrack.append(clone);
     }
-  } while (exampleTrack.scrollWidth < exampleViewport.clientWidth * 2.5);
+  }
 }
 
 function startExampleDrag(event) {
@@ -622,30 +638,89 @@ function autoScrollExamples(timestamp) {
 }
 
 function rotateExampleScroll() {
-  const midpoint = exampleTrack.scrollWidth / 2;
-  if (midpoint <= 0) {
+  if (exampleLoopWidth <= 0) {
     return;
   }
-  exampleScrollPosition = normalizeExampleScrollPosition(exampleScrollPosition, midpoint);
+  exampleScrollPosition = normalizeExampleScrollPosition(exampleScrollPosition);
   exampleViewport.scrollLeft = exampleScrollPosition;
 }
 
 function setExampleScrollPosition(nextPosition) {
-  const midpoint = exampleTrack.scrollWidth / 2;
-  if (midpoint <= 0) {
+  if (exampleLoopWidth <= 0) {
     return;
   }
-  exampleScrollPosition = normalizeExampleScrollPosition(nextPosition, midpoint);
+  exampleScrollPosition = normalizeExampleScrollPosition(nextPosition);
   exampleViewport.scrollLeft = exampleScrollPosition;
 }
 
-function normalizeExampleScrollPosition(position, midpoint) {
+function normalizeExampleScrollPosition(position) {
   let normalizedPosition = position;
-  while (normalizedPosition >= midpoint) {
-    normalizedPosition -= midpoint;
+  const lowerBound = exampleLoopWidth;
+  const upperBound = exampleLoopWidth * 2;
+  while (normalizedPosition >= upperBound) {
+    normalizedPosition -= exampleLoopWidth;
   }
-  while (normalizedPosition < 0) {
-    normalizedPosition += midpoint;
+  while (normalizedPosition < lowerBound) {
+    normalizedPosition += exampleLoopWidth;
   }
   return normalizedPosition;
+}
+
+function measureExampleLoopWidth() {
+  const firstClone = exampleTrack.children[exampleQuestions.length];
+  if (!(firstClone instanceof HTMLElement)) {
+    return;
+  }
+  exampleLoopWidth = firstClone.offsetLeft;
+}
+
+function setupRotatingPlaceholder() {
+  if (!questionInput) {
+    return;
+  }
+  if (exampleQuestions.length === 0) {
+    exampleQuestions = [...document.querySelectorAll(".example-button[data-question]")]
+      .map((button) => button.dataset.question || "")
+      .filter(Boolean);
+  }
+  if (exampleQuestions.length === 0) {
+    return;
+  }
+
+  setRandomPlaceholder({ immediate: true });
+  placeholderTimerId = window.setInterval(setRandomPlaceholder, PLACEHOLDER_ROTATION_MS);
+}
+
+function setRandomPlaceholder(options = {}) {
+  const nextQuestion = pickRandomPlaceholderQuestion();
+  if (!nextQuestion) {
+    return;
+  }
+  placeholderQuestion = nextQuestion;
+
+  if (options.immediate) {
+    questionInput.placeholder = nextQuestion;
+    return;
+  }
+
+  questionInput.classList.add("is-placeholder-transitioning");
+  window.setTimeout(() => {
+    questionInput.placeholder = nextQuestion;
+    questionInput.classList.remove("is-placeholder-transitioning");
+  }, PLACEHOLDER_FADE_MS);
+}
+
+function pickRandomPlaceholderQuestion() {
+  if (exampleQuestions.length === 0) {
+    return "";
+  }
+  if (exampleQuestions.length === 1) {
+    return exampleQuestions[0];
+  }
+
+  let nextQuestion = placeholderQuestion;
+  while (nextQuestion === placeholderQuestion) {
+    nextQuestion = exampleQuestions[Math.floor(Math.random() * exampleQuestions.length)];
+  }
+  return nextQuestion;
 }

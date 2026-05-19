@@ -373,6 +373,16 @@ textarea {
   overflow-y: hidden;
 }
 
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.78;
+  transition: opacity 180ms ease;
+}
+
+textarea.is-placeholder-transitioning::placeholder {
+  opacity: 0;
+}
+
 textarea:focus {
   border-color: var(--accent);
   outline: 3px solid rgb(18 107 87 / 18%);
