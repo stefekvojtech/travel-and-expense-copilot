@@ -11,53 +11,67 @@
 
 - order: `1`
 - type: `image_vision_text` section='Image Extraction'
-- metadata: `{"vision_model": "gpt-4.1-mini", "mime_type": "image/png"}`
+- metadata: `{"vision_model": "gpt-5.4", "mime_type": "image/png"}`
 
 ```text
-```markdown
 # Airport Transfer Eligibility Decision Tree
 
 ## Need airport transfer reimbursement?
 
 ### 1. Is public transport reasonably available and safe?
 
-- YES → 2. Are you traveling with heavy luggage, medical needs, or client equipment?
-  - YES  
-    ✅ Taxi or ride-hailing may be reimbursable.  
-    Add justification in expense claim.
-  - NO  
-    ❌ Use public transport.  
-    Taxi is not normally reimbursable.
+**YES**
 
-- NO → 3. Is the transfer after the policy cutoff time?
+### 2. Are you traveling with heavy luggage, medical needs, or client equipment?
 
-  - YES → 4. What is the city cutoff time?  
-    - Vienna 22:00  
-    - Berlin 22:00  
-    - Prague 21:00  
+**YES**
 
-    ✅ Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.
+- Taxi or ride-hailing may be reimbursable.
+- Add justification in expense claim.
 
-  - NO → 5. Is there a documented safety concern, service disruption, or no practical connection?
+**NO**
 
-    - YES  
-      ✔️ Taxi may be reimbursable with explanation and supporting details.
-    - NO  
-      ❌ Taxi is not reimbursable.  
-      Use public transport.
+- Use public transport.
+- Taxi is not normally reimbursable.
 
----
+**NO**
+
+### 3. Is the transfer after the policy cutoff time?
+
+**YES**
+
+### 4. What is the city cutoff time?
+
+| City | Cutoff time |
+|---|---|
+| Vienna | 22:00 |
+| Berlin | 22:00 |
+| Prague | 21:00 |
+
+- Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.
+
+**NO**
+
+### 5. Is there a documented safety concern, service disruption, or no practical connection?
+
+**YES**
+
+- Taxi may be reimbursable with explanation and supporting details.
+
+**NO**
+
+- Taxi is not reimbursable.
+- Use public transport.
 
 ## Required claim details
 
-- origin and destination  
-- date and local time  
-- business purpose  
-- reason public transport was unsuitable  
-- receipt required above policy minimum  
+- origin and destination
+- date and local time
+- business purpose
+- reason public transport was unsuitable
+- receipt required above policy minimum
 
----
+## Note
 
-ℹ️ Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
-```
+Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
 ```

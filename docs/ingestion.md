@@ -217,7 +217,7 @@ PROCESSED_DATA_DIR=data/processed
 VECTOR_COLLECTION_NAME=travel_expense_policy_chunks
 
 EMBEDDING_MODEL=text-embedding-3-large
-VISION_MODEL=gpt-4.1-mini
+VISION_MODEL=gpt-5.4
 
 CHUNK_SIZE=600
 CHUNK_OVERLAP=120
