@@ -28,12 +28,24 @@ planned, label it as planned or not yet developed.
 - Do not hardcode secrets.
 - Do not replace the travel and expense policy use case with another domain.
 - Do not stage or commit unrelated existing work.
-- Never track, stage, or commit any `AGENTS.md` file.
+- Do not stage or commit `AGENTS.md` files unless the user explicitly asks to
+  update or track Codex instructions.
 - Do not change `.gitignore` unless explicitly requested.
 - Explain beginner-facing Python, packaging, RAG, and architecture decisions
   clearly and concretely.
 - Distinguish between implemented behavior, planned behavior, and temporary
   demo shortcuts.
+
+## Git Completion
+
+When finishing a requested change:
+
+- Stage only files that belong to the completed change.
+- Commit the completed change with a concise, descriptive message.
+- If the repository has a configured remote and upstream branch, push the commit
+  after committing unless the user asks not to.
+- Leave unrelated dirty files unstaged and mention them briefly in the final
+  response.
 
 ## Architecture Boundaries
 
