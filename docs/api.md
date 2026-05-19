@@ -180,6 +180,9 @@ The chat input starts as a single line, grows upward to 12 lines as text is
 entered, and then scrolls internally. The send button sits beside the input so
 the composer stays compact on smaller screens.
 
+The top runtime badge is the single stage indicator. It uses the compact states
+`Idle`, `Retrieving...`, `Answering...`, `Complete`, and `Error`.
+
 Implemented debug fields:
 
 - retrieved chunks, with source filenames shown instead of full source paths

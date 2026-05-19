@@ -6,7 +6,6 @@ const runtimeStatus = document.querySelector("#runtimeStatus");
 const sendButton = document.querySelector("#sendButton");
 const confidenceBadge = document.querySelector("#confidenceBadge");
 const citationCount = document.querySelector("#citationCount");
-const debugStage = document.querySelector("#debugStage");
 const debugEvidenceCount = document.querySelector("#debugEvidenceCount");
 const debugCitations = document.querySelector("#debugCitations");
 const debugJudge = document.querySelector("#debugJudge");
@@ -107,7 +106,7 @@ async function streamQuestion(question) {
   streamedAnswer = "";
   resetUi();
   setBusy(true);
-  setStatus("Retrieving", false);
+  setStatus("Retrieving...", false);
   questionEcho.textContent = question;
   questionEcho.classList.remove("is-empty");
   answerText.textContent = "";
@@ -197,18 +196,15 @@ function parseSseMessage(message) {
 function handleStreamEvent(eventName, data) {
   switch (eventName) {
     case "retrieval_started":
-      setStatus("Retrieving", false);
-      debugStage.textContent = "Retrieval started";
+      setStatus("Retrieving...", false);
       break;
     case "retrieval_complete":
-      setStatus("Generating", false);
-      debugStage.textContent = "Retrieval complete";
+      setStatus("Answering...", false);
       renderEvidence(data.evidence_blocks || []);
       contextText.textContent = data.context_text || "No context assembled.";
       break;
     case "answer_started":
-      setStatus(`Generating with ${data.model || "model"}`, false);
-      debugStage.textContent = "Answer started";
+      setStatus("Answering...", false);
       break;
     case "answer_delta":
       streamedAnswer += data.delta || "";
@@ -217,18 +213,16 @@ function handleStreamEvent(eventName, data) {
     case "answer_replaced":
       streamedAnswer = data.answer || "";
       answerText.textContent = streamedAnswer;
-      debugStage.textContent = data.reason || "Answer replaced";
       break;
     case "answer_complete":
       renderFinalAnswer(data);
       setStatus("Complete", false);
-      debugStage.textContent = data.abstained ? "Abstained" : "Complete";
       break;
     case "error":
       showError(data.message || "The backend returned an error.");
       break;
     default:
-      debugStage.textContent = eventName;
+      break;
   }
 }
 
@@ -440,7 +434,6 @@ function resetUi() {
   confidenceBadge.textContent = "Confidence pending";
   confidenceBadge.className = "badge muted";
   citationCount.textContent = "No citations yet";
-  debugStage.textContent = "Idle";
   debugEvidenceCount.textContent = "0 chunks";
   debugCitations.textContent = "None";
   debugJudge.textContent = "Not implemented";
@@ -462,7 +455,6 @@ function setStatus(text, isError) {
 
 function showError(message) {
   setStatus("Error", true);
-  debugStage.textContent = "Error";
   answerText.textContent = `The request failed before a final answer was returned.\n\n${message}`;
   renderWarnings([message]);
 }
