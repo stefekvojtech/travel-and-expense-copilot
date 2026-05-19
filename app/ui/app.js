@@ -8,6 +8,7 @@ const confidenceBadge = document.querySelector("#confidenceBadge");
 const citationCount = document.querySelector("#citationCount");
 const evidenceList = document.querySelector("#evidenceList");
 const evidenceSection = document.querySelector(".evidence-section");
+const renderMarkdownToggle = document.querySelector("#renderMarkdownToggle");
 const warningList = document.querySelector("#warningList");
 const contextText = document.querySelector("#contextText");
 const exampleRibbon = document.querySelector(".example-ribbon");
@@ -23,6 +24,8 @@ const PLACEHOLDER_FADE_MS = 180;
 
 let activeController = null;
 let streamedAnswer = "";
+let currentEvidenceBlocks = [];
+let shouldRenderEvidenceMarkdown = false;
 let exampleQuestions = [];
 let exampleAutoScrollPaused = false;
 let exampleDragStartX = 0;
@@ -46,6 +49,7 @@ form.addEventListener("submit", (event) => {
 });
 
 questionInput.addEventListener("input", resizeQuestionInput);
+renderMarkdownToggle?.addEventListener("click", toggleEvidenceMarkdownRendering);
 window.addEventListener("resize", () => {
   measureExampleLoopWidth();
   rotateExampleScroll();
@@ -240,6 +244,9 @@ function renderFinalAnswer(data) {
 }
 
 function renderEvidence(blocks) {
+  currentEvidenceBlocks = blocks;
+  syncRenderMarkdownToggle();
+
   if (blocks.length === 0) {
     evidenceList.innerHTML = '<p class="empty-state">No evidence blocks returned.</p>';
     return;
@@ -268,7 +275,9 @@ function renderEvidence(blocks) {
         textElement("span", `Similarity ${formatNumber(block.approximate_cosine_similarity)}`),
       );
 
-      const snippet = textElement("p", block.text || "");
+      const snippet = shouldRenderEvidenceMarkdown
+        ? renderEvidenceMarkdown(block.text || "")
+        : textElement("p", block.text || "");
       snippet.className = "evidence-text";
 
       const snippetWrapper = document.createElement("div");
@@ -293,6 +302,22 @@ function renderEvidence(blocks) {
     }),
   );
   requestAnimationFrame(syncEvidenceExpandLinks);
+}
+
+function toggleEvidenceMarkdownRendering() {
+  shouldRenderEvidenceMarkdown = !shouldRenderEvidenceMarkdown;
+  syncRenderMarkdownToggle();
+  renderEvidence(currentEvidenceBlocks);
+}
+
+function syncRenderMarkdownToggle() {
+  if (!renderMarkdownToggle) {
+    return;
+  }
+  const hasEvidence = currentEvidenceBlocks.length > 0;
+  renderMarkdownToggle.hidden = !hasEvidence;
+  renderMarkdownToggle.setAttribute("aria-pressed", String(shouldRenderEvidenceMarkdown));
+  renderMarkdownToggle.classList.toggle("is-active", shouldRenderEvidenceMarkdown);
 }
 
 function renderAnswerWithCitations(answer, citations) {
@@ -326,6 +351,142 @@ function renderAnswerWithCitations(answer, citations) {
   }
 
   answerText.replaceChildren(...nodes);
+}
+
+function renderEvidenceMarkdown(markdown) {
+  const container = document.createElement("div");
+  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+  let index = 0;
+
+  while (index < lines.length) {
+    const line = lines[index];
+    const trimmedLine = line.trim();
+
+    if (!trimmedLine) {
+      index += 1;
+      continue;
+    }
+
+    if (isMarkdownTableStart(lines, index)) {
+      const { table, nextIndex } = renderMarkdownTable(lines, index);
+      container.append(table);
+      index = nextIndex;
+      continue;
+    }
+
+    const headingMatch = /^(#{1,4})\s+(.+)$/.exec(trimmedLine);
+    if (headingMatch) {
+      const heading = document.createElement(`h${Math.min(headingMatch[1].length + 3, 6)}`);
+      appendInlineMarkdown(heading, headingMatch[2]);
+      container.append(heading);
+      index += 1;
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(trimmedLine)) {
+      const list = document.createElement("ul");
+      while (index < lines.length && /^[-*]\s+/.test(lines[index].trim())) {
+        const item = document.createElement("li");
+        appendInlineMarkdown(item, lines[index].trim().replace(/^[-*]\s+/, ""));
+        list.append(item);
+        index += 1;
+      }
+      container.append(list);
+      continue;
+    }
+
+    const paragraphLines = [trimmedLine];
+    index += 1;
+    while (
+      index < lines.length
+      && lines[index].trim()
+      && !isMarkdownTableStart(lines, index)
+      && !/^(#{1,4})\s+/.test(lines[index].trim())
+      && !/^[-*]\s+/.test(lines[index].trim())
+    ) {
+      paragraphLines.push(lines[index].trim());
+      index += 1;
+    }
+
+    const paragraph = document.createElement("p");
+    appendInlineMarkdown(paragraph, paragraphLines.join(" "));
+    container.append(paragraph);
+  }
+
+  return container;
+}
+
+function isMarkdownTableStart(lines, index) {
+  return Boolean(
+    lines[index]?.includes("|")
+      && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[index + 1] || ""),
+  );
+}
+
+function renderMarkdownTable(lines, startIndex) {
+  const table = document.createElement("table");
+  const headerCells = splitMarkdownTableRow(lines[startIndex]);
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  for (const cell of headerCells) {
+    const th = document.createElement("th");
+    appendInlineMarkdown(th, cell);
+    headerRow.append(th);
+  }
+  thead.append(headerRow);
+  table.append(thead);
+
+  const tbody = document.createElement("tbody");
+  let index = startIndex + 2;
+  while (index < lines.length && lines[index].includes("|") && lines[index].trim()) {
+    const row = document.createElement("tr");
+    for (const cell of splitMarkdownTableRow(lines[index])) {
+      const td = document.createElement("td");
+      appendInlineMarkdown(td, cell);
+      row.append(td);
+    }
+    tbody.append(row);
+    index += 1;
+  }
+  table.append(tbody);
+  return { table, nextIndex: index };
+}
+
+function splitMarkdownTableRow(row) {
+  return row
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function appendInlineMarkdown(parent, text) {
+  const pattern = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parent.append(document.createTextNode(text.slice(lastIndex, match.index)));
+    }
+
+    const token = match[0];
+    if (token.startsWith("**")) {
+      const strong = document.createElement("strong");
+      strong.textContent = token.slice(2, -2);
+      parent.append(strong);
+    } else {
+      const code = document.createElement("code");
+      code.textContent = token.slice(1, -1);
+      parent.append(code);
+    }
+    lastIndex = match.index + token.length;
+  }
+
+  if (lastIndex < text.length) {
+    parent.append(document.createTextNode(text.slice(lastIndex)));
+  }
 }
 
 function buildCitationMarkers(citations) {
@@ -384,9 +545,19 @@ function scrollEvidenceToTop(item) {
 }
 
 function getEvidenceScrollPadding() {
-  const computedStyle = window.getComputedStyle(evidenceList);
-  const rowGap = parseFloat(computedStyle.rowGap);
-  return Number.isFinite(rowGap) ? rowGap : 0;
+  const header = evidenceSection?.querySelector(".debug-section-header");
+  const sectionStyle = evidenceSection ? window.getComputedStyle(evidenceSection) : null;
+  const sidePadding = sectionStyle ? parseFloat(sectionStyle.paddingLeft) : 0;
+  const headerStyle = header ? window.getComputedStyle(header) : null;
+  const headerBottomPadding = headerStyle ? parseFloat(headerStyle.paddingBottom) : 0;
+  return (
+    (header ? header.getBoundingClientRect().height : 0)
+    + Math.max(
+      0,
+      (Number.isFinite(sidePadding) ? sidePadding : 0)
+        - (Number.isFinite(headerBottomPadding) ? headerBottomPadding : 0),
+    )
+  );
 }
 
 function renderWarnings(warnings) {
@@ -427,6 +598,8 @@ function resetUi() {
   confidenceBadge.textContent = "Confidence pending";
   confidenceBadge.className = "badge muted";
   citationCount.textContent = "No citations yet";
+  currentEvidenceBlocks = [];
+  syncRenderMarkdownToggle();
   evidenceList.innerHTML = '<p class="empty-state">No evidence yet.</p>';
   renderWarnings([]);
   contextText.textContent = "No context assembled yet.";

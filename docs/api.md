@@ -192,9 +192,14 @@ Implemented debug fields:
 - validation warnings
 - assembled retrieval context
 
+The retrieved-chunks panel includes a `Render markdown` toggle when chunks are
+available. It switches all retrieved chunks between plain text and a safe
+Markdown preview, and its sticky header keeps the toggle visible while scrolling
+through chunks.
+
 Citation markers in completed answers are interactive. Hovering or focusing a
-citation highlights the matching retrieved chunk and scrolls it to the top of
-the retrieved-chunks panel.
+citation highlights the matching retrieved chunk and scrolls it below the sticky
+retrieved-chunks header with the same spacing as the panel side padding.
 
 Tool-call display is not implemented because the answer path does not yet have a
 tool-calling loop.

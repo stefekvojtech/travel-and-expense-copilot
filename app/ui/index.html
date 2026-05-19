@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Travel &amp; Expense Policy Copilot</title>
-    <link rel="stylesheet" href="/ui/styles.css?v=20260519-4">
+    <link rel="stylesheet" href="/ui/styles.css?v=20260519-markdown-preview">
   </head>
   <body>
     <main class="shell" aria-label="Travel and expense copilot">
@@ -111,7 +111,18 @@
         </section>
 
         <section class="debug-section evidence-section">
-          <h3>Retrieved Chunks</h3>
+          <div class="debug-section-header">
+            <h3>Retrieved Chunks</h3>
+            <button
+              type="button"
+              class="secondary-button compact render-markdown-toggle"
+              id="renderMarkdownToggle"
+              aria-pressed="false"
+              hidden
+            >
+              Render markdown
+            </button>
+          </div>
           <div class="evidence-list" id="evidenceList">
             <p class="empty-state">No evidence yet.</p>
           </div>
@@ -124,6 +135,6 @@
       </aside>
     </main>
 
-    <script src="/ui/app.js?v=20260519-4" defer></script>
+    <script src="/ui/app.js?v=20260519-markdown-preview" defer></script>
   </body>
 </html>
