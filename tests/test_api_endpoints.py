@@ -8,6 +8,7 @@ from typing import Any
 from fastapi.testclient import TestClient
 
 import app.api.chat as chat_routes
+import app.api.ui as ui_routes
 from app.agents.answer import GroundedAnswer
 from app.main import app
 from app.retrieval.step03_assemble_context import EvidenceBlock
@@ -72,6 +73,33 @@ def test_streaming_chat_endpoint_returns_sse_events(monkeypatch: Any) -> None:
     assert "event: retrieval_started" in response.text
     assert "event: answer_delta" in response.text
     assert '"delta": "Yes. [1]"' in response.text
+
+
+def test_ui_config_endpoint_returns_author_links(monkeypatch: Any) -> None:
+    """GET /api/ui/config should expose non-sensitive author metadata."""
+    monkeypatch.setattr(
+        ui_routes,
+        "get_settings",
+        lambda: type(
+            "Settings",
+            (),
+            {
+                "author_name": "Vojtech Stefek",
+                "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
+                "author_github_url": "https://github.com/stefekvojtech",
+            },
+        )(),
+    )
+    client = TestClient(app)
+
+    response = client.get("/api/ui/config")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "author_name": "Vojtech Stefek",
+        "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
+        "author_github_url": "https://github.com/stefekvojtech",
+    }
 
 
 def _fake_stream_grounded_answer_events(

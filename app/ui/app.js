@@ -16,6 +16,10 @@ const exampleViewport = document.querySelector("#exampleViewport");
 const exampleTrack = document.querySelector("#exampleTrack");
 const examplesBack = document.querySelector("#examplesBack");
 const examplesForward = document.querySelector("#examplesForward");
+const authorFooter = document.querySelector("#authorFooter");
+const authorName = document.querySelector("#authorName");
+const authorLinkedin = document.querySelector("#authorLinkedin");
+const authorGithub = document.querySelector("#authorGithub");
 
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
 const EXAMPLE_ARROW_NUDGE_PIXELS = 96;
@@ -66,6 +70,7 @@ questionInput.addEventListener("keydown", (event) => {
 
 setupExampleRibbon();
 setupRotatingPlaceholder();
+void loadUiConfig();
 resizeQuestionInput();
 
 function insertQuestion(question) {
@@ -875,4 +880,35 @@ function pickRandomPlaceholderQuestion() {
     nextQuestion = exampleQuestions[Math.floor(Math.random() * exampleQuestions.length)];
   }
   return nextQuestion;
+}
+
+async function loadUiConfig() {
+  if (!authorFooter || !authorName || !authorLinkedin || !authorGithub) {
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/ui/config", { headers: { Accept: "application/json" } });
+    if (!response.ok) {
+      return;
+    }
+
+    const config = await response.json();
+    const name = String(config.author_name || "").trim();
+    const linkedinUrl = String(config.author_linkedin_url || "").trim();
+    const githubUrl = String(config.author_github_url || "").trim();
+
+    if (!name || !linkedinUrl || !githubUrl) {
+      return;
+    }
+
+    authorName.textContent = name;
+    authorLinkedin.href = linkedinUrl;
+    authorLinkedin.setAttribute("aria-label", `${name} on LinkedIn`);
+    authorGithub.href = githubUrl;
+    authorGithub.setAttribute("aria-label", `${name} on GitHub`);
+    authorFooter.hidden = false;
+  } catch {
+    authorFooter.hidden = true;
+  }
 }

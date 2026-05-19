@@ -30,6 +30,10 @@ def _get_int(name: str, default: int) -> int:
     return int(value) if value is not None else default
 
 
+def _get_str(name: str, default: str = "") -> str:
+    return os.getenv(name, default)
+
+
 def _get_path(name: str) -> Path:
     value = os.getenv(name)
     if value is None:
@@ -58,6 +62,9 @@ class Settings:
     chunk_size: int
     chunk_overlap: int
     max_chunk_tokens: int
+    author_name: str = ""
+    author_linkedin_url: str = ""
+    author_github_url: str = ""
 
 
 @lru_cache(maxsize=1)
@@ -83,4 +90,7 @@ def get_settings() -> Settings:
         chunk_size=_get_int("CHUNK_SIZE", 800),
         chunk_overlap=_get_int("CHUNK_OVERLAP", 120),
         max_chunk_tokens=_get_int("MAX_CHUNK_TOKENS", 1200),
+        author_name=_get_str("AUTHOR_NAME"),
+        author_linkedin_url=_get_str("AUTHOR_LINKEDIN_URL"),
+        author_github_url=_get_str("AUTHOR_GITHUB_URL"),
     )

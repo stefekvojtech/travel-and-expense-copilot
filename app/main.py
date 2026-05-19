@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.chat import router as chat_router
 from app.api.downloads import router as downloads_router
+from app.api.ui import router as ui_router
 
 
 UI_DIRECTORY = Path(__file__).resolve().parent / "ui"
@@ -20,6 +21,7 @@ app = FastAPI(
 )
 app.include_router(chat_router)
 app.include_router(downloads_router)
+app.include_router(ui_router)
 app.mount("/ui", StaticFiles(directory=UI_DIRECTORY, html=True), name="ui")
 
 

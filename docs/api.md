@@ -28,6 +28,7 @@ http://127.0.0.1:8000/ui/
 Implemented routes:
 
 - `GET /health`
+- `GET /api/ui/config`
 - `POST /api/chat`
 - `POST /api/chat/stream`
 - `GET /api/downloads/raw-data.zip`
@@ -50,6 +51,22 @@ retrieval/model layer instead of making real OpenAI, Chroma, or reranker calls.
 ```
 
 It does not currently check Chroma, OpenAI credentials, or model availability.
+
+## UI Config Route
+
+`GET /api/ui/config` returns non-sensitive author metadata used by the static
+browser UI footer:
+
+```json
+{
+  "author_name": "Vojtech Stefek",
+  "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
+  "author_github_url": "https://github.com/stefekvojtech"
+}
+```
+
+The values come from `AUTHOR_NAME`, `AUTHOR_LINKEDIN_URL`, and
+`AUTHOR_GITHUB_URL`.
 
 ## Raw Data Download Route
 
@@ -166,6 +183,7 @@ Implemented UI elements:
 
 - chat input
 - raw source ZIP download button
+- author footer with LinkedIn and GitHub links
 - sideways scrolling example-question ribbon with buttons that insert text at
   the chat input cursor
 - rotating chat-input placeholder that randomly reuses the ribbon's example

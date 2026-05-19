@@ -21,6 +21,14 @@ class HealthResponse(BaseModel):
     app: str = "travel-and-expense-copilot"
 
 
+class UiConfigResponse(BaseModel):
+    """Non-sensitive UI configuration exposed to the browser."""
+
+    author_name: str
+    author_linkedin_url: str
+    author_github_url: str
+
+
 class RetrievalFiltersRequest(BaseModel):
     """Exact metadata filters for the first vector-retrieval pass."""
 
