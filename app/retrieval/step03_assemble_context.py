@@ -28,7 +28,6 @@ class EvidenceBlock:
     title: str | None
     section_path: str | None
     page_label: str | None
-    sheet_label: str | None
     row_number: int | None
     cosine_distance: float
     approximate_cosine_similarity: float
@@ -132,7 +131,6 @@ def _build_evidence_block(
         title=_optional_str(chunk.metadata.get("title")),
         section_path=chunk.section_path,
         page_label=_metadata_label(chunk.metadata, "page", "pages"),
-        sheet_label=_metadata_label(chunk.metadata, "sheet", "sheets"),
         row_number=_optional_int(
             chunk.metadata.get("row_number")
             or chunk.metadata.get("metadata_row_number")
@@ -195,7 +193,6 @@ def _format_context_block(block: EvidenceBlock) -> str:
             f"doc_type: {block.doc_type}",
             f"section_path: {block.section_path}",
             f"page: {block.page_label}" if block.page_label else None,
-            f"sheet: {block.sheet_label}" if block.sheet_label else None,
             f"row_number: {block.row_number}"
             if block.row_number is not None
             else None,

@@ -95,7 +95,6 @@ def _evidence_block(
         title="Source",
         section_path=None,
         page_label=None,
-        sheet_label=None,
         row_number=None,
         cosine_distance=0.1,
         approximate_cosine_similarity=0.9,

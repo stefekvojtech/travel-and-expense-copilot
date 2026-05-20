@@ -100,7 +100,6 @@ deep inspection. Each block has:
 - `text`
 - `section_path`
 - `page`
-- `sheet`
 - `order`
 - `metadata`
 
@@ -114,11 +113,10 @@ preserves common semantic tags, renders tables and lists into Markdown, and
 tracks section paths from headings.
 
 XLSX normalization uses OpenPyXL with `read_only=True` and `data_only=True`.
-Sheets are converted into a sheet heading, a table header block, and row-level
-`table_row` blocks whose text contains only cell field/value lines. Sheet and
-row location are kept as structured metadata instead of being repeated in the
-row text. Common row fields such as country, city, category, expense category,
-and currency are copied into metadata when present.
+Worksheets are converted into a section heading named after the worksheet, a
+table header block, and row-level `table_row` blocks whose text contains only
+cell field/value lines. Worksheet location is stored in `section_path`, and row
+location is stored in metadata as `row_number`.
 
 TXT normalization reads UTF-8 text, cleans paragraph whitespace, and stores the
 file as one plain-text block.
@@ -152,7 +150,6 @@ Chunk metadata includes:
 - `title`
 - `section_path`
 - `page`
-- `sheet`
 - `chunk_strategy`
 - `token_count`
 - `order`
@@ -180,8 +177,8 @@ The embedder builds a temporary collection, adds all chunks, verifies the count,
 then promotes the temporary collection to the configured collection name.
 
 The embedder writes chunk text as the vector document. Chunk metadata is
-flattened for Chroma. Citation fields such as `page`, `sheet`, and row metadata
-are stored as scalar Chroma metadata where available.
+flattened for Chroma. Citation fields such as `page`, `section_path`, and row
+metadata are stored as scalar Chroma metadata where available.
 
 ### Embedding Model Consistency
 

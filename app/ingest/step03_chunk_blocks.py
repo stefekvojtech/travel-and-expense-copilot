@@ -26,7 +26,7 @@ from app.ingest.artifact_paths import (
     reset_artifact_dir,
     write_text_if_changed,
 )
-from app.ingest.artifacts import BlockArtifact, ChunkArtifact
+from app.ingest.artifacts import BlockArtifact, ChunkArtifact, block_artifact_from_dict
 
 
 HEADERS_TO_SPLIT_ON = [
@@ -384,7 +384,6 @@ def _build_chunk(
 ) -> ChunkArtifact:
     first_block = blocks[0]
     pages = sorted({block.page for block in blocks if block.page is not None})
-    sheets = sorted({block.sheet for block in blocks if block.sheet is not None})
     section_paths = [block.section_path for block in blocks if block.section_path]
     section_path = section_paths[0] if section_paths else None
 
@@ -397,7 +396,6 @@ def _build_chunk(
         text=text,
         section_path=section_path,
         page=pages[0] if pages else None,
-        sheet=sheets[0] if sheets else None,
         chunk_strategy=chunk_strategy,
         token_count=splitter._length_function(text),
         order=order,
@@ -653,7 +651,7 @@ def _read_blocks(blocks_path: Path) -> list[BlockArtifact]:
     blocks: list[BlockArtifact] = []
     for line in blocks_path.read_text(encoding="utf-8").splitlines():
         if line.strip():
-            blocks.append(BlockArtifact(**json.loads(line)))
+            blocks.append(block_artifact_from_dict(json.loads(line)))
     return sorted(blocks, key=lambda block: block.order)
 
 
@@ -677,7 +675,6 @@ def _chunks_preview_markdown(chunks: list[ChunkArtifact]) -> str:
     ]
     for chunk in chunks:
         page_text = f" page={chunk.page}" if chunk.page is not None else ""
-        sheet_text = f" sheet={chunk.sheet!r}" if chunk.sheet else ""
         section_text = f" section={chunk.section_path!r}" if chunk.section_path else ""
         lines.extend(
             [
@@ -685,7 +682,7 @@ def _chunks_preview_markdown(chunks: list[ChunkArtifact]) -> str:
                 "",
                 f"- order: `{chunk.order}`",
                 f"- strategy: `{chunk.chunk_strategy}`",
-                f"- tokens: `{chunk.token_count}`{page_text}{sheet_text}{section_text}",
+                f"- tokens: `{chunk.token_count}`{page_text}{section_text}",
                 f"- metadata: `{json.dumps(chunk.metadata, ensure_ascii=True)}`",
                 "",
                 "```text",
@@ -706,14 +703,7 @@ def _merge_metadata(blocks: list[BlockArtifact]) -> dict:
     ]
     if table_indexes:
         metadata["table_indexes_on_page"] = table_indexes
-    for key in (
-        "row_number",
-        "country_code",
-        "country",
-        "city",
-        "expense_category",
-        "currency",
-    ):
+    for key in ("row_number",):
         values = [
             block.metadata.get(key)
             for block in blocks

@@ -189,7 +189,10 @@ def _remove_orphaned_chroma_vector_dirs(settings: Settings) -> None:
             continue
         if not path.resolve().is_relative_to(vector_store_root):
             continue
-        shutil.rmtree(path)
+        try:
+            shutil.rmtree(path)
+        except PermissionError:
+            continue
 
 
 def _read_active_vector_segment_ids(sqlite_path: Path) -> set[str]:
@@ -230,7 +233,6 @@ def _chunk_metadata(chunk: ChunkArtifact) -> dict[str, str | int | float | bool 
         "token_count": chunk.token_count,
         "order": chunk.order,
         "page": chunk.page,
-        "sheet": chunk.sheet,
     }
     metadata.update(_flatten_metadata(chunk.metadata))
     return metadata

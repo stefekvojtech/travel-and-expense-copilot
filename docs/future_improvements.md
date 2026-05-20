@@ -203,10 +203,10 @@ semantic concepts. They are also exact tokens or structured values that should b
 easy to match directly.
 
 The existing ingestion pipeline already prepares useful structure for this. XLSX
-rows are chunked as row-level chunks, and chunk metadata can include fields such
-as `city`, `country`, `country_code`, `expense_category`, and `currency`. A
-future hybrid implementation should use that structure instead of treating every
-query as plain unstructured text.
+rows are chunked as row-level chunks, with worksheet location in `section_path`
+and row location in `row_number`. A future hybrid implementation can derive
+additional structured values from row text or a purpose-built index instead of
+treating every query as plain unstructured text.
 
 This suggests a future hybrid retrieval design:
 
@@ -264,8 +264,8 @@ assembly, at least for the first implementation.
 
 ##### Metadata Filters Before Heavy Search Logic
 
-Before adding complex keyword behavior, expand the exact-match filter shape to
-cover metadata the project already creates:
+Before adding complex keyword behavior, consider adding a purpose-built metadata
+or keyword index for structured values the project can derive:
 
 - `city`
 - `country`
@@ -279,7 +279,7 @@ either plain vector search or plain keyword search.
 
 Filter extraction can start deterministic and conservative. For example:
 
-- detect known cities/countries from indexed metadata values
+- detect known cities/countries from indexed or derived values
 - detect expense-category terms such as `hotel`, `meal`, `taxi`, `flight`,
   `receipt`, `mileage`, `entertainment`, and `alcohol`
 - preserve exact numeric/time/currency tokens such as `22:00`, `35 EUR`, or

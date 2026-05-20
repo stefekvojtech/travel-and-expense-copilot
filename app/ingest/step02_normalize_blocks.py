@@ -140,7 +140,6 @@ def build_block_artifacts(
                 text=source_block.text,
                 section_path=source_block.section_path,
                 page=source_block.page,
-                sheet=source_block.sheet,
                 order=index,
                 metadata=source_block.metadata,
             )
@@ -163,7 +162,6 @@ def normalized_blocks_preview_markdown(blocks: list[BlockArtifact]) -> str:
     ]
     for block in blocks:
         page_text = f" page={block.page}" if block.page is not None else ""
-        sheet_text = f" sheet={block.sheet!r}" if block.sheet is not None else ""
         section_text = (
             f" section={block.section_path!r}" if block.section_path is not None else ""
         )
@@ -172,7 +170,7 @@ def normalized_blocks_preview_markdown(blocks: list[BlockArtifact]) -> str:
                 f"### {block.block_id}",
                 "",
                 f"- order: `{block.order}`",
-                f"- type: `{block.block_type}`{page_text}{sheet_text}{section_text}",
+                f"- type: `{block.block_type}`{page_text}{section_text}",
                 f"- metadata: `{json.dumps(block.metadata, ensure_ascii=True)}`",
                 "",
                 "```text",
@@ -203,7 +201,6 @@ def _blocks_from_loaded_image(record: LoadedDocumentArtifact) -> list[BlockArtif
     block_type = metadata.get("source_block_type")
     section_path = metadata.get("source_section_path")
     page = metadata.get("source_page")
-    sheet = metadata.get("source_sheet")
     return [
         BlockArtifact(
             doc_id=record.doc_id,
@@ -215,7 +212,6 @@ def _blocks_from_loaded_image(record: LoadedDocumentArtifact) -> list[BlockArtif
             text=record.text,
             section_path=section_path if isinstance(section_path, str) else "Image Extraction",
             page=page if isinstance(page, int) else None,
-            sheet=sheet if isinstance(sheet, str) else None,
             order=1,
             metadata=source_block_metadata,
         )

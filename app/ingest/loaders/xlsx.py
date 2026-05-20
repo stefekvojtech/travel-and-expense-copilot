@@ -1,8 +1,7 @@
-"""Normalize spreadsheets into sheet-aware Markdown and row-level source blocks.
+"""Normalize spreadsheets into worksheet-section Markdown and row-level blocks.
 
 The XLSX loader reads cached cell values, creates one section per worksheet,
-keeps header context, and emits row blocks with common policy metadata fields
-for filtering during retrieval.
+keeps header context, and emits row blocks with row-number lineage.
 """
 
 from __future__ import annotations
@@ -21,7 +20,7 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
     markdown_sections: list[str] = []
     blocks: list[SourceBlock] = []
     for sheet in workbook.worksheets:
-        section = f"Sheet: {sheet.title}"
+        section = sheet.title
         rows = [_clean_row(row) for row in sheet.iter_rows(values_only=True)]
         non_empty_rows = [row for row in rows if any(row)]
 
@@ -31,7 +30,6 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
                 text=f"## {section}",
                 block_type="heading",
                 section_path=section,
-                sheet=sheet.title,
             )
         )
 
@@ -47,10 +45,8 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
                 text=header_text,
                 block_type="table_header",
                 section_path=section,
-                sheet=sheet.title,
                 metadata={
                     "row_number": 1,
-                    "column_headers": headers,
                 },
             )
         )
@@ -66,12 +62,8 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
                     text=_row_block_text(row_values),
                     block_type="table_row",
                     section_path=section,
-                    sheet=sheet.title,
                     metadata={
                         "row_number": row_index,
-                        "column_headers": headers,
-                        "row_values": row_values,
-                        **_filter_metadata_from_row(row_values),
                     },
                 )
             )
@@ -84,12 +76,8 @@ def normalize_xlsx(source_path: Path) -> NormalizedSource:
                     text=_row_block_text(row_values),
                     block_type="table_row",
                     section_path=section,
-                    sheet=sheet.title,
                     metadata={
                         "row_number": 1,
-                        "column_headers": headers,
-                        "row_values": row_values,
-                        **_filter_metadata_from_row(row_values),
                     },
                 )
             )
@@ -134,20 +122,3 @@ def _row_block_text(row_values: dict[str, str]) -> str:
 
 def _markdown_row(values: list[str]) -> str:
     return "| " + " | ".join(values) + " |"
-
-
-def _filter_metadata_from_row(row_values: dict[str, str]) -> dict[str, str]:
-    # These common policy dimensions are useful for Chroma metadata filters.
-    metadata: dict[str, str] = {}
-    for source_key, metadata_key in {
-        "country_code": "country_code",
-        "country": "country",
-        "city": "city",
-        "category": "expense_category",
-        "expense_category": "expense_category",
-        "currency": "currency",
-    }.items():
-        value = row_values.get(source_key)
-        if value:
-            metadata[metadata_key] = value
-    return metadata

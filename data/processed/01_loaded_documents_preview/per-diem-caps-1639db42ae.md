@@ -11,7 +11,7 @@
 - metadata: `{"extraction_method": "openpyxl_row_level", "extraction_warning": null, "source_block_count": 105}`
 
 ```text
-## Sheet: README
+## README
 | Atlas Mobility Group - Per Diem Caps Workbook 2026 | column_2 |
 | Purpose | Synthetic data source for local RAG and agentic reimbursement demo. |
 | Version | PDC-2026.2 |
@@ -29,7 +29,7 @@
 | ClaimExamples | Worked examples with formulas for reimbursement logic. |
 | PolicyTags | Metadata tags useful for filtering and retrieval. |
 
-## Sheet: PerDiemCaps
+## PerDiemCaps
 | country_code | country | city | currency | meal_cap_breakfast | meal_cap_lunch | meal_cap_dinner | meal_cap_daily | hotel_cap_per_night | taxi_allowed_after | laundry_after_nights | notes | effective_date |
 | AT | Austria | Vienna | EUR | 12 | 24 | 35 | 71 | 160 | 22:00 | 5 | Dinner cap excludes alcohol unless client entertainment was pre-approved. | 2026-01-01 |
 | AT | Austria | Graz | EUR | 10 | 22 | 32 | 64 | 135 | 22:00 | 5 | Lower hotel cap than Vienna; airport taxi needs route evidence. | 2026-01-01 |
@@ -52,7 +52,7 @@
 | IT | Italy | Milan | EUR | 14 | 30 | 44 | 88 | 205 | 22:00 | 5 | City tax reimbursable when shown on hotel folio. | 2026-01-01 |
 | ES | Spain | Madrid | EUR | 12 | 26 | 38 | 76 | 165 | 22:00 | 5 | Late dinner is normal locally but alcohol still excluded. | 2026-01-01 |
 
-## Sheet: TaxiRules
+## TaxiRules
 | country_code | city | default_after_hours_threshold | airport_to_city_allowed | home_to_office_allowed | requires_route_evidence | exception_keywords | audit_note |
 | AT | Vienna | 22:00 | Yes if luggage, late arrival, or public transport disruption | No, unless approved overtime after 22:00 or safety issue | Yes | luggage; late arrival; safety; strike; disruption | Before 22:00 route evidence and exception reason are important. |
 | CZ | Prague | 21:00 | Yes if after threshold or public transport not practical | No, unless overtime after 22:00 or safety issue | Yes | luggage; unsafe; disruption; late return | 20:30 is not after-hours in Prague under default rule. |
@@ -64,7 +64,7 @@
 | GB | London | 22:30 | Yes if after threshold, safety issue, or rail strike | No | Yes | rail strike; safety; equipment | Black cab receipt without route needs manual route entry. |
 | US | New York | 22:00 | Yes, route evidence required | No | Yes | late arrival; client materials | Tips above 20% require explanation in US cities. |
 
-## Sheet: MileageRates
+## MileageRates
 | country_code | country | currency | private_car_rate_per_km | electric_car_rate_per_km | preapproval_distance_one_way_km | fuel_claim_separate_allowed | notes |
 | AT | Austria | EUR | 0.42 | 0.45 | 150 | No | Private mileage includes fuel, wear, and standard insurance. |
 | CZ | Czechia | CZK | 6.2 | 6.8 | 150 | No | Use local payroll/tax rate if different from Finance rate. |
@@ -75,7 +75,7 @@
 | GB | United Kingdom | GBP | 0.45 | 0.45 | 150 | No | Use local HMRC-compliant value if Finance updates rate. |
 | US | United States | USD | 0.67 | 0.67 | 150 | No | Use IRS-compliant rate if Finance updates rate. |
 
-## Sheet: ExchangeRates
+## ExchangeRates
 | month | currency | eur_rate | source | notes |
 | 2026-01 | EUR | 1 | Finance monthly table | Base currency |
 | 2026-01 | CZK | 0.04 | Finance monthly table | 25 CZK = 1 EUR equivalent |
@@ -92,7 +92,7 @@
 | 2026-02 | PLN | 0.231 | Finance monthly table | Monthly conversion rate |
 | 2026-02 | HUF | 0.00255 | Finance monthly table | Monthly conversion rate |
 
-## Sheet: ApprovalMatrix
+## ApprovalMatrix
 | scenario | threshold | currency | approval_required | approver | source_priority | notes |
 | Client entertainment total | 120 | EUR | Yes if above threshold | Cost center owner or Sales VP | Travel Policy PDF + Expense Policy HTML | Requires attendee list and business purpose. |
 | Missing receipt declaration | 25 | EUR | Yes if above threshold | Line manager | Expense Policy HTML | Repeated missing evidence can trigger manual review. |
@@ -102,7 +102,7 @@
 | Late expense submission | 90 | days | Yes for exception | Finance Operations | Expense Policy HTML + Travel Policy PDF | Claims older than 90 days normally rejected. |
 | Team celebration per person | 50 | EUR | Yes if above threshold | Line manager or morale budget owner | Expense Policy HTML | Not normal travel expense category. |
 
-## Sheet: ClaimExamples
+## ClaimExamples
 | claim_id | city | country_code | category | source_amount | currency | alcohol_amount | preapproved | cap_reference | cap_amount | fx_to_eur | converted_amount_eur | reimbursable_hint | notes |
 | C-001 | Vienna | AT | Dinner | 40 | EUR | 8 | No | Dinner cap | 35 | 1 | 40 | 32 | Wine excluded; food portion 32 EUR below cap. |
 | C-002 | Berlin | DE | Hotel | 175 | EUR | 0 | N/A | Hotel cap | 180 | 1 | 175 | 175 | Within cap. |
@@ -113,7 +113,7 @@
 | C-007 | Vienna | AT | Client dinner | 150 | EUR | 20 | Yes | Entertainment threshold | 120 | 1 | 150 | 150 | Pre-approved client entertainment can include alcohol if attendee list exists. |
 | C-008 | Brno | CZ | Hotel | 2800 | CZK | 0 | No | Hotel cap | 2500 | 0.04 | 112 | 100 | Above cap; needs approval or documented shortage. |
 
-## Sheet: PolicyTags
+## PolicyTags
 | source_name | sheet_or_section | doc_type | country | city | expense_category | recommended_filter | notes |
 | per_diem_caps.xlsx | PerDiemCaps | xlsx | AT | Vienna | meals | country=AT, city=Vienna, expense_category=meals | Use for meal and hotel cap questions. |
 | per_diem_caps.xlsx | PerDiemCaps | xlsx | DE | Berlin | hotel | country=DE, city=Berlin, expense_category=hotel | Use for hotel cap questions. |

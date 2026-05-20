@@ -22,7 +22,7 @@
 
 Use the corporate travel card only for approved business travel expenses.
 
-### Permitted Categories
+### Permitted Categories:
 - Flights
 - Rail
 - Hotel
@@ -34,6 +34,7 @@ Use the corporate travel card only for approved business travel expenses.
 - Split personal/business transactions are not allowed.
 
 ## 2. Do Not Use the Card For
+
 - alcohol unless pre-approved for client entertainment
 - personal shopping
 - family or companion travel
@@ -42,6 +43,7 @@ Use the corporate travel card only for approved business travel expenses.
 - entertainment without business justification
 
 ## 3. Receipt Requirements
+
 - Keep itemized receipts for all card transactions.
 - Receipt required for all expenses above EUR 10.
 - Hotel invoices must show nightly rate and taxes.
@@ -49,21 +51,25 @@ Use the corporate travel card only for approved business travel expenses.
 - Boarding pass or equivalent proof of travel is required for flights.
 
 ## 4. Submission Deadlines
+
 - Submit expenses within 10 calendar days after trip end.
 - Unmatched card transactions must be explained.
 - Late submission may result in temporary card suspension.
 
 ## 5. Approval and Exceptions
+
 - Manager approval required for out-of-policy spend.
 - Finance review required for repeated exceptions.
 - Emergency exceptions must include written justification.
 
 ## 6. Need Help?
+
 - Contact Travel Operations for booking issues.
 - Contact Finance for reimbursement and policy questions.
 - Escalate suspected misuse immediately.
 
 ## Quick Reminders
+
 - Business purpose must be documented.
 - Use preferred suppliers when available.
 - Cardholder is responsible for accurate submission.

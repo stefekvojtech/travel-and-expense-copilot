@@ -218,7 +218,6 @@ def _load_with_project_normalizer(
                     "source_block_type": first_block.block_type,
                     "source_section_path": first_block.section_path,
                     "source_page": first_block.page,
-                    "source_sheet": first_block.sheet,
                     "source_block_metadata": first_block.metadata,
                 }
             )

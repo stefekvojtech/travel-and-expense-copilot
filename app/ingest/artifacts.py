@@ -50,7 +50,6 @@ class BlockArtifact:
     text: str
     section_path: str | None
     page: int | None
-    sheet: str | None
     order: int
     metadata: dict[str, Any]
 
@@ -67,7 +66,6 @@ class ChunkArtifact:
     text: str
     section_path: str | None
     page: int | None
-    sheet: str | None
     chunk_strategy: str
     token_count: int
     order: int
@@ -79,10 +77,17 @@ def chunk_artifact_from_dict(row: dict[str, Any]) -> ChunkArtifact:
     normalized = dict(row)
     if "page" not in normalized:
         normalized["page"] = _first_value(normalized.pop("pages", []))
-    if "sheet" not in normalized:
-        normalized["sheet"] = _first_value(normalized.pop("sheets", []))
+    normalized.pop("sheet", None)
+    normalized.pop("sheets", None)
     normalized.pop("source_block_ids", None)
     return ChunkArtifact(**normalized)
+
+
+def block_artifact_from_dict(row: dict[str, Any]) -> BlockArtifact:
+    """Build a block artifact from current rows or older generated rows."""
+    normalized = dict(row)
+    normalized.pop("sheet", None)
+    return BlockArtifact(**normalized)
 
 
 def _first_value(value: Any) -> Any:

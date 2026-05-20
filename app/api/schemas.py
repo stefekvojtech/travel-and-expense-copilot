@@ -79,7 +79,6 @@ class EvidenceBlockResponse(BaseModel):
     title: str | None
     section_path: str | None
     page_label: str | None
-    sheet_label: str | None
     row_number: int | None
     cosine_distance: float
     approximate_cosine_similarity: float

@@ -39,7 +39,7 @@ Use the corporate travel card only for approved business travel expenses.
 - metadata: `{}`
 
 ```text
-### Permitted Categories
+### Permitted Categories:
 - Flights
 - Rail
 - Hotel
@@ -58,7 +58,7 @@ Use the corporate travel card only for approved business travel expenses.
 - metadata: `{}`
 
 ```text
-## 2. Do Not Use the Card For
+## 2. Do Not Use the Card For  
 - alcohol unless pre-approved for client entertainment
 - personal shopping
 - family or companion travel
@@ -75,7 +75,7 @@ Use the corporate travel card only for approved business travel expenses.
 - metadata: `{}`
 
 ```text
-## 3. Receipt Requirements
+## 3. Receipt Requirements  
 - Keep itemized receipts for all card transactions.
 - Receipt required for all expenses above EUR 10.
 - Hotel invoices must show nightly rate and taxes.
@@ -91,7 +91,7 @@ Use the corporate travel card only for approved business travel expenses.
 - metadata: `{}`
 
 ```text
-## 4. Submission Deadlines
+## 4. Submission Deadlines  
 - Submit expenses within 10 calendar days after trip end.
 - Unmatched card transactions must be explained.
 - Late submission may result in temporary card suspension.
@@ -105,7 +105,7 @@ Use the corporate travel card only for approved business travel expenses.
 - metadata: `{}`
 
 ```text
-## 5. Approval and Exceptions
+## 5. Approval and Exceptions  
 - Manager approval required for out-of-policy spend.
 - Finance review required for repeated exceptions.
 - Emergency exceptions must include written justification.
@@ -115,11 +115,11 @@ Use the corporate travel card only for approved business travel expenses.
 
 - order: `8`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `32` section='Image Extraction'
+- tokens: `33` section='Image Extraction'
 - metadata: `{}`
 
 ```text
-## 6. Need Help?
+## 6. Need Help?  
 - Contact Travel Operations for booking issues.
 - Contact Finance for reimbursement and policy questions.
 - Escalate suspected misuse immediately.
@@ -133,7 +133,7 @@ Use the corporate travel card only for approved business travel expenses.
 - metadata: `{}`
 
 ```text
-## Quick Reminders
+## Quick Reminders  
 - Business purpose must be documented.
 - Use preferred suppliers when available.
 - Cardholder is responsible for accurate submission.

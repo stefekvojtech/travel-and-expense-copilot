@@ -133,7 +133,6 @@ def _evidence_block() -> EvidenceBlock:
         title="Per Diem Caps",
         section_path="Taxi",
         page_label=None,
-        sheet_label="Taxi",
         row_number=42,
         cosine_distance=0.1,
         approximate_cosine_similarity=0.9,

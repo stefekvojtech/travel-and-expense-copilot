@@ -143,7 +143,6 @@ def _evidence_block_to_dict(block: EvidenceBlock) -> dict[str, Any]:
         "title": block.title,
         "section_path": block.section_path,
         "page_label": block.page_label,
-        "sheet_label": block.sheet_label,
         "row_number": block.row_number,
         "cosine_distance": block.cosine_distance,
         "approximate_cosine_similarity": block.approximate_cosine_similarity,

@@ -14,7 +14,6 @@ class SourceBlock:
     block_type: str
     section_path: str | None = None
     page: int | None = None
-    sheet: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
 

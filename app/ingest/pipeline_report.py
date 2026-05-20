@@ -26,6 +26,7 @@ from app.ingest.artifacts import (
     ChunkArtifact,
     LoadedDocumentArtifact,
     PipelineWarning,
+    block_artifact_from_dict,
     chunk_artifact_from_dict,
 )
 from app.ingest.source_files import discover_raw_files, split_supported_files
@@ -116,7 +117,7 @@ def _read_loaded_records(settings: Settings) -> dict[str, list[LoadedDocumentArt
 def _read_block_records(settings: Settings) -> dict[str, list[BlockArtifact]]:
     blocks_by_doc_id: dict[str, list[BlockArtifact]] = {}
     for path in sorted(normalized_blocks_dir(settings).glob("*.jsonl")):
-        blocks = read_jsonl(path, BlockArtifact)
+        blocks = read_jsonl(path, block_artifact_from_dict)
         if blocks:
             blocks_by_doc_id[blocks[0].doc_id] = blocks
     return blocks_by_doc_id

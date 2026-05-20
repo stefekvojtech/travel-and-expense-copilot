@@ -96,7 +96,6 @@ class PolicyReference:
     citation_id: str | None = None
     source_path: str | None = None
     section_path: str | None = None
-    sheet: str | None = None
     row_number: int | None = None
     note: str | None = None
 
