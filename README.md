@@ -90,10 +90,10 @@ Use Python 3.11 or newer. From the repository root:
 python -m pip install -e .
 ```
 
-Create a local `.env` from `.env.example` and set `OPENAI_API_KEY` if you intend
-to run OpenAI-backed image extraction, chunk embedding, vector search, or answer
-generation. Set `ANSWER_MODEL` explicitly in `.env`; the runtime no longer uses
-a built-in answer-model fallback.
+The app has built-in defaults for non-secret settings shown in `.env.example`.
+Create a local `.env` only when you need to override those defaults or set
+`OPENAI_API_KEY` for OpenAI-backed image extraction, chunk embedding, vector
+search, or answer generation.
 
 Relative paths in `.env` are resolved from the project root, not from the current
 terminal working directory.

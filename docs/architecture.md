@@ -66,7 +66,8 @@ data/eval/golden_eval_set.jsonl
 ## Runtime Boundaries
 
 `app/core/config.py` owns configuration loading. It loads `.env` from the project
-root and resolves relative configured paths from the project root.
+root when present, supplies non-secret local defaults when values are omitted,
+and resolves relative configured paths from the project root.
 
 `app/core/openai_clients.py` builds OpenAI HTTP clients for LangChain/OpenAI
 calls with environment proxy inheritance disabled. This keeps local shell proxy
@@ -125,7 +126,8 @@ build, retrieval debug, or evaluation.
 ## Current Modules
 
 `app/core/config.py` defines the `Settings` dataclass and `get_settings()` cache.
-Required settings come from environment variables, usually via `.env`.
+Non-secret settings have built-in defaults matching `.env.example`; environment
+variables, usually via `.env`, override those defaults.
 
 `app/core/openai_clients.py` centralizes OpenAI HTTP client construction. The
 retrieval, answer, streaming, embedding, and image extraction modules use it
@@ -177,12 +179,12 @@ budgets, and formats evidence blocks with citation IDs and retrieval metadata.
 `app/agents/answer.py` orchestrates retrieve, rerank, assemble context, and
 generate answer. It calls OpenAI through `langchain-openai`, so normal execution
 performs a paid answer-generation model call in addition to the retrieval query
-embedding. `ANSWER_MODEL` must be set in the environment; the runtime no longer
-falls back to a built-in answer-model default. Model output is constrained with
-LangChain structured output and Pydantic, then validated against the assembled
-evidence citation IDs. If evidence is below the weak-evidence threshold, or if
-the model output fails validation, the answer layer abstains instead of
-returning an unsupported answer.
+embedding. `ANSWER_MODEL` defaults to `gpt-4.1-mini` and can be overridden in
+the environment. Model output is constrained with LangChain structured output
+and Pydantic, then validated against the assembled evidence citation IDs. If
+evidence is below the weak-evidence threshold, or if the model output fails
+validation, the answer layer abstains instead of returning an unsupported
+answer.
 
 `app/api/chat.py` exposes the implemented HTTP runtime routes. `GET /health`
 returns liveness only. `POST /api/chat` returns one validated grounded answer.
