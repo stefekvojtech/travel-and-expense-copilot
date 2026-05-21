@@ -45,7 +45,7 @@ def test_get_settings_has_defaults_without_env_file_values(monkeypatch: Any) -> 
     assert settings.vector_store_dir == ROOT_DIR / "data" / "processed" / "04_vectorstore"
     assert settings.vector_collection_name == "travel_expense_policy_chunks"
     assert settings.retrieval_top_k == 12
-    assert settings.retrieval_rerank_k == 6
+    assert settings.retrieval_rerank_k == 8
     assert settings.retrieval_context_k == 4
     assert settings.retrieval_context_max_tokens == 3000
     assert settings.retrieval_context_max_block_tokens == 800

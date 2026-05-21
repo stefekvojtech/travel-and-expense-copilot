@@ -107,7 +107,7 @@ Current default retrieval settings:
 
 ```text
 RETRIEVAL_TOP_K=12
-RETRIEVAL_RERANK_K=6
+RETRIEVAL_RERANK_K=8
 RETRIEVAL_CONTEXT_K=4
 ```
 
