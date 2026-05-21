@@ -416,6 +416,25 @@ Future answer generation should use the assembled evidence context rather than
 answering directly from the user's question. Final answers should include
 citations, confidence, and abstention behavior when evidence is weak.
 
+### Chat History and Sessions
+
+Chat history is planned future work, not implemented behavior.
+
+The current copilot flow treats each user prompt as a standalone question. A
+future version should support chat sessions where the user can ask follow-up
+questions, refine details, and refer back to earlier turns in the same
+conversation.
+
+The session layer should preserve prior user messages, assistant answers,
+retrieved evidence, citations, and any deterministic tool results needed to
+interpret later turns. Follow-up questions such as "what about dinner?" should
+be resolved against the active session context before retrieval and answer
+generation.
+
+Chat history should not replace retrieval. Each policy answer should still be
+grounded in fresh or session-relevant evidence, with citations and confidence.
+The system should avoid treating earlier generated answers as policy evidence.
+
 ## Receipt OCR and Claim Intake
 
 Receipt image upload and OCR post-processing are planned future work. The current
