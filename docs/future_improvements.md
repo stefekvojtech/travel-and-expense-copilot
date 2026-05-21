@@ -437,14 +437,21 @@ The system should avoid treating earlier generated answers as policy evidence.
 
 ## Receipt OCR and Claim Intake
 
-Receipt image upload and OCR post-processing are planned future work. The current
-image ingestion path extracts Markdown text from images for corpus indexing, but
-it does not normalize uploaded bills into structured receipt data for claim
-evaluation.
+Receipt image upload and OCR post-processing are deferred future work, not part
+of the current implementation plan. The idea came from an earlier UI direction
+where the user could upload a bill image, have the system extract claim facts
+from that image, and then evaluate the claim against retrieved policy evidence
+and deterministic tools.
 
-The current browser UI intentionally does not expose file upload. A future UI/API
-workflow can add explicit upload controls once the backend has a scoped intake
-route, clear cost warnings, and a defined storage policy for uploaded artifacts.
+The current image ingestion path extracts Markdown text from images for corpus
+indexing, but it does not normalize user-uploaded bills into structured receipt
+data for claim evaluation.
+
+The current browser UI intentionally does not expose file upload, even though
+older UI/tooling experiments may leave code or documentation references around
+image input. A future UI/API workflow can add explicit upload controls once the
+backend has a scoped intake route, clear cost warnings, and a defined storage
+policy for uploaded artifacts.
 
 The future receipt flow should support one or more uploaded bill images:
 
