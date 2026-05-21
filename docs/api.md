@@ -117,7 +117,7 @@ The response includes:
 
 `judge_result` is currently always `null` because the judge flow is not
 implemented yet. `debug` includes the assembled context, raw model output when
-available, and validation warnings.
+available, and validation warnings for API/debug consumers.
 
 ## Streaming Chat Route
 
@@ -153,8 +153,8 @@ from:
 
 The answer path uses LangChain/OpenAI for the final model call. Normal chat
 execution performs paid OpenAI calls for the query embedding and final answer
-model. `ANSWER_MODEL` must be set in the environment; the runtime no longer
-falls back to a built-in answer-model default.
+model. `ANSWER_MODEL` defaults to `gpt-4.1-mini` and can be overridden in the
+environment.
 
 The non-streaming path uses LangChain structured output with the
 `AnswerModelOutput` Pydantic schema. The streaming path streams normal chat
@@ -163,8 +163,8 @@ the same citation validation.
 
 If evidence is missing or below the weak-evidence threshold, the answer layer
 abstains before calling the answer model. If model output fails validation, the
-answer layer returns a deterministic abstention instead of the unsupported
-draft.
+answer layer stops at the first validation failure and returns a deterministic
+abstention instead of the unsupported draft.
 
 ## Current UI Status
 
@@ -198,8 +198,9 @@ The chat input starts as a single line, grows upward to 12 lines as text is
 entered, and then scrolls internally. The send button sits beside the input so
 the composer stays compact on smaller screens.
 
-The top runtime badge is the single stage indicator. It uses the compact states
-`Idle`, `Retrieving...`, `Answering...`, `Complete`, and `Error`.
+The answer-card header contains the single visible stage indicator. It uses the
+compact states `Retrieving...`, `Answering...`, `Complete`, and `Error`; the
+idle state is hidden.
 
 Implemented debug fields:
 
@@ -207,7 +208,6 @@ Implemented debug fields:
   and an inline `more` control when chunk text is truncated
 - rerank scores
 - confidence
-- validation warnings
 - assembled retrieval context
 
 The retrieved-chunks panel includes a `Render markdown` toggle when chunks are
@@ -223,12 +223,19 @@ Tool-call display is not implemented because the answer path does not yet have a
 tool-calling loop.
 
 The UI is sized as a full-height app surface on desktop so the composer remains
-visible while the answer and debug panels scroll. On narrower screens, the debug
-panel moves below the chat panel.
+visible while the answer and debug panels scroll. Compact desktop widths keep
+the two-column layout with reduced spacing; only genuinely narrow/mobile widths
+move the debug panel below the chat panel.
 
-On desktop, the debug panel keeps validation details at the top, retrieved
-chunks in the middle, and assembled retrieval context always visible at the
-bottom with its own scrollbar.
+On desktop, the debug panel keeps retrieved chunks in the middle and assembled
+retrieval context always visible at the bottom with its own scrollbar. Validation
+and runtime failures are shown in the answer card instead of a separate debug
+panel section.
+
+Desktop users can resize the main chat/debug split and the retrieved
+chunks/assembled context split by dragging the separator bars. The app clamps
+the resized panels to usable minimum sizes and stores the preference in browser
+local storage.
 
 The example ribbon loops with a transform-based virtual offset, slowly scrolls
 on its own, pauses on hover or focus, supports left/right arrow buttons, and can

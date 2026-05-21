@@ -117,10 +117,7 @@ def build_grounded_answer_from_model_output(
         return _build_abstention_answer(
             question=question,
             assembled_context=assembled_context,
-            reason=(
-                "The answer model produced output that failed grounding "
-                "validation, so I am abstaining instead of returning it."
-            ),
+            reason=validation_warnings[0],
             raw_model_output=raw_model_output,
             validation_warnings=validation_warnings,
         )
@@ -335,13 +332,12 @@ def _validate_model_output(
     *,
     evidence_blocks: list[EvidenceBlock],
 ) -> list[str]:
-    warnings: list[str] = []
     valid_citations = {block.citation_id for block in evidence_blocks}
     normalized_citations = _normalize_citations(output.citations)
     answer_citations = set(re.findall(r"\[\d+\]", output.answer))
 
     if output.answer.strip() == "":
-        warnings.append("Answer text is empty.")
+        return ["Answer text is empty."]
 
     invalid_citations = [
         citation
@@ -349,10 +345,10 @@ def _validate_model_output(
         if citation not in valid_citations
     ]
     if invalid_citations:
-        warnings.append(
+        return [
             "Answer cited evidence IDs that were not in the assembled context: "
             f"{', '.join(invalid_citations)}."
-        )
+        ]
 
     listed_but_missing = [
         citation
@@ -360,10 +356,10 @@ def _validate_model_output(
         if citation not in answer_citations
     ]
     if listed_but_missing:
-        warnings.append(
+        return [
             "Answer listed citations that do not appear in the answer text: "
             f"{', '.join(listed_but_missing)}."
-        )
+        ]
 
     unlisted_answer_citations = [
         citation
@@ -371,18 +367,18 @@ def _validate_model_output(
         if citation not in normalized_citations
     ]
     if unlisted_answer_citations:
-        warnings.append(
+        return [
             "Answer text contains citations missing from the citations field: "
             f"{', '.join(unlisted_answer_citations)}."
-        )
+        ]
 
     if not output.abstained and not normalized_citations:
-        warnings.append("Non-abstained answers must include at least one citation.")
+        return ["Non-abstained answers must include at least one citation."]
 
     if output.abstained and output.confidence != "low":
-        warnings.append("Abstained answers must use low confidence.")
+        return ["Abstained answers must use low confidence."]
 
-    return warnings
+    return []
 
 
 def _build_abstention_answer(

@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Travel &amp; Expense Policy Copilot</title>
-    <link rel="stylesheet" href="/ui/styles.css?v=20260520-author-footer">
+    <link rel="stylesheet" href="/ui/styles.css?v=20260521-resizer-affordance">
   </head>
   <body>
     <main class="shell" aria-label="Travel and expense copilot">
-      <section class="chat-pane" aria-label="Chat">
+      <section class="chat-pane is-intro" aria-label="Chat">
         <header class="topbar">
           <div class="brand-lockup">
             <div class="brand-mark">
@@ -19,10 +19,9 @@
               <h1>Travel &amp; Expense Policy Copilot</h1>
             </div>
           </div>
-          <div class="runtime" id="runtimeStatus" role="status">Idle</div>
         </header>
 
-        <section class="answer-stream" aria-live="polite" aria-label="Answer stream">
+        <section class="answer-stream" aria-live="polite" aria-label="Answer stream" aria-hidden="true">
           <div class="message user-message is-empty" id="questionEcho">
             No question yet.
           </div>
@@ -30,6 +29,7 @@
             <div class="answer-meta">
               <span id="confidenceBadge" class="badge muted">Confidence pending</span>
               <span id="citationCount" class="meta-text">No citations yet</span>
+              <span class="runtime" id="runtimeStatus" role="status" hidden></span>
             </div>
             <div id="answerText" class="answer-text">No answer yet.</div>
           </article>
@@ -92,6 +92,15 @@
         </form>
       </section>
 
+      <div
+        class="split-resizer main-splitter"
+        id="mainSplitter"
+        role="separator"
+        aria-label="Resize chat and retrieval panels"
+        aria-orientation="vertical"
+        tabindex="0"
+      ></div>
+
       <aside class="debug-pane" aria-label="Retrieval debug panel">
         <header class="debug-header">
           <div>
@@ -102,13 +111,6 @@
             Download source files
           </a>
         </header>
-
-        <section class="debug-section validation-section">
-          <h3>Validation</h3>
-          <ul class="warning-list" id="warningList">
-            <li>No validation warnings yet.</li>
-          </ul>
-        </section>
 
         <section class="debug-section evidence-section">
           <div class="debug-section-header">
@@ -128,6 +130,15 @@
           </div>
         </section>
 
+        <div
+          class="split-resizer debug-splitter"
+          id="debugSplitter"
+          role="separator"
+          aria-label="Resize retrieved chunks and assembled context"
+          aria-orientation="horizontal"
+          tabindex="0"
+        ></div>
+
         <section class="debug-section context-section" id="contextSection">
           <h3>Assembled Context</h3>
           <pre id="contextText">No context assembled yet.</pre>
@@ -137,11 +148,14 @@
           <p>Built by <span id="authorName"></span></p>
           <div class="author-links" aria-label="Author links">
             <a id="authorLinkedin" target="_blank" rel="noreferrer">
-              <span class="author-link-icon author-link-icon--linkedin" aria-hidden="true">in</span>
+              <svg class="author-link-icon author-link-icon--linkedin" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                <path d="M8 10v7M8 7.3v.1M12 17v-7M12 13.1c0-1.8 1.1-3.1 2.9-3.1 1.6 0 2.6 1.1 2.6 3.2V17"></path>
+              </svg>
               <span>LinkedIn</span>
             </a>
             <a id="authorGithub" target="_blank" rel="noreferrer">
-              <svg class="author-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <svg class="author-link-icon author-link-icon--github" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.76.6-3.34-1.18-3.34-1.18-.46-1.16-1.12-1.47-1.12-1.47-.91-.62.07-.61.07-.61 1.01.07 1.54 1.04 1.54 1.04.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.64-1.34-2.2-.25-4.52-1.1-4.52-4.9 0-1.08.39-1.97 1.03-2.66-.1-.25-.45-1.26.1-2.63 0 0 .84-.27 2.75 1.02A9.46 9.46 0 0 1 12 6.07c.85 0 1.7.12 2.5.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.38.1 2.63.64.69 1.03 1.58 1.03 2.66 0 3.81-2.32 4.65-4.53 4.9.36.31.68.91.68 1.84v2.73c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
               </svg>
               <span>GitHub</span>
@@ -151,6 +165,6 @@
       </aside>
     </main>
 
-    <script src="/ui/app.js?v=20260520-author-footer" defer></script>
+    <script src="/ui/app.js?v=20260521-evidence-border-clip" defer></script>
   </body>
 </html>

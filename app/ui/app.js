@@ -1,21 +1,28 @@
 const form = document.querySelector("#chatForm");
+const shell = document.querySelector(".shell");
+const chatPane = document.querySelector(".chat-pane");
 const questionInput = document.querySelector("#questionInput");
 const questionEcho = document.querySelector("#questionEcho");
 const answerText = document.querySelector("#answerText");
+const answerStream = document.querySelector(".answer-stream");
 const runtimeStatus = document.querySelector("#runtimeStatus");
 const sendButton = document.querySelector("#sendButton");
 const confidenceBadge = document.querySelector("#confidenceBadge");
 const citationCount = document.querySelector("#citationCount");
 const evidenceList = document.querySelector("#evidenceList");
 const evidenceSection = document.querySelector(".evidence-section");
+const debugPane = document.querySelector(".debug-pane");
+const debugHeader = document.querySelector(".debug-header");
+const contextSection = document.querySelector("#contextSection");
 const renderMarkdownToggle = document.querySelector("#renderMarkdownToggle");
-const warningList = document.querySelector("#warningList");
 const contextText = document.querySelector("#contextText");
 const exampleRibbon = document.querySelector(".example-ribbon");
 const exampleViewport = document.querySelector("#exampleViewport");
 const exampleTrack = document.querySelector("#exampleTrack");
 const examplesBack = document.querySelector("#examplesBack");
 const examplesForward = document.querySelector("#examplesForward");
+const mainSplitter = document.querySelector("#mainSplitter");
+const debugSplitter = document.querySelector("#debugSplitter");
 const authorFooter = document.querySelector("#authorFooter");
 const authorName = document.querySelector("#authorName");
 const authorLinkedin = document.querySelector("#authorLinkedin");
@@ -23,8 +30,13 @@ const authorGithub = document.querySelector("#authorGithub");
 
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
 const EXAMPLE_ARROW_NUDGE_PIXELS = 96;
+const EXAMPLE_ARROW_NUDGE_MS = 280;
+const EXAMPLE_WHEEL_PIXELS_PER_LINE = 18;
 const PLACEHOLDER_ROTATION_MS = 5000;
 const PLACEHOLDER_FADE_MS = 180;
+const PANEL_SIZE_STORAGE_KEY = "travelExpenseCopilotPanelSizes";
+const PANEL_RESIZE_KEY_STEP = 24;
+const STACKED_LAYOUT_MAX_WIDTH = 700;
 
 let activeController = null;
 let streamedAnswer = "";
@@ -39,9 +51,11 @@ let exampleDidDrag = false;
 let examplePointerStartButton = null;
 let exampleLastFrameTime = 0;
 let exampleScrollPosition = 0;
+let exampleNudgeAnimation = null;
 let exampleLoopWidth = 0;
 let placeholderQuestion = "";
 let placeholderTimerId = 0;
+let activePanelResize = null;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -49,12 +63,16 @@ form.addEventListener("submit", (event) => {
   if (!question) {
     return;
   }
+  questionInput.value = "";
+  resizeQuestionInput();
+  revealConversationUi();
   void streamQuestion(question);
 });
 
 questionInput.addEventListener("input", resizeQuestionInput);
 renderMarkdownToggle?.addEventListener("click", toggleEvidenceMarkdownRendering);
 window.addEventListener("resize", () => {
+  clampPanelSizes();
   measureExampleLoopWidth();
   rotateExampleScroll();
   requestAnimationFrame(syncEvidenceExpandLinks);
@@ -70,6 +88,7 @@ questionInput.addEventListener("keydown", (event) => {
 
 setupExampleRibbon();
 setupRotatingPlaceholder();
+setupPanelResizers();
 void loadUiConfig();
 resizeQuestionInput();
 
@@ -101,6 +120,11 @@ function resizeQuestionInput() {
 
   questionInput.style.height = `${nextHeight}px`;
   questionInput.style.overflowY = questionInput.scrollHeight > maxHeight ? "auto" : "hidden";
+}
+
+function revealConversationUi() {
+  chatPane?.classList.remove("is-intro");
+  answerStream?.removeAttribute("aria-hidden");
 }
 
 async function streamQuestion(question) {
@@ -242,9 +266,12 @@ function renderFinalAnswer(data) {
   confidenceBadge.textContent = `Confidence ${confidence}`;
   confidenceBadge.className = `badge ${confidence}`;
   citationCount.textContent = citations.length === 1 ? "1 citation" : `${citations.length} citations`;
+  answerText.classList.toggle(
+    "is-problem-answer",
+    Boolean(data.abstained || data.debug?.validation_warnings?.length),
+  );
 
   renderEvidence(data.evidence_blocks || []);
-  renderWarnings(data.debug?.validation_warnings || []);
   contextText.textContent = data.debug?.context_text || contextText.textContent;
 }
 
@@ -321,6 +348,9 @@ function syncRenderMarkdownToggle() {
   }
   const hasEvidence = currentEvidenceBlocks.length > 0;
   renderMarkdownToggle.hidden = !hasEvidence;
+  renderMarkdownToggle.disabled = !hasEvidence;
+  renderMarkdownToggle.tabIndex = hasEvidence ? 0 : -1;
+  renderMarkdownToggle.setAttribute("aria-hidden", String(!hasEvidence));
   renderMarkdownToggle.setAttribute("aria-pressed", String(shouldRenderEvidenceMarkdown));
   renderMarkdownToggle.classList.toggle("is-active", shouldRenderEvidenceMarkdown);
 }
@@ -533,45 +563,26 @@ function findEvidenceItem(citationKey) {
 }
 
 function scrollEvidenceToTop(item) {
-  if (!evidenceSection) {
+  if (!evidenceList) {
     item.scrollIntoView({ block: "start", behavior: "smooth" });
     return;
   }
 
   const scrollPadding = getEvidenceScrollPadding();
-  evidenceSection.scrollTo({
+  evidenceList.scrollTo({
     top:
       item.getBoundingClientRect().top -
-      evidenceSection.getBoundingClientRect().top +
-      evidenceSection.scrollTop -
+      evidenceList.getBoundingClientRect().top +
+      evidenceList.scrollTop -
       scrollPadding,
     behavior: "smooth",
   });
 }
 
 function getEvidenceScrollPadding() {
-  const header = evidenceSection?.querySelector(".debug-section-header");
-  const sectionStyle = evidenceSection ? window.getComputedStyle(evidenceSection) : null;
-  const sidePadding = sectionStyle ? parseFloat(sectionStyle.paddingLeft) : 0;
-  const headerStyle = header ? window.getComputedStyle(header) : null;
-  const headerBottomPadding = headerStyle ? parseFloat(headerStyle.paddingBottom) : 0;
-  return (
-    (header ? header.getBoundingClientRect().height : 0)
-    + Math.max(
-      0,
-      (Number.isFinite(sidePadding) ? sidePadding : 0)
-        - (Number.isFinite(headerBottomPadding) ? headerBottomPadding : 0),
-    )
-  );
-}
-
-function renderWarnings(warnings) {
-  warningList.classList.toggle("has-warning", warnings.length > 0);
-  warningList.replaceChildren(
-    ...(warnings.length ? warnings : ["No validation warnings."]).map((warning) =>
-      textElement("li", warning),
-    ),
-  );
+  const listStyle = evidenceList ? window.getComputedStyle(evidenceList) : null;
+  const listPaddingTop = listStyle ? parseFloat(listStyle.paddingTop) : 0;
+  return Number.isFinite(listPaddingTop) ? listPaddingTop : 0;
 }
 
 function syncEvidenceExpandLinks() {
@@ -595,18 +606,286 @@ function syncEvidenceExpandLink(item) {
   expandLink.hidden = !shouldShowLink;
 }
 
+function setupPanelResizers() {
+  if (!shell || !debugPane || !mainSplitter || !debugSplitter) {
+    return;
+  }
+
+  restorePanelSizes();
+
+  mainSplitter.addEventListener("pointerdown", startMainPanelResize);
+  mainSplitter.addEventListener("pointermove", dragMainPanelResize);
+  mainSplitter.addEventListener("pointerup", stopPanelResize);
+  mainSplitter.addEventListener("pointercancel", stopPanelResize);
+  mainSplitter.addEventListener("lostpointercapture", stopPanelResize);
+  mainSplitter.addEventListener("dblclick", resetMainPanelSize);
+  mainSplitter.addEventListener("keydown", handleMainSplitterKeydown);
+
+  debugSplitter.addEventListener("pointerdown", startDebugPanelResize);
+  debugSplitter.addEventListener("pointermove", dragDebugPanelResize);
+  debugSplitter.addEventListener("pointerup", stopPanelResize);
+  debugSplitter.addEventListener("pointercancel", stopPanelResize);
+  debugSplitter.addEventListener("lostpointercapture", stopPanelResize);
+  debugSplitter.addEventListener("dblclick", resetDebugPanelSize);
+  debugSplitter.addEventListener("keydown", handleDebugSplitterKeydown);
+
+  requestAnimationFrame(clampPanelSizes);
+}
+
+function startMainPanelResize(event) {
+  if (isStackedLayout()) {
+    return;
+  }
+  event.preventDefault();
+  activePanelResize = "main";
+  mainSplitter.classList.add("is-active");
+  document.body.classList.add("is-resizing", "is-resizing-main");
+  mainSplitter.setPointerCapture(event.pointerId);
+}
+
+function dragMainPanelResize(event) {
+  if (activePanelResize !== "main") {
+    return;
+  }
+  setDebugPanelWidth(widthFromMainSplitterPointer(event.clientX));
+}
+
+function startDebugPanelResize(event) {
+  if (isStackedLayout()) {
+    return;
+  }
+  event.preventDefault();
+  activePanelResize = "debug";
+  debugSplitter.classList.add("is-active");
+  document.body.classList.add("is-resizing", "is-resizing-debug");
+  debugSplitter.setPointerCapture(event.pointerId);
+}
+
+function dragDebugPanelResize(event) {
+  if (activePanelResize !== "debug") {
+    return;
+  }
+  setContextPanelHeight(heightFromDebugSplitterPointer(event.clientY));
+}
+
+function stopPanelResize(event) {
+  if (!activePanelResize) {
+    return;
+  }
+  if (event?.pointerId !== undefined) {
+    for (const splitter of [mainSplitter, debugSplitter]) {
+      if (splitter?.hasPointerCapture(event.pointerId)) {
+        splitter.releasePointerCapture(event.pointerId);
+      }
+    }
+  }
+  activePanelResize = null;
+  mainSplitter?.classList.remove("is-active");
+  debugSplitter?.classList.remove("is-active");
+  document.body.classList.remove("is-resizing", "is-resizing-main", "is-resizing-debug");
+  savePanelSizes();
+}
+
+function handleMainSplitterKeydown(event) {
+  if (isStackedLayout() || !["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) {
+    return;
+  }
+  event.preventDefault();
+  if (event.key === "Home") {
+    resetMainPanelSize();
+    return;
+  }
+  const direction = event.key === "ArrowLeft" ? 1 : -1;
+  setDebugPanelWidth(currentDebugPanelWidth() + direction * PANEL_RESIZE_KEY_STEP);
+  savePanelSizes();
+}
+
+function handleDebugSplitterKeydown(event) {
+  if (isStackedLayout() || !["ArrowUp", "ArrowDown", "Home"].includes(event.key)) {
+    return;
+  }
+  event.preventDefault();
+  if (event.key === "Home") {
+    resetDebugPanelSize();
+    return;
+  }
+  const direction = event.key === "ArrowUp" ? 1 : -1;
+  setContextPanelHeight(currentContextPanelHeight() + direction * PANEL_RESIZE_KEY_STEP);
+  savePanelSizes();
+}
+
+function resetMainPanelSize() {
+  shell?.style.removeProperty("--debug-panel-width");
+  savePanelSizes();
+}
+
+function resetDebugPanelSize() {
+  debugPane?.style.removeProperty("--context-panel-height");
+  savePanelSizes();
+}
+
+function widthFromMainSplitterPointer(clientX) {
+  const shellRect = shell.getBoundingClientRect();
+  const splitterSize = mainSplitter.getBoundingClientRect().width || 8;
+  return shellRect.right - clientX - (splitterSize / 2);
+}
+
+function heightFromDebugSplitterPointer(clientY) {
+  const debugRect = debugPane.getBoundingClientRect();
+  const footerHeight = authorFooter && !authorFooter.hidden
+    ? authorFooter.getBoundingClientRect().height
+    : 0;
+  const splitterSize = debugSplitter.getBoundingClientRect().height || 8;
+  return debugRect.bottom - footerHeight - clientY - (splitterSize / 2);
+}
+
+function setDebugPanelWidth(width) {
+  if (!shell || isStackedLayout()) {
+    return;
+  }
+  shell.style.setProperty("--debug-panel-width", `${clampDebugPanelWidth(width)}px`);
+}
+
+function setContextPanelHeight(height) {
+  if (!debugPane || isStackedLayout()) {
+    return;
+  }
+  debugPane.style.setProperty("--context-panel-height", `${clampContextPanelHeight(height)}px`);
+}
+
+function clampPanelSizes() {
+  if (isStackedLayout()) {
+    return;
+  }
+  syncAuthorFooterHeight();
+  if (shell?.style.getPropertyValue("--debug-panel-width")) {
+    setDebugPanelWidth(currentDebugPanelWidth());
+  }
+  if (debugPane?.style.getPropertyValue("--context-panel-height")) {
+    setContextPanelHeight(currentContextPanelHeight());
+  }
+}
+
+function clampDebugPanelWidth(width) {
+  const shellRect = shell.getBoundingClientRect();
+  const splitterSize = mainSplitter.getBoundingClientRect().width || 8;
+  const availableWidth = Math.max(0, shellRect.width - splitterSize);
+  const minChatWidth = window.innerWidth <= 1100 ? 340 : 420;
+  const minDebugWidth = window.innerWidth <= 1100 ? 300 : 360;
+  const maxDebugWidth = Math.max(minDebugWidth, availableWidth - minChatWidth);
+  return clamp(width, minDebugWidth, maxDebugWidth);
+}
+
+function clampContextPanelHeight(height) {
+  syncAuthorFooterHeight();
+  const debugRect = debugPane.getBoundingClientRect();
+  const headerHeight = debugHeader ? debugHeader.getBoundingClientRect().height : 0;
+  const footerHeight = authorFooter && !authorFooter.hidden
+    ? authorFooter.getBoundingClientRect().height
+    : 0;
+  const splitterSize = debugSplitter.getBoundingClientRect().height || 8;
+  const availableHeight = Math.max(0, debugRect.height - headerHeight - footerHeight - splitterSize);
+  const minEvidenceHeight = minimumEvidencePanelHeight();
+  const minContextHeight = window.innerHeight <= 760 ? 110 : 130;
+  const maxContextHeight = Math.max(minContextHeight, availableHeight - minEvidenceHeight);
+  return clamp(height, minContextHeight, maxContextHeight);
+}
+
+function minimumEvidencePanelHeight() {
+  if (window.innerHeight <= 760) {
+    return Math.ceil(window.innerHeight * 0.48);
+  }
+  if (window.innerWidth <= 1100) {
+    return Math.ceil(window.innerHeight * 0.42);
+  }
+  return Math.ceil(window.innerHeight * 0.4);
+}
+
+function syncAuthorFooterHeight() {
+  if (!debugPane || !authorFooter || authorFooter.hidden) {
+    debugPane?.style.removeProperty("--author-footer-height");
+    return 0;
+  }
+  const footerHeight = Math.ceil(authorFooter.getBoundingClientRect().height);
+  debugPane.style.setProperty("--author-footer-height", `${footerHeight}px`);
+  return footerHeight;
+}
+
+function currentDebugPanelWidth() {
+  return debugPane?.getBoundingClientRect().width || 0;
+}
+
+function currentContextPanelHeight() {
+  return contextSection?.getBoundingClientRect().height || 0;
+}
+
+function isStackedLayout() {
+  return window.innerWidth <= STACKED_LAYOUT_MAX_WIDTH;
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function restorePanelSizes() {
+  try {
+    const rawValue = window.localStorage.getItem(PANEL_SIZE_STORAGE_KEY);
+    if (!rawValue) {
+      return;
+    }
+    const sizes = JSON.parse(rawValue);
+    if (typeof sizes.debugPanelWidth === "number") {
+      shell.style.setProperty(
+        "--debug-panel-width",
+        `${clampDebugPanelWidth(sizes.debugPanelWidth)}px`,
+      );
+    }
+    if (typeof sizes.contextPanelHeight === "number") {
+      debugPane.style.setProperty(
+        "--context-panel-height",
+        `${clampContextPanelHeight(sizes.contextPanelHeight)}px`,
+      );
+    }
+  } catch {
+    window.localStorage.removeItem(PANEL_SIZE_STORAGE_KEY);
+  }
+}
+
+function savePanelSizes() {
+  if (!shell || !debugPane) {
+    return;
+  }
+  const debugWidth = shell.style.getPropertyValue("--debug-panel-width");
+  const contextHeight = debugPane.style.getPropertyValue("--context-panel-height");
+  try {
+    if (!debugWidth && !contextHeight) {
+      window.localStorage.removeItem(PANEL_SIZE_STORAGE_KEY);
+      return;
+    }
+    window.localStorage.setItem(
+      PANEL_SIZE_STORAGE_KEY,
+      JSON.stringify({
+        debugPanelWidth: debugWidth ? parseFloat(debugWidth) : null,
+        contextPanelHeight: contextHeight ? parseFloat(contextHeight) : null,
+      }),
+    );
+  } catch {
+    // Layout preferences are optional; ignore storage failures.
+  }
+}
+
 function resetUi() {
   streamedAnswer = "";
   questionEcho.textContent = "No question yet.";
   questionEcho.classList.add("is-empty");
   answerText.textContent = "No answer yet.";
+  answerText.classList.remove("is-problem-answer");
   confidenceBadge.textContent = "Confidence pending";
   confidenceBadge.className = "badge muted";
   citationCount.textContent = "No citations yet";
   currentEvidenceBlocks = [];
   syncRenderMarkdownToggle();
   evidenceList.innerHTML = '<p class="empty-state">No evidence yet.</p>';
-  renderWarnings([]);
   contextText.textContent = "No context assembled yet.";
   setStatus("Idle", false);
 }
@@ -618,13 +897,14 @@ function setBusy(isBusy) {
 
 function setStatus(text, isError) {
   runtimeStatus.textContent = text;
+  runtimeStatus.hidden = text === "Idle";
   runtimeStatus.classList.toggle("is-error", isError);
 }
 
 function showError(message) {
   setStatus("Error", true);
   answerText.textContent = `The request failed before a final answer was returned.\n\n${message}`;
-  renderWarnings([message]);
+  answerText.classList.add("is-problem-answer");
 }
 
 function textElement(tagName, text) {
@@ -707,6 +987,7 @@ function setupExampleRibbon() {
   exampleViewport.addEventListener("pointerup", stopExampleDrag);
   exampleViewport.addEventListener("pointercancel", stopExampleDrag);
   exampleViewport.addEventListener("lostpointercapture", stopExampleDrag);
+  exampleViewport.addEventListener("wheel", scrollExamplesWithWheel, { passive: false });
 
   examplesBack.addEventListener("click", () => scrollExamplesBy(-EXAMPLE_ARROW_NUDGE_PIXELS));
   examplesForward.addEventListener("click", () => scrollExamplesBy(EXAMPLE_ARROW_NUDGE_PIXELS));
@@ -737,6 +1018,7 @@ function startExampleDrag(event) {
   const target = event.target instanceof Element ? event.target : null;
   exampleDragging = true;
   exampleDidDrag = false;
+  exampleNudgeAnimation = null;
   examplePointerStartButton = target?.closest("[data-question]") || null;
   exampleAutoScrollPaused = true;
   exampleDragStartX = event.clientX;
@@ -778,7 +1060,50 @@ function stopExampleDrag(event) {
 }
 
 function scrollExamplesBy(distance) {
+  if (exampleLoopWidth <= 0) {
+    return;
+  }
+  exampleNudgeAnimation = {
+    startPosition: exampleScrollPosition,
+    distance,
+    startTime: 0,
+  };
+}
+
+function scrollExamplesWithWheel(event) {
+  if (exampleLoopWidth <= 0) {
+    return;
+  }
+
+  const distance = normalizeExampleWheelDistance(event);
+  if (!distance) {
+    return;
+  }
+
+  event.preventDefault();
+  exampleNudgeAnimation = null;
+  exampleAutoScrollPaused = true;
   setExampleScrollPosition(exampleScrollPosition + distance);
+}
+
+function normalizeExampleWheelDistance(event) {
+  const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+    ? event.deltaX
+    : event.deltaY;
+
+  if (!dominantDelta) {
+    return 0;
+  }
+
+  if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+    return dominantDelta * EXAMPLE_WHEEL_PIXELS_PER_LINE;
+  }
+
+  if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    return dominantDelta * exampleViewport.clientWidth;
+  }
+
+  return dominantDelta;
 }
 
 function autoScrollExamples(timestamp) {
@@ -788,7 +1113,22 @@ function autoScrollExamples(timestamp) {
   const elapsed = timestamp - exampleLastFrameTime;
   exampleLastFrameTime = timestamp;
 
-  if (!exampleAutoScrollPaused && !exampleDragging) {
+  if (exampleNudgeAnimation) {
+    if (!exampleNudgeAnimation.startTime) {
+      exampleNudgeAnimation.startTime = timestamp;
+    }
+    const progress = Math.min(
+      (timestamp - exampleNudgeAnimation.startTime) / EXAMPLE_ARROW_NUDGE_MS,
+      1,
+    );
+    setExampleScrollPosition(
+      exampleNudgeAnimation.startPosition
+        + exampleNudgeAnimation.distance * easeOutCubic(progress),
+    );
+    if (progress >= 1) {
+      exampleNudgeAnimation = null;
+    }
+  } else if (!exampleAutoScrollPaused && !exampleDragging) {
     setExampleScrollPosition(exampleScrollPosition + elapsed * EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS);
   }
 
@@ -816,6 +1156,10 @@ function normalizeExampleScrollPosition(position) {
     return 0;
   }
   return ((position % exampleLoopWidth) + exampleLoopWidth) % exampleLoopWidth;
+}
+
+function easeOutCubic(progress) {
+  return 1 - ((1 - progress) ** 3);
 }
 
 function measureExampleLoopWidth() {
@@ -908,7 +1252,12 @@ async function loadUiConfig() {
     authorGithub.href = githubUrl;
     authorGithub.setAttribute("aria-label", `${name} on GitHub`);
     authorFooter.hidden = false;
+    requestAnimationFrame(() => {
+      syncAuthorFooterHeight();
+      clampPanelSizes();
+    });
   } catch {
     authorFooter.hidden = true;
+    syncAuthorFooterHeight();
   }
 }
