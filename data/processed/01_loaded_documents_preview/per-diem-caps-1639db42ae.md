@@ -8,7 +8,7 @@
 
 ## Document 1
 
-- metadata: `{"extraction_method": "openpyxl_row_level", "extraction_warning": null, "source_block_count": 105}`
+- metadata: `{"extraction_method": "openpyxl_row_level", "extraction_warning": null, "source_block_count": 92}`
 
 ```text
 ## README
@@ -18,8 +18,6 @@
 | Effective date | 2026-01-01 |
 | Owner | Finance Operations |
 | Source priority | Use this workbook for numeric caps, thresholds, and deterministic lookups. Use PDF/HTML for narrative policy rules. |
-| RAG note | Every sheet is intentionally structured differently so loaders must preserve sheet name, row context, and metadata. |
-| Recommended metadata | doc_type=xlsx, source_name=per_diem_caps.xlsx, sheet=<sheet>, effective_date=2026-01-01 |
 | Sheets |  |
 | PerDiemCaps | Meal, hotel, taxi, and laundry caps by country/city. |
 | TaxiRules | After-hours thresholds and city-specific transport notes. |
@@ -27,7 +25,6 @@
 | ExchangeRates | Monthly finance exchange rates for claim conversion. |
 | ApprovalMatrix | Numeric thresholds for approval routing. |
 | ClaimExamples | Worked examples with formulas for reimbursement logic. |
-| PolicyTags | Metadata tags useful for filtering and retrieval. |
 
 ## PerDiemCaps
 | country_code | country | city | currency | meal_cap_breakfast | meal_cap_lunch | meal_cap_dinner | meal_cap_daily | hotel_cap_per_night | taxi_allowed_after | laundry_after_nights | notes | effective_date |
@@ -108,19 +105,8 @@
 | C-002 | Berlin | DE | Hotel | 175 | EUR | 0 | N/A | Hotel cap | 180 | 1 | 175 | 175 | Within cap. |
 | C-003 | Prague | CZ | Taxi | 650 | CZK | 0 | No | Taxi after-hours | 0 | 0.04 | 26 | 26 | Eligibility depends on time threshold and exception reason. |
 | C-004 | Zurich | CH | Hotel | 260 | CHF | 0 | No | Hotel cap | 240 | 1.06 | 275.6 | 254.4 | Above cap without approval; reimbursable hint capped. |
-| C-005 | London | GB | Dinner | 62 | GBP | 0 | No | Dinner cap | 48 | 1.17 | 72.53999999999999 | 56.16 | Above meal cap; excess requires approval. |
+| C-005 | London | GB | Dinner | 62 | GBP | 0 | No | Dinner cap | 48 | 1.17 | 72.54 | 56.16 | Above meal cap; excess requires approval. |
 | C-006 | New York | US | Dinner | 58 | USD | 0 | No | Dinner cap | 60 | 0.92 | 53.36 | 53.36 | Within cap. |
 | C-007 | Vienna | AT | Client dinner | 150 | EUR | 20 | Yes | Entertainment threshold | 120 | 1 | 150 | 150 | Pre-approved client entertainment can include alcohol if attendee list exists. |
 | C-008 | Brno | CZ | Hotel | 2800 | CZK | 0 | No | Hotel cap | 2500 | 0.04 | 112 | 100 | Above cap; needs approval or documented shortage. |
-
-## PolicyTags
-| source_name | sheet_or_section | doc_type | country | city | expense_category | recommended_filter | notes |
-| per_diem_caps.xlsx | PerDiemCaps | xlsx | AT | Vienna | meals | country=AT, city=Vienna, expense_category=meals | Use for meal and hotel cap questions. |
-| per_diem_caps.xlsx | PerDiemCaps | xlsx | DE | Berlin | hotel | country=DE, city=Berlin, expense_category=hotel | Use for hotel cap questions. |
-| per_diem_caps.xlsx | TaxiRules | xlsx | CZ | Prague | taxi | country=CZ, city=Prague, expense_category=taxi | Use for taxi after-hours checks. |
-| per_diem_caps.xlsx | MileageRates | xlsx | AT |  | mileage | country=AT, expense_category=mileage | Use for private car mileage rate. |
-| expense_policy.html | Receipts | html |  |  | receipts | expense_category=receipts | Use for evidence and missing receipt questions. |
-| expense_policy.html | Meals | html |  |  | meals | expense_category=meals | Use for alcohol, tips, and meal eligibility. |
-| travel_policy.pdf | Flights | pdf |  |  | flights | expense_category=flights | Use for flight class, boarding pass, and air travel logistics. |
-| travel_policy.pdf | Approval Matrix | pdf |  |  | approval | expense_category=approval | Use for pre-approval authority. |
 ```

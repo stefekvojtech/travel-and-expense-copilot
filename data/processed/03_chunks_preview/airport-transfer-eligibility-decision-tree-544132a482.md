@@ -3,7 +3,7 @@
 - doc_id: `airport-transfer-eligibility-decision-tree-544132a482`
 - source_path: `data/raw/airport_transfer_eligibility_decision_tree.png`
 - doc_type: `image`
-- chunks: `8`
+- chunks: `7`
 
 ## Chunks
 
@@ -11,58 +11,52 @@
 
 - order: `1`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `31` section='Image Extraction'
+- tokens: `49` section='Image Extraction'
 - metadata: `{}`
 
 ```text
 # Airport Transfer Eligibility Decision Tree  
 ## Need airport transfer reimbursement?  
 ### 1. Is public transport reasonably available and safe?  
-#### If YES
+- **YES** → Go to Step 2
+- **NO** → Go to Step 3
 ```
 
 ### airport-transfer-eligibility-decision-tree-544132a482:chunk:00002
 
 - order: `2`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `56` section='Image Extraction'
+- tokens: `63` section='Image Extraction'
 - metadata: `{}`
 
 ```text
 ### 2. Are you traveling with heavy luggage, medical needs, or client equipment?  
-- **YES:** Taxi or ride-hailing may be reimbursable. Add justification in expense claim.
-- **NO:** Use public transport. Taxi is not normally reimbursable.
+- **YES**
+**Taxi or ride-hailing may be reimbursable.**
+Add justification in expense claim.  
+- **NO**
+**Use public transport.**
+Taxi is not normally reimbursable.
 ```
 
 ### airport-transfer-eligibility-decision-tree-544132a482:chunk:00003
 
 - order: `3`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `3` section='Image Extraction'
+- tokens: `35` section='Image Extraction'
 - metadata: `{}`
 
 ```text
-#### If NO
+### 3. Is the transfer after the policy cutoff time?  
+- **YES** → Go to Step 4
+- **NO** → Go to Step 5
 ```
 
 ### airport-transfer-eligibility-decision-tree-544132a482:chunk:00004
 
 - order: `4`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `34` section='Image Extraction'
-- metadata: `{}`
-
-```text
-### 3. Is the transfer after the policy cutoff time?  
-- **YES:** Go to city cutoff times.
-- **NO:** Go to documented exception check.
-```
-
-### airport-transfer-eligibility-decision-tree-544132a482:chunk:00005
-
-- order: `5`
-- strategy: `markdown_header+section_as_chunk`
-- tokens: `68` section='Image Extraction'
+- tokens: `70` section='Image Extraction'
 - metadata: `{}`
 
 ```text
@@ -72,25 +66,28 @@
 | Vienna | 22:00 |
 | Berlin | 22:00 |
 | Prague | 21:00 |  
-- Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.
+**Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.**
+```
+
+### airport-transfer-eligibility-decision-tree-544132a482:chunk:00005
+
+- order: `5`
+- strategy: `markdown_header+section_as_chunk`
+- tokens: `58` section='Image Extraction'
+- metadata: `{}`
+
+```text
+### 5. Is there a documented safety concern, service disruption, or no practical connection?  
+- **YES**
+**Taxi may be reimbursable with explanation and supporting details.**  
+- **NO**
+**Taxi is not reimbursable.**
+Use public transport.
 ```
 
 ### airport-transfer-eligibility-decision-tree-544132a482:chunk:00006
 
 - order: `6`
-- strategy: `markdown_header+section_as_chunk`
-- tokens: `51` section='Image Extraction'
-- metadata: `{}`
-
-```text
-### 5. Is there a documented safety concern, service disruption, or no practical connection?  
-- **YES:** Taxi may be reimbursable with explanation and supporting details.
-- **NO:** Taxi is not reimbursable. Use public transport.
-```
-
-### airport-transfer-eligibility-decision-tree-544132a482:chunk:00007
-
-- order: `7`
 - strategy: `markdown_header+section_as_chunk`
 - tokens: `34` section='Image Extraction'
 - metadata: `{}`
@@ -104,14 +101,14 @@
 - receipt required above policy minimum
 ```
 
-### airport-transfer-eligibility-decision-tree-544132a482:chunk:00008
+### airport-transfer-eligibility-decision-tree-544132a482:chunk:00007
 
-- order: `8`
+- order: `7`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `20` section='Image Extraction'
+- tokens: `22` section='Image Extraction'
 - metadata: `{}`
 
 ```text
 ## Note  
-Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
+**Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.**
 ```

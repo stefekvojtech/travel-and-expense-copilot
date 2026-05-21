@@ -3,7 +3,7 @@
 - doc_id: `corporate-travel-card-rules-b50727f8ce`
 - source_path: `data/raw/corporate_travel_card_rules.png`
 - doc_type: `image`
-- chunks: `9`
+- chunks: `10`
 
 ## Chunks
 
@@ -129,7 +129,7 @@ Use the corporate travel card only for approved business travel expenses.
 
 - order: `9`
 - strategy: `markdown_header+section_as_chunk`
-- tokens: `54` section='Image Extraction'
+- tokens: `38` section='Image Extraction'
 - metadata: `{}`
 
 ```text
@@ -137,6 +137,17 @@ Use the corporate travel card only for approved business travel expenses.
 - Business purpose must be documented.
 - Use preferred suppliers when available.
 - Cardholder is responsible for accurate submission.
-- Final reimbursement remains subject to company policy review.  
-**Reference poster only. Always follow the latest travel and expense policy.**
+- Final reimbursement remains subject to company policy review.
+```
+
+### corporate-travel-card-rules-b50727f8ce:chunk:00010
+
+- order: `10`
+- strategy: `markdown_header+section_as_chunk`
+- tokens: `16` section='Image Extraction'
+- metadata: `{}`
+
+```text
+## Note  
+Reference poster only. Always follow the latest travel and expense policy.
 ```
