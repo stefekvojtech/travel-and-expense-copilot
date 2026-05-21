@@ -72,7 +72,5 @@ Use the corporate travel card only for approved business travel expenses.
 - Cardholder is responsible for accurate submission.
 - Final reimbursement remains subject to company policy review.
 
-## Note
-
-Reference poster only. Always follow the latest travel and expense policy.
+**Reference poster only. Always follow the latest travel and expense policy.**
 ```

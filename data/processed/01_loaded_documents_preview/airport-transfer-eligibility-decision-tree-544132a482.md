@@ -17,42 +17,40 @@
 
 ### 1. Is public transport reasonably available and safe?
 
-- **YES** → Go to Step 2
-- **NO** → Go to Step 3
+- **YES** → Go to **2**
+- **NO** → Go to **3**
 
 ### 2. Are you traveling with heavy luggage, medical needs, or client equipment?
 
-- **YES**  
-  **Taxi or ride-hailing may be reimbursable.**  
-  Add justification in expense claim.
-
-- **NO**  
-  **Use public transport.**  
-  Taxi is not normally reimbursable.
+- **YES**
+  - **Taxi or ride-hailing may be reimbursable.**
+  - Add justification in expense claim.
+- **NO**
+  - **Use public transport.**
+  - Taxi is not normally reimbursable.
 
 ### 3. Is the transfer after the policy cutoff time?
 
-- **YES** → Go to Step 4
-- **NO** → Go to Step 5
+- **YES** → Go to **4**
+- **NO** → Go to **5**
 
 ### 4. What is the city cutoff time?
 
-| City | Cutoff Time |
-|---|---|
-| Vienna | 22:00 |
-| Berlin | 22:00 |
-| Prague | 21:00 |
+| City   | Cutoff Time |
+|--------|-------------|
+| Vienna | 22:00       |
+| Berlin | 22:00       |
+| Prague | 21:00       |
 
-**Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.**
+- **Taxi or ride-hailing is reimbursable if travel occurs after the city cutoff time.**
 
 ### 5. Is there a documented safety concern, service disruption, or no practical connection?
 
-- **YES**  
-  **Taxi may be reimbursable with explanation and supporting details.**
-
-- **NO**  
-  **Taxi is not reimbursable.**  
-  Use public transport.
+- **YES**
+  - **Taxi may be reimbursable with explanation and supporting details.**
+- **NO**
+  - **Taxi is not reimbursable.**
+  - Use public transport.
 
 ## Required claim details
 
@@ -64,5 +62,5 @@
 
 ## Note
 
-**Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.**
+Reference guide only. Final reimbursement depends on company travel policy and manager/finance review.
 ```

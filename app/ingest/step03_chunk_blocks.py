@@ -220,6 +220,13 @@ def chunk_blocks(
                     )
                 )
 
+    if chunks and all(chunk.doc_type == "image" for chunk in chunks):
+        chunks = _merge_adjacent_image_chunks(
+            chunks,
+            chunk_size=chunk_size,
+            splitter=recursive_splitter,
+        )
+
     _validate_chunks_within_max_tokens(chunks, max_chunk_tokens=max_chunk_tokens)
     return chunks
 
@@ -296,6 +303,88 @@ def _chunk_xlsx_rows(
             )
 
     return chunks
+
+
+def _merge_adjacent_image_chunks(
+    chunks: list[ChunkArtifact],
+    *,
+    chunk_size: int,
+    splitter: RecursiveCharacterTextSplitter,
+) -> list[ChunkArtifact]:
+    merged_chunks: list[ChunkArtifact] = []
+    pending: list[ChunkArtifact] = []
+
+    for chunk in chunks:
+        candidate = [*pending, chunk]
+        if pending and _merged_chunk_token_count(candidate, splitter) > chunk_size:
+            merged_chunks.append(
+                _build_merged_image_chunk(pending, len(merged_chunks) + 1, splitter)
+            )
+            pending = [chunk]
+        else:
+            pending = candidate
+
+    if pending:
+        merged_chunks.append(
+            _build_merged_image_chunk(pending, len(merged_chunks) + 1, splitter)
+        )
+
+    return merged_chunks
+
+
+def _merged_chunk_token_count(
+    chunks: list[ChunkArtifact],
+    splitter: RecursiveCharacterTextSplitter,
+) -> int:
+    return splitter._length_function(_merged_chunk_text(chunks))
+
+
+def _build_merged_image_chunk(
+    chunks: list[ChunkArtifact],
+    order: int,
+    splitter: RecursiveCharacterTextSplitter,
+) -> ChunkArtifact:
+    first_chunk = chunks[0]
+    text = _merged_chunk_text(chunks)
+    page = next((chunk.page for chunk in chunks if chunk.page is not None), None)
+    section_path = next(
+        (chunk.section_path for chunk in chunks if chunk.section_path is not None),
+        None,
+    )
+    return ChunkArtifact(
+        chunk_id=f"{first_chunk.doc_id}:chunk:{order:05d}",
+        doc_id=first_chunk.doc_id,
+        source_path=first_chunk.source_path,
+        doc_type=first_chunk.doc_type,
+        title=first_chunk.title,
+        text=text,
+        section_path=section_path,
+        page=page,
+        chunk_strategy="image_markdown_header_merged",
+        token_count=splitter._length_function(text),
+        order=order,
+        metadata=_merge_chunk_metadata(chunks),
+    )
+
+
+def _merged_chunk_text(chunks: list[ChunkArtifact]) -> str:
+    return "\n\n".join(chunk.text.strip() for chunk in chunks if chunk.text.strip())
+
+
+def _merge_chunk_metadata(chunks: list[ChunkArtifact]) -> dict:
+    merged_metadata: dict = {}
+    for chunk in chunks:
+        for key, value in chunk.metadata.items():
+            if key not in merged_metadata:
+                merged_metadata[key] = value
+                continue
+            if merged_metadata[key] == value:
+                continue
+            plural_key = f"{key}s"
+            values = merged_metadata.setdefault(plural_key, [merged_metadata.pop(key)])
+            if value not in values:
+                values.append(value)
+    return merged_metadata
 
 
 def _chunk_strategy(

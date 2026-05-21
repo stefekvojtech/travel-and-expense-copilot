@@ -138,6 +138,11 @@ For other sources, blocks are assembled into Markdown and split with
 `MarkdownHeaderTextSplitter`, then oversized sections are split with
 `RecursiveCharacterTextSplitter.from_tiktoken_encoder(...)`.
 
+Image sources use the same Markdown-aware splitting first, then merge adjacent
+image sections back together up to `CHUNK_SIZE`. This keeps visual context from
+posters, screenshots, diagrams, and other image-derived text together without
+changing PDF, HTML, TXT, or XLSX chunking behavior.
+
 `CHUNK_SIZE` and `CHUNK_OVERLAP` are passed directly into the LangChain splitter.
 `MAX_CHUNK_TOKENS` remains a validation limit after chunking.
 
