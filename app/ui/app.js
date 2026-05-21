@@ -16,6 +16,7 @@ const debugHeader = document.querySelector(".debug-header");
 const contextSection = document.querySelector("#contextSection");
 const renderMarkdownToggle = document.querySelector("#renderMarkdownToggle");
 const contextText = document.querySelector("#contextText");
+const copyContextButton = document.querySelector("#copyContextButton");
 const exampleRibbon = document.querySelector(".example-ribbon");
 const exampleViewport = document.querySelector("#exampleViewport");
 const exampleTrack = document.querySelector("#exampleTrack");
@@ -28,6 +29,7 @@ const authorName = document.querySelector("#authorName");
 const authorLinkedin = document.querySelector("#authorLinkedin");
 const authorGithub = document.querySelector("#authorGithub");
 
+const EMPTY_CONTEXT_TEXT = "No context assembled yet.";
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
 const EXAMPLE_ARROW_NUDGE_PIXELS = 96;
 const EXAMPLE_ARROW_NUDGE_MS = 280;
@@ -71,6 +73,7 @@ form.addEventListener("submit", (event) => {
 
 questionInput.addEventListener("input", resizeQuestionInput);
 renderMarkdownToggle?.addEventListener("click", toggleEvidenceMarkdownRendering);
+copyContextButton?.addEventListener("click", copyAssembledContext);
 window.addEventListener("resize", () => {
   clampPanelSizes();
   measureExampleLoopWidth();
@@ -91,6 +94,7 @@ setupRotatingPlaceholder();
 setupPanelResizers();
 void loadUiConfig();
 resizeQuestionInput();
+syncCopyContextButton();
 
 function insertQuestion(question) {
   const currentValue = questionInput.value;
@@ -231,7 +235,8 @@ function handleStreamEvent(eventName, data) {
     case "retrieval_complete":
       setStatus("Answering...", false);
       renderEvidence(data.evidence_blocks || []);
-      contextText.textContent = data.context_text || "No context assembled.";
+      contextText.textContent = data.context_text || EMPTY_CONTEXT_TEXT;
+      syncCopyContextButton();
       break;
     case "answer_started":
       setStatus("Answering...", false);
@@ -273,6 +278,7 @@ function renderFinalAnswer(data) {
 
   renderEvidence(data.evidence_blocks || []);
   contextText.textContent = data.debug?.context_text || contextText.textContent;
+  syncCopyContextButton();
 }
 
 function renderEvidence(blocks) {
@@ -606,6 +612,70 @@ function syncEvidenceExpandLink(item) {
   expandLink.hidden = !shouldShowLink;
 }
 
+async function copyAssembledContext() {
+  if (!contextText || !copyContextButton) {
+    return;
+  }
+
+  const text = contextText.textContent || "";
+  if (!hasAssembledContext(text)) {
+    return;
+  }
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      copyTextWithFallback(text);
+    }
+    showCopyContextResult(true);
+  } catch {
+    try {
+      copyTextWithFallback(text);
+      showCopyContextResult(true);
+    } catch {
+      showCopyContextResult(false);
+    }
+  }
+}
+
+function copyTextWithFallback(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.className = "clipboard-fallback";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
+
+function syncCopyContextButton() {
+  if (!copyContextButton || !contextText) {
+    return;
+  }
+  const canCopy = hasAssembledContext(contextText.textContent || "");
+  copyContextButton.hidden = !canCopy;
+  copyContextButton.disabled = !canCopy;
+}
+
+function hasAssembledContext(text) {
+  const normalizedText = text.trim();
+  return Boolean(normalizedText && normalizedText !== EMPTY_CONTEXT_TEXT);
+}
+
+function showCopyContextResult(wasCopied) {
+  copyContextButton.dataset.copyState = wasCopied ? "copied" : "failed";
+  copyContextButton.setAttribute(
+    "aria-label",
+    wasCopied ? "Copied assembled context" : "Copy failed",
+  );
+  window.setTimeout(() => {
+    delete copyContextButton.dataset.copyState;
+    copyContextButton.setAttribute("aria-label", "Copy assembled context");
+  }, 1400);
+}
+
 function setupPanelResizers() {
   if (!shell || !debugPane || !mainSplitter || !debugSplitter) {
     return;
@@ -886,7 +956,8 @@ function resetUi() {
   currentEvidenceBlocks = [];
   syncRenderMarkdownToggle();
   evidenceList.innerHTML = '<p class="empty-state">No evidence yet.</p>';
-  contextText.textContent = "No context assembled yet.";
+  contextText.textContent = EMPTY_CONTEXT_TEXT;
+  syncCopyContextButton();
   setStatus("Idle", false);
 }
 

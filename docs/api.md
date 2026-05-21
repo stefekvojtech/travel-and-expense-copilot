@@ -212,11 +212,11 @@ Implemented debug fields:
 
 The retrieved-chunks panel includes a `Render markdown` toggle when chunks are
 available. It switches all retrieved chunks between plain text and a safe
-Markdown preview, and its sticky header keeps the toggle visible while scrolling
-through chunks.
+Markdown preview, and the retrieved-chunks header remains outside the card
+scroll area so the toggle stays visible while scrolling through chunks.
 
 Citation markers in completed answers are interactive. Hovering or focusing a
-citation highlights the matching retrieved chunk and scrolls it below the sticky
+citation highlights the matching retrieved chunk and scrolls it below the
 retrieved-chunks header with the same spacing as the panel side padding.
 
 Tool-call display is not implemented because the answer path does not yet have a
@@ -228,9 +228,10 @@ the two-column layout with reduced spacing; only genuinely narrow/mobile widths
 move the debug panel below the chat panel.
 
 On desktop, the debug panel keeps retrieved chunks in the middle and assembled
-retrieval context always visible at the bottom with its own scrollbar. Validation
-and runtime failures are shown in the answer card instead of a separate debug
-panel section.
+retrieval context always visible at the bottom with its own scrollbar. The
+assembled context header includes an icon-only copy control that copies the full
+context text to the clipboard. Validation and runtime failures are shown in the
+answer card instead of a separate debug panel section.
 
 Desktop users can resize the main chat/debug split and the retrieved
 chunks/assembled context split by dragging the separator bars. The app clamps

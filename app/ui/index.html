@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Travel &amp; Expense Policy Copilot</title>
-    <link rel="stylesheet" href="/ui/styles.css?v=20260521-resizer-affordance">
+    <link rel="stylesheet" href="/ui/styles.css?v=20260521-context-copy-state">
   </head>
   <body>
     <main class="shell" aria-label="Travel and expense copilot">
@@ -140,7 +140,18 @@
         ></div>
 
         <section class="debug-section context-section" id="contextSection">
-          <h3>Assembled Context</h3>
+          <div class="context-section-header">
+            <h3>Assembled Context</h3>
+            <button type="button" class="icon-button copy-context-button" id="copyContextButton" aria-label="Copy assembled context" hidden>
+              <svg class="copy-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+                <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+              </svg>
+              <svg class="check-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m5 12 4 4 10-10"></path>
+              </svg>
+            </button>
+          </div>
           <pre id="contextText">No context assembled yet.</pre>
         </section>
 
@@ -165,6 +176,6 @@
       </aside>
     </main>
 
-    <script src="/ui/app.js?v=20260521-evidence-border-clip" defer></script>
+    <script src="/ui/app.js?v=20260521-context-copy-state" defer></script>
   </body>
 </html>
