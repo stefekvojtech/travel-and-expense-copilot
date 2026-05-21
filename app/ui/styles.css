@@ -824,7 +824,7 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding-right: 26px;
+  padding-right: 16px;
   padding-left: 16px;
   border-bottom: 0;
   background: #f2f7fb;
@@ -892,13 +892,34 @@ textarea:focus {
   }
 }
 
-pre {
+.context-scroll {
+  display: flex;
   flex: 1 1 auto;
-  max-height: none;
+  min-height: 0;
   margin: 0;
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
+  background: #ffffff;
+}
+
+.context-scroll-inner {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  border-radius: inherit;
+  scrollbar-gutter: stable;
+}
+
+.context-scroll-inner::-webkit-scrollbar-track {
+  margin-block: 8px;
+}
+
+pre {
+  min-height: 100%;
+  margin: 0 10px 0 0;
+  border: 0;
   padding: 12px;
   background: #ffffff;
   color: #2b3945;
