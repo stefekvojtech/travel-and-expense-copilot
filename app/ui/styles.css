@@ -329,11 +329,11 @@ h3 {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .answer-trace {
-  margin: 4px 0 10px;
+  margin: 0 0 4px;
   color: var(--muted);
   font-size: 0.9rem;
 }
