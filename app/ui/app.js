@@ -439,7 +439,11 @@ function renderAnswerTrace() {
     ? `${traceState.label || TRACE_DEFAULT_LABEL} for ${formatTraceSeconds(traceState.elapsedMs)}`
     : runningStep?.label || "Processing...";
 
-  answerTraceDetails.hidden = !(traceState.expanded && hasExpandableHistory);
+  answerTraceDetails.hidden = !hasExpandableHistory;
+  answerTraceDetails.setAttribute(
+    "aria-hidden",
+    String(!(traceState.expanded && hasExpandableHistory)),
+  );
   answerTraceDetails.replaceChildren(...traceState.steps.map(renderTraceStepRow));
 }
 
