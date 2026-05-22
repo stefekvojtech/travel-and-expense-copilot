@@ -147,8 +147,8 @@ draft, the stream emits `answer_replaced` and the UI should trust the final
 
 `status_changed` carries a simple user-facing state such as `retrieving`,
 `answering`, `complete`, or `error`. Detailed progress is separate: `trace_*`
-events describe collectible backend steps for a future expandable progress
-widget. The current detailed labels are:
+events describe collectible backend steps for the answer trace widget. The
+current detailed labels are:
 
 - `Embedding query...`
 - `Searching vector index...`
@@ -158,10 +158,11 @@ widget. The current detailed labels are:
 
 Future deterministic tool calls should emit the same trace-step shape with a
 label like `Running tool: <ToolName>...`. The stream includes `elapsed_ms` on
-trace payloads and `duration_ms` on completed trace steps. `trace_complete`
-contains the total backend processing time that a future UI can render as
-`Processed for 17s >`. The UI implementation guide lives at
-`app/ui/ANSWER_TRACE_UI_GUIDE.md`.
+trace payloads and `duration_ms` on completed trace steps. While processing,
+the browser UI shows the currently running trace label as a subtle one-line
+status. After completion or error, the UI renders a collapsed summary such as
+`Processed for 17s >`; expanding it shows the collected trace steps in order.
+The UI implementation guide lives at `app/ui/ANSWER_TRACE_UI_GUIDE.md`.
 
 `retrieval_complete` includes evidence blocks and assembled context for the
 browser debug panel. `answer_complete` uses the same shape as `POST /api/chat`
@@ -214,6 +215,7 @@ Implemented UI elements:
   questions
 - send button
 - streaming answer panel
+- expandable answer trace summary after streaming completes or errors
 
 Pressing `Enter` in the chat input sends the current question. Pressing
 `Shift+Enter` inserts a newline.
@@ -224,7 +226,9 @@ the composer stays compact on smaller screens.
 
 The answer-card header contains the single visible stage indicator. It uses the
 compact states `Retrieving...`, `Answering...`, `Complete`, and `Error`; the
-idle state is hidden.
+idle state is hidden. Detailed backend trace steps render below that header as
+a quiet one-line progress row while processing. The row becomes expandable only
+after completion or error, provided at least one trace step was received.
 
 Implemented debug fields:
 

@@ -6,6 +6,10 @@ const questionEcho = document.querySelector("#questionEcho");
 const answerText = document.querySelector("#answerText");
 const answerStream = document.querySelector(".answer-stream");
 const runtimeStatus = document.querySelector("#runtimeStatus");
+const answerTrace = document.querySelector("#answerTrace");
+const answerTraceToggle = document.querySelector("#answerTraceToggle");
+const answerTraceLabel = document.querySelector("#answerTraceLabel");
+const answerTraceDetails = document.querySelector("#answerTraceDetails");
 const sendButton = document.querySelector("#sendButton");
 const confidenceBadge = document.querySelector("#confidenceBadge");
 const citationCount = document.querySelector("#citationCount");
@@ -30,6 +34,7 @@ const authorLinkedin = document.querySelector("#authorLinkedin");
 const authorGithub = document.querySelector("#authorGithub");
 
 const EMPTY_CONTEXT_TEXT = "No context assembled yet.";
+const TRACE_DEFAULT_LABEL = "Processed";
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
 const EXAMPLE_ARROW_NUDGE_PIXELS = 96;
 const EXAMPLE_ARROW_NUDGE_MS = 280;
@@ -58,6 +63,7 @@ let exampleLoopWidth = 0;
 let placeholderQuestion = "";
 let placeholderTimerId = 0;
 let activePanelResize = null;
+let traceState = createEmptyTraceState();
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -74,6 +80,7 @@ form.addEventListener("submit", (event) => {
 questionInput.addEventListener("input", resizeQuestionInput);
 renderMarkdownToggle?.addEventListener("click", toggleEvidenceMarkdownRendering);
 copyContextButton?.addEventListener("click", copyAssembledContext);
+answerTraceToggle?.addEventListener("click", toggleAnswerTrace);
 window.addEventListener("resize", () => {
   clampPanelSizes();
   measureExampleLoopWidth();
@@ -163,6 +170,7 @@ async function streamQuestion(question) {
     await readSseStream(response.body, handleStreamEvent);
   } catch (error) {
     if (error.name !== "AbortError") {
+      finalizeTraceAfterError();
       showError(error.message || "Streaming request failed.");
     }
   } finally {
@@ -229,6 +237,9 @@ function parseSseMessage(message) {
 
 function handleStreamEvent(eventName, data) {
   switch (eventName) {
+    case "status_changed":
+      handleStatusChanged(data);
+      break;
     case "retrieval_started":
       setStatus("Retrieving...", false);
       break;
@@ -237,6 +248,18 @@ function handleStreamEvent(eventName, data) {
       renderEvidence(data.evidence_blocks || []);
       contextText.textContent = data.context_text || EMPTY_CONTEXT_TEXT;
       syncCopyContextButton();
+      break;
+    case "trace_started":
+      startAnswerTrace(data);
+      break;
+    case "trace_step_started":
+      startAnswerTraceStep(data);
+      break;
+    case "trace_step_completed":
+      completeAnswerTraceStep(data);
+      break;
+    case "trace_complete":
+      completeAnswerTrace(data);
       break;
     case "answer_started":
       setStatus("Answering...", false);
@@ -254,6 +277,7 @@ function handleStreamEvent(eventName, data) {
       setStatus("Complete", false);
       break;
     case "error":
+      finalizeTraceAfterError();
       showError(data.message || "The backend returned an error.");
       break;
     default:
@@ -261,7 +285,202 @@ function handleStreamEvent(eventName, data) {
   }
 }
 
+function handleStatusChanged(data = {}) {
+  const status = data.status || "";
+  if (status === "retrieving") {
+    setStatus("Retrieving...", false);
+    return;
+  }
+  if (status === "answering") {
+    setStatus("Answering...", false);
+    return;
+  }
+  if (status === "complete") {
+    if (!traceState.complete && (traceState.hasTrace || traceState.steps.length > 0)) {
+      completeAnswerTrace({ elapsed_ms: data.elapsed_ms });
+    }
+    setStatus("Complete", false);
+    return;
+  }
+  if (status === "error") {
+    finalizeTraceAfterError();
+    setStatus("Error", true);
+  }
+}
+
+function createEmptyTraceState() {
+  return {
+    label: TRACE_DEFAULT_LABEL,
+    startedAt: 0,
+    elapsedMs: 0,
+    steps: [],
+    expanded: false,
+    complete: false,
+    hasTrace: false,
+  };
+}
+
+function startAnswerTrace(data = {}) {
+  traceState = createEmptyTraceState();
+  traceState.label = data.label || TRACE_DEFAULT_LABEL;
+  traceState.startedAt = performance.now();
+  traceState.elapsedMs = data.elapsed_ms || 0;
+  traceState.hasTrace = true;
+  renderAnswerTrace();
+}
+
+function startAnswerTraceStep(data = {}) {
+  ensureTraceStarted();
+  const sequence = Number(data.sequence);
+  const existingStep = traceState.steps.find((step) => step.sequence === sequence);
+  const step = existingStep || {
+    sequence,
+    label: data.label || "Processing...",
+    status: "running",
+    durationMs: null,
+  };
+
+  step.label = data.label || step.label;
+  step.status = "running";
+  step.durationMs = null;
+
+  if (!existingStep) {
+    traceState.steps.push(step);
+  }
+  renderAnswerTrace();
+}
+
+function completeAnswerTraceStep(data = {}) {
+  ensureTraceStarted();
+  const sequence = Number(data.sequence);
+  let step = traceState.steps.find((item) => item.sequence === sequence);
+  if (!step) {
+    step = {
+      sequence,
+      label: data.label || "Processing...",
+      status: "completed",
+      durationMs: null,
+    };
+    traceState.steps.push(step);
+  }
+
+  step.label = data.label || step.label;
+  step.status = "completed";
+  step.durationMs = typeof data.duration_ms === "number" ? data.duration_ms : null;
+  traceState.elapsedMs = typeof data.elapsed_ms === "number" ? data.elapsed_ms : traceState.elapsedMs;
+  renderAnswerTrace();
+}
+
+function completeAnswerTrace(data = {}) {
+  if (!traceState.hasTrace && traceState.steps.length === 0) {
+    return;
+  }
+  traceState.label = data.label || traceState.label || TRACE_DEFAULT_LABEL;
+  traceState.elapsedMs = typeof data.elapsed_ms === "number"
+    ? data.elapsed_ms
+    : elapsedTraceMs();
+  traceState.complete = true;
+  renderAnswerTrace();
+}
+
+function finalizeTraceAfterError() {
+  if (!traceState.hasTrace && traceState.steps.length === 0) {
+    return;
+  }
+  traceState.steps.forEach((step) => {
+    if (step.status === "running") {
+      step.status = "completed";
+    }
+  });
+  traceState.elapsedMs = traceState.elapsedMs || elapsedTraceMs();
+  traceState.complete = true;
+  renderAnswerTrace();
+}
+
+function ensureTraceStarted() {
+  if (traceState.hasTrace) {
+    return;
+  }
+  traceState.hasTrace = true;
+  traceState.startedAt = performance.now();
+}
+
+function toggleAnswerTrace() {
+  if (!traceState.complete || traceState.steps.length === 0) {
+    return;
+  }
+  traceState.expanded = !traceState.expanded;
+  renderAnswerTrace();
+}
+
+function renderAnswerTrace() {
+  if (!answerTrace || !answerTraceToggle || !answerTraceLabel || !answerTraceDetails) {
+    return;
+  }
+
+  const hasExpandableHistory = traceState.complete && traceState.steps.length > 0;
+  const runningStep = [...traceState.steps].reverse().find((step) => step.status === "running");
+
+  if (!traceState.hasTrace && !hasExpandableHistory) {
+    answerTrace.hidden = true;
+    answerTraceDetails.hidden = true;
+    return;
+  }
+
+  answerTrace.hidden = false;
+  answerTrace.classList.toggle("is-running", !traceState.complete);
+  answerTrace.classList.toggle("is-complete", traceState.complete);
+  answerTrace.classList.toggle("is-expanded", traceState.expanded && hasExpandableHistory);
+  answerTraceToggle.setAttribute("aria-expanded", String(traceState.expanded && hasExpandableHistory));
+  answerTraceToggle.setAttribute("aria-disabled", String(!hasExpandableHistory));
+  answerTraceToggle.tabIndex = hasExpandableHistory ? 0 : -1;
+
+  answerTraceLabel.textContent = traceState.complete
+    ? `${traceState.label || TRACE_DEFAULT_LABEL} for ${formatTraceSeconds(traceState.elapsedMs)}`
+    : runningStep?.label || "Processing...";
+
+  answerTraceDetails.hidden = !(traceState.expanded && hasExpandableHistory);
+  answerTraceDetails.replaceChildren(...traceState.steps.map(renderTraceStepRow));
+}
+
+function renderTraceStepRow(step) {
+  const row = document.createElement("div");
+  row.className = `answer-trace-step is-${step.status || "completed"}`;
+
+  const status = document.createElement("span");
+  status.className = "answer-trace-step-status";
+  status.setAttribute("aria-hidden", "true");
+
+  const label = document.createElement("span");
+  label.className = "answer-trace-step-label";
+  label.textContent = step.label;
+
+  row.append(status, label);
+  return row;
+}
+
+function resetAnswerTrace() {
+  traceState = createEmptyTraceState();
+  renderAnswerTrace();
+}
+
+function elapsedTraceMs() {
+  if (!traceState.startedAt) {
+    return 0;
+  }
+  return Math.max(Math.round(performance.now() - traceState.startedAt), 0);
+}
+
+function formatTraceSeconds(elapsedMs) {
+  const seconds = Math.max(Math.round((elapsedMs || 0) / 1000), 0);
+  return seconds === 1 ? "1s" : `${seconds}s`;
+}
+
 function renderFinalAnswer(data) {
+  if (!traceState.complete && (traceState.hasTrace || traceState.steps.length > 0)) {
+    completeAnswerTrace({ elapsed_ms: data.processing_ms });
+  }
+
   streamedAnswer = data.answer || streamedAnswer;
 
   const citations = data.citations || [];
@@ -953,6 +1172,7 @@ function resetUi() {
   confidenceBadge.textContent = "Confidence pending";
   confidenceBadge.className = "badge muted";
   citationCount.textContent = "No citations yet";
+  resetAnswerTrace();
   currentEvidenceBlocks = [];
   syncRenderMarkdownToggle();
   evidenceList.innerHTML = '<p class="empty-state">No evidence yet.</p>';

@@ -23,8 +23,8 @@ Implemented:
 - Citation-ready context assembly
 - First-pass grounded answer generation from retrieved evidence
 - FastAPI health, chat, and streaming chat routes
-- Minimal plain HTML/CSS/JS browser UI with streaming answers and a retrieval
-  debug panel and clickable example questions
+- Minimal plain HTML/CSS/JS browser UI with streaming answers, expandable
+  processing traces, a retrieval debug panel, and clickable example questions
 - Structured answer-output validation and fail-closed citation checks
 - Prompt files for the grounded-answering contract and answer examples
 - Deterministic currency conversion tool with local Finance workbook rates first
@@ -151,7 +151,7 @@ Routes:
 server-sent events for simple runtime status, detailed answer trace steps,
 answer deltas, and the final validated answer payload. The browser UI uses the
 streaming route and displays retrieved evidence, rerank scores, citations,
-validation warnings, confidence, and the assembled context in its debug panel.
+confidence, and the assembled context in its debug panel.
 Both chat routes and the UI perform paid OpenAI calls for query embedding and
 final answer generation.
 

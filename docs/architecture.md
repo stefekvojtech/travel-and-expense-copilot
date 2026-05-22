@@ -204,8 +204,8 @@ events.
 
 `app/ui/index.html`, `app/ui/styles.css`, and `app/ui/app.js` implement the
 minimal browser UI. The UI renders streamed answer deltas, citation and
-confidence metadata, retrieved evidence blocks, rerank scores, validation
-warnings, assembled retrieval context, and clickable example questions.
+confidence metadata, expandable processing traces, retrieved evidence blocks,
+rerank scores, assembled retrieval context, and clickable example questions.
 
 `app/tools/currency.py` converts amounts between currencies for future claim
 evaluation. It first uses the `ExchangeRates` sheet in

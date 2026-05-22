@@ -342,6 +342,103 @@ h3 {
   margin-left: auto;
 }
 
+.answer-trace {
+  margin: -4px 0 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.answer-trace-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1.35;
+}
+
+.answer-trace-summary[aria-disabled="true"] {
+  cursor: default;
+}
+
+.answer-trace-summary:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.answer-trace-label {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.answer-trace.is-running .answer-trace-label::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-120%);
+  background:
+    linear-gradient(
+      100deg,
+      transparent 0%,
+      rgb(255 255 255 / 0) 35%,
+      rgb(255 255 255 / 72%) 50%,
+      rgb(255 255 255 / 0) 65%,
+      transparent 100%
+    );
+  animation: trace-shimmer 1600ms ease-in-out infinite;
+}
+
+.answer-trace-arrow {
+  display: inline-block;
+  width: 8px;
+  color: var(--line-strong);
+  font-size: 0.72rem;
+  line-height: 1;
+  transform-origin: center;
+  transition: transform 140ms ease;
+}
+
+.answer-trace.is-running .answer-trace-arrow {
+  display: none;
+}
+
+.answer-trace.is-expanded .answer-trace-arrow {
+  transform: rotate(90deg);
+}
+
+.answer-trace-details {
+  display: grid;
+  gap: 7px;
+  margin-top: 7px;
+  padding-left: 2px;
+}
+
+.answer-trace-step {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.answer-trace-step-status {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--line-strong);
+}
+
+.answer-trace-step.is-running .answer-trace-step-status {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
 .meta-text {
   color: var(--muted);
   font-size: 0.9rem;
@@ -355,6 +452,17 @@ h3 {
 
 .answer-text.is-problem-answer {
   color: var(--danger);
+}
+
+@keyframes trace-shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  54%,
+  100% {
+    transform: translateX(120%);
+  }
 }
 
 .citation-link {
