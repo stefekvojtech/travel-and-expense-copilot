@@ -333,8 +333,7 @@ h3 {
 }
 
 .answer-trace {
-  margin: -4px 0 10px;
-  padding-left: 10px;
+  margin: 4px 0 10px;
   color: var(--muted);
   font-size: 0.9rem;
 }
