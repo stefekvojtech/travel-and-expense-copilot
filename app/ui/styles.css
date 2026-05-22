@@ -370,8 +370,7 @@ h3 {
 }
 
 .answer-trace-summary[aria-disabled="false"]:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--text);
 }
 
 .answer-trace-summary:focus-visible {
