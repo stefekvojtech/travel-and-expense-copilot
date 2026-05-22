@@ -418,25 +418,13 @@ h3 {
   padding-left: 2px;
 }
 
+.answer-trace-details[hidden] {
+  display: none;
+}
+
 .answer-trace-step {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
   color: var(--muted);
   line-height: 1.35;
-}
-
-.answer-trace-step-status {
-  width: 6px;
-  height: 6px;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: var(--line-strong);
-}
-
-.answer-trace-step.is-running .answer-trace-step-status {
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 .meta-text {

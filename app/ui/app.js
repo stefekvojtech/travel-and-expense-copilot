@@ -445,17 +445,13 @@ function renderAnswerTrace() {
 
 function renderTraceStepRow(step) {
   const row = document.createElement("div");
-  row.className = `answer-trace-step is-${step.status || "completed"}`;
-
-  const status = document.createElement("span");
-  status.className = "answer-trace-step-status";
-  status.setAttribute("aria-hidden", "true");
+  row.className = "answer-trace-step";
 
   const label = document.createElement("span");
   label.className = "answer-trace-step-label";
   label.textContent = step.label;
 
-  row.append(status, label);
+  row.append(label);
   return row;
 }
 
