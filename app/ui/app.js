@@ -5,7 +5,6 @@ const questionInput = document.querySelector("#questionInput");
 const questionEcho = document.querySelector("#questionEcho");
 const answerText = document.querySelector("#answerText");
 const answerStream = document.querySelector(".answer-stream");
-const runtimeStatus = document.querySelector("#runtimeStatus");
 const answerTrace = document.querySelector("#answerTrace");
 const answerTraceToggle = document.querySelector("#answerTraceToggle");
 const answerTraceLabel = document.querySelector("#answerTraceLabel");
@@ -147,7 +146,6 @@ async function streamQuestion(question) {
   streamedAnswer = "";
   resetUi();
   setBusy(true);
-  setStatus("Retrieving...", false);
   questionEcho.textContent = question;
   questionEcho.classList.remove("is-empty");
   answerText.textContent = "";
@@ -241,10 +239,8 @@ function handleStreamEvent(eventName, data) {
       handleStatusChanged(data);
       break;
     case "retrieval_started":
-      setStatus("Retrieving...", false);
       break;
     case "retrieval_complete":
-      setStatus("Answering...", false);
       renderEvidence(data.evidence_blocks || []);
       contextText.textContent = data.context_text || EMPTY_CONTEXT_TEXT;
       syncCopyContextButton();
@@ -262,7 +258,6 @@ function handleStreamEvent(eventName, data) {
       completeAnswerTrace(data);
       break;
     case "answer_started":
-      setStatus("Answering...", false);
       break;
     case "answer_delta":
       streamedAnswer += data.delta || "";
@@ -274,7 +269,6 @@ function handleStreamEvent(eventName, data) {
       break;
     case "answer_complete":
       renderFinalAnswer(data);
-      setStatus("Complete", false);
       break;
     case "error":
       finalizeTraceAfterError();
@@ -287,24 +281,14 @@ function handleStreamEvent(eventName, data) {
 
 function handleStatusChanged(data = {}) {
   const status = data.status || "";
-  if (status === "retrieving") {
-    setStatus("Retrieving...", false);
-    return;
-  }
-  if (status === "answering") {
-    setStatus("Answering...", false);
-    return;
-  }
   if (status === "complete") {
     if (!traceState.complete && (traceState.hasTrace || traceState.steps.length > 0)) {
       completeAnswerTrace({ elapsed_ms: data.elapsed_ms });
     }
-    setStatus("Complete", false);
     return;
   }
   if (status === "error") {
     finalizeTraceAfterError();
-    setStatus("Error", true);
   }
 }
 
@@ -1178,7 +1162,6 @@ function resetUi() {
   evidenceList.innerHTML = '<p class="empty-state">No evidence yet.</p>';
   contextText.textContent = EMPTY_CONTEXT_TEXT;
   syncCopyContextButton();
-  setStatus("Idle", false);
 }
 
 function setBusy(isBusy) {
@@ -1186,14 +1169,7 @@ function setBusy(isBusy) {
   questionInput.disabled = isBusy;
 }
 
-function setStatus(text, isError) {
-  runtimeStatus.textContent = text;
-  runtimeStatus.hidden = text === "Idle";
-  runtimeStatus.classList.toggle("is-error", isError);
-}
-
 function showError(message) {
-  setStatus("Error", true);
   answerText.textContent = `The request failed before a final answer was returned.\n\n${message}`;
   answerText.classList.add("is-problem-answer");
 }

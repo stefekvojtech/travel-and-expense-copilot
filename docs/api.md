@@ -224,11 +224,10 @@ The chat input starts as a single line, grows upward to 12 lines as text is
 entered, and then scrolls internally. The send button sits beside the input so
 the composer stays compact on smaller screens.
 
-The answer-card header contains the single visible stage indicator. It uses the
-compact states `Retrieving...`, `Answering...`, `Complete`, and `Error`; the
-idle state is hidden. Detailed backend trace steps render below that header as
-a quiet one-line progress row while processing. The row becomes expandable only
-after completion or error, provided at least one trace step was received.
+The answer-card header shows answer metadata such as confidence and citation
+count. Detailed backend trace steps render below that header as a quiet
+one-line progress row while processing. The row becomes expandable only after
+completion or error, provided at least one trace step was received.
 
 Implemented debug fields:
 

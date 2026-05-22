@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Travel &amp; Expense Policy Copilot</title>
-    <link rel="stylesheet" href="/ui/styles.css?v=20260523-trace-polish">
+    <link rel="stylesheet" href="/ui/styles.css?v=20260523-trace-layout">
   </head>
   <body>
     <main class="shell" aria-label="Travel and expense copilot">
@@ -29,7 +29,6 @@
             <div class="answer-meta">
               <span id="confidenceBadge" class="badge muted">Confidence pending</span>
               <span id="citationCount" class="meta-text">No citations yet</span>
-              <span class="runtime" id="runtimeStatus" role="status" hidden></span>
             </div>
             <div class="answer-trace" id="answerTrace" hidden>
               <button
@@ -40,7 +39,7 @@
                 aria-controls="answerTraceDetails"
               >
                 <span class="answer-trace-label" id="answerTraceLabel"></span>
-                <span class="answer-trace-arrow" aria-hidden="true">&#9656;</span>
+                <span class="answer-trace-arrow" aria-hidden="true"></span>
               </button>
               <div class="answer-trace-details" id="answerTraceDetails" hidden></div>
             </div>
@@ -193,6 +192,6 @@
       </aside>
     </main>
 
-    <script src="/ui/app.js?v=20260523-trace-polish" defer></script>
+    <script src="/ui/app.js?v=20260523-trace-layout" defer></script>
   </body>
 </html>
