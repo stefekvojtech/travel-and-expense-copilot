@@ -61,4 +61,5 @@ def _chat_sse_events(request: ChatRequest) -> Iterator[str]:
         ):
             yield format_sse_event(event, data)
     except Exception as exc:
+        yield format_sse_event("status_changed", {"status": "error", "label": "Error"})
         yield format_sse_event("error", {"message": str(exc)})

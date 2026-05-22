@@ -14,6 +14,8 @@ from app.core.config import Settings
 from app.core.openai_clients import build_openai_http_client
 from app.retrieval.chroma_config import CHROMA_COLLECTION_METADATA
 
+_DEFAULT_EMBEDDING_FUNCTION = object()
+
 
 @dataclass(frozen=True)
 class RetrievalFilters:
@@ -61,12 +63,34 @@ def search_chunks(
     This function embeds the query, so calling it uses the configured embedding
     provider. The stored chunk text and metadata come from the Chroma collection.
     """
-    vector_store = _open_chroma_vector_store(settings)
+    query_embedding = embed_query(settings, query)
+    return search_chunks_by_query_embedding(
+        settings,
+        query_embedding,
+        k=k,
+        filters=filters,
+    )
+
+
+def embed_query(settings: Settings, query: str) -> list[float]:
+    """Embed a user query with the configured embedding provider."""
+    return list(_build_embeddings(settings).embed_query(query))
+
+
+def search_chunks_by_query_embedding(
+    settings: Settings,
+    query_embedding: list[float],
+    *,
+    k: int | None = None,
+    filters: RetrievalFilters | None = None,
+) -> list[RetrievedChunk]:
+    """Search Chroma with an already embedded query vector."""
+    vector_store = _open_chroma_vector_store(settings, embedding_function=None)
     where_filter = _build_chroma_filter(filters)
     search_k = k if k is not None else settings.retrieval_top_k
 
-    results = vector_store.similarity_search_with_score(
-        query,
+    results = vector_store.similarity_search_by_vector_with_relevance_scores(
+        query_embedding,
         k=search_k,
         filter=where_filter,
     )
@@ -79,23 +103,41 @@ def search_chunks(
         for document, score in results
     ]
 
-def _open_chroma_vector_store(settings: Settings):
+
+def _build_embeddings(settings: Settings):
     try:
-        from langchain_chroma import Chroma
         from langchain_openai import OpenAIEmbeddings
     except ImportError as exc:
         raise RuntimeError(
-            "Retrieval requires langchain-chroma and langchain-openai. "
-            "Run `python -m pip install -e .` from the project root."
+            "Retrieval requires langchain-openai. Run "
+            "`python -m pip install -e .` from the project root."
         ) from exc
 
-    embeddings = OpenAIEmbeddings(
+    return OpenAIEmbeddings(
         model=settings.embedding_model,
         http_client=build_openai_http_client(),
     )
+
+
+def _open_chroma_vector_store(
+    settings: Settings,
+    *,
+    embedding_function: Any = _DEFAULT_EMBEDDING_FUNCTION,
+):
+    try:
+        from langchain_chroma import Chroma
+    except ImportError as exc:
+        raise RuntimeError(
+            "Retrieval requires langchain-chroma. "
+            "Run `python -m pip install -e .` from the project root."
+        ) from exc
+
+    if embedding_function is _DEFAULT_EMBEDDING_FUNCTION:
+        embedding_function = _build_embeddings(settings)
+
     return Chroma(
         collection_name=settings.vector_collection_name,
-        embedding_function=embeddings,
+        embedding_function=embedding_function,
         persist_directory=settings.vector_store_dir.as_posix(),
         collection_metadata=CHROMA_COLLECTION_METADATA,
     )

@@ -126,7 +126,12 @@ server-sent events with media type `text/event-stream`.
 
 Current event types:
 
+- `status_changed`
 - `retrieval_started`
+- `trace_started`
+- `trace_step_started`
+- `trace_step_completed`
+- `trace_complete`
 - `retrieval_complete`
 - `answer_started`
 - `answer_delta`
@@ -140,8 +145,27 @@ before emitting `answer_complete`. If final validation changes the streamed
 draft, the stream emits `answer_replaced` and the UI should trust the final
 `answer_complete` payload.
 
+`status_changed` carries a simple user-facing state such as `retrieving`,
+`answering`, `complete`, or `error`. Detailed progress is separate: `trace_*`
+events describe collectible backend steps for a future expandable progress
+widget. The current detailed labels are:
+
+- `Embedding query...`
+- `Searching vector index...`
+- `Reranking retrieved chunks...`
+- `Assembling cited context...`
+- `Streaming grounded answer...`
+
+Future deterministic tool calls should emit the same trace-step shape with a
+label like `Running tool: <ToolName>...`. The stream includes `elapsed_ms` on
+trace payloads and `duration_ms` on completed trace steps. `trace_complete`
+contains the total backend processing time that a future UI can render as
+`Processed for 17s >`. The UI implementation guide lives at
+`app/ui/ANSWER_TRACE_UI_GUIDE.md`.
+
 `retrieval_complete` includes evidence blocks and assembled context for the
-browser debug panel. `answer_complete` uses the same shape as `POST /api/chat`.
+browser debug panel. `answer_complete` uses the same shape as `POST /api/chat`
+plus `processing_ms` when returned from the streaming route.
 
 ## Current Answer Behavior
 

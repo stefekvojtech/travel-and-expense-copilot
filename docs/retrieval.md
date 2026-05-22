@@ -51,7 +51,10 @@ The collection metadata is defined in `app/retrieval/chroma_config.py`:
 {"hnsw:space": "cosine"}
 ```
 
-`search_chunks()` embeds the query with the configured OpenAI embedding model.
+`search_chunks()` embeds the query with the configured OpenAI embedding model
+and searches Chroma. The same module also exposes `embed_query()` and
+`search_chunks_by_query_embedding()` so the streaming answer path can report
+`Embedding query...` and `Searching vector index...` as separate trace steps.
 
 ## Retrieval Filters
 

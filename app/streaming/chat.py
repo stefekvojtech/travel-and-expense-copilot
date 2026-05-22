@@ -7,7 +7,9 @@ server-sent events for the future browser UI.
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator, Iterator
+from dataclasses import dataclass
+from time import perf_counter
 from typing import Any
 
 from app.agents.answer import (
@@ -16,13 +18,21 @@ from app.agents.answer import (
     build_answer_messages,
     build_grounded_answer_from_model_output,
     parse_answer_model_json,
-    retrieve_answer_context,
     weak_evidence_reason,
 )
 from app.core.config import Settings
 from app.core.openai_clients import build_openai_http_client
-from app.retrieval.step01_search_chunks import RetrievalFilters
-from app.retrieval.step03_assemble_context import EvidenceBlock
+from app.retrieval.step01_search_chunks import (
+    RetrievalFilters,
+    embed_query,
+    search_chunks_by_query_embedding,
+)
+from app.retrieval.step02_rerank_chunks import rerank_chunks
+from app.retrieval.step03_assemble_context import (
+    AssembledContext,
+    EvidenceBlock,
+    assemble_context,
+)
 
 
 ChatStreamEvent = tuple[str, dict[str, Any]]
@@ -36,9 +46,14 @@ def stream_grounded_answer_events(
     search_k: int | None = None,
 ) -> Iterator[ChatStreamEvent]:
     """Yield retrieval, answer-token, and final-result events for one question."""
-    yield "retrieval_started", {"question": question}
+    trace = _StreamTrace()
 
-    assembled_context = retrieve_answer_context(
+    yield "status_changed", {"status": "retrieving", "label": "Retrieving"}
+    yield "retrieval_started", {"question": question}
+    yield "trace_started", trace.started_payload()
+
+    assembled_context = yield from _retrieve_answer_context_with_trace(
+        trace,
         settings,
         question,
         filters=filters,
@@ -61,7 +76,17 @@ def stream_grounded_answer_events(
             validation_warnings=[reason],
         )
         yield "answer_delta", {"delta": answer.answer}
-        yield "answer_complete", _grounded_answer_to_dict(answer)
+        processing_ms = trace.elapsed_ms()
+        yield "trace_complete", trace.complete_payload()
+        yield "status_changed", {
+            "status": "complete",
+            "label": "Complete",
+            "elapsed_ms": processing_ms,
+        }
+        yield "answer_complete", _grounded_answer_to_dict(
+            answer,
+            processing_ms=processing_ms,
+        )
         return
 
     try:
@@ -72,7 +97,15 @@ def stream_grounded_answer_events(
             "`python -m pip install -e .` from the project root."
         ) from exc
 
+    yield "status_changed", {"status": "answering", "label": "Answering"}
     yield "answer_started", {"model": settings.answer_model}
+    answer_step = trace.start_step(
+        step="stream_grounded_answer",
+        label="Streaming grounded answer...",
+        phase="answer",
+        metadata={"model": settings.answer_model},
+    )
+    yield answer_step.started_event
 
     raw_text = ""
     emitted_answer = ""
@@ -100,6 +133,14 @@ def stream_grounded_answer_events(
         model_output=model_output,
         raw_model_output=raw_text,
     )
+    yield trace.complete_step(
+        answer_step,
+        metadata={
+            "model": settings.answer_model,
+            "abstained": answer.abstained,
+            "citation_count": len(answer.citations),
+        },
+    )
 
     if answer.answer.startswith(emitted_answer):
         remaining_delta = answer.answer[len(emitted_answer):]
@@ -111,11 +152,129 @@ def stream_grounded_answer_events(
             "reason": "Final validation changed the streamed draft.",
         }
 
-    yield "answer_complete", _grounded_answer_to_dict(answer)
+    processing_ms = trace.elapsed_ms()
+    yield "trace_complete", trace.complete_payload()
+    yield "status_changed", {
+        "status": "complete",
+        "label": "Complete",
+        "elapsed_ms": processing_ms,
+    }
+    yield "answer_complete", _grounded_answer_to_dict(
+        answer,
+        processing_ms=processing_ms,
+    )
 
 
-def _grounded_answer_to_dict(answer: Any) -> dict[str, Any]:
-    return {
+def _retrieve_answer_context_with_trace(
+    trace: "_StreamTrace",
+    settings: Settings,
+    question: str,
+    *,
+    filters: RetrievalFilters | None,
+    search_k: int | None,
+) -> Generator[ChatStreamEvent, None, AssembledContext]:
+    search_limit = search_k if search_k is not None else settings.retrieval_top_k
+
+    embedding_step = trace.start_step(
+        step="embedding_query",
+        label="Embedding query...",
+        phase="retrieval",
+        metadata={"model": settings.embedding_model},
+    )
+    yield embedding_step.started_event
+    query_embedding = embed_query(settings, question)
+    yield trace.complete_step(
+        embedding_step,
+        metadata={
+            "model": settings.embedding_model,
+            "dimensions": len(query_embedding),
+        },
+    )
+
+    search_step = trace.start_step(
+        step="search_vector_index",
+        label="Searching vector index...",
+        phase="retrieval",
+        metadata={
+            "requested_k": search_limit,
+            "filters": _filters_to_dict(filters),
+        },
+    )
+    yield search_step.started_event
+    retrieved_chunks = search_chunks_by_query_embedding(
+        settings,
+        query_embedding,
+        k=search_k,
+        filters=filters,
+    )
+    yield trace.complete_step(
+        search_step,
+        metadata={
+            "requested_k": search_limit,
+            "result_count": len(retrieved_chunks),
+            "filters": _filters_to_dict(filters),
+        },
+    )
+
+    rerank_step = trace.start_step(
+        step="rerank_retrieved_chunks",
+        label="Reranking retrieved chunks...",
+        phase="retrieval",
+        metadata={
+            "model": settings.rerank_model,
+            "input_count": len(retrieved_chunks),
+            "top_k": settings.retrieval_rerank_k,
+        },
+    )
+    yield rerank_step.started_event
+    reranked_chunks = rerank_chunks(
+        question,
+        retrieved_chunks,
+        model_name=settings.rerank_model,
+        top_k=settings.retrieval_rerank_k,
+    )
+    yield trace.complete_step(
+        rerank_step,
+        metadata={
+            "model": settings.rerank_model,
+            "input_count": len(retrieved_chunks),
+            "result_count": len(reranked_chunks),
+        },
+    )
+
+    context_step = trace.start_step(
+        step="assemble_cited_context",
+        label="Assembling cited context...",
+        phase="retrieval",
+        metadata={
+            "max_blocks": settings.retrieval_context_k,
+            "max_total_tokens": settings.retrieval_context_max_tokens,
+        },
+    )
+    yield context_step.started_event
+    assembled_context = assemble_context(
+        reranked_chunks,
+        max_blocks=settings.retrieval_context_k,
+        max_total_tokens=settings.retrieval_context_max_tokens,
+        max_block_tokens=settings.retrieval_context_max_block_tokens,
+    )
+    yield trace.complete_step(
+        context_step,
+        metadata={
+            "evidence_block_count": len(assembled_context.evidence_blocks),
+            "context_characters": len(assembled_context.context_text),
+        },
+    )
+
+    return assembled_context
+
+
+def _grounded_answer_to_dict(
+    answer: Any,
+    *,
+    processing_ms: int | None = None,
+) -> dict[str, Any]:
+    payload = {
         "question": answer.question,
         "answer": answer.answer,
         "citations": answer.citations,
@@ -131,6 +290,109 @@ def _grounded_answer_to_dict(answer: Any) -> dict[str, Any]:
             "raw_model_output": answer.raw_model_output,
             "validation_warnings": answer.validation_warnings or [],
         },
+    }
+    if processing_ms is not None:
+        payload["processing_ms"] = processing_ms
+    return payload
+
+
+@dataclass(frozen=True)
+class _TraceStep:
+    sequence: int
+    step: str
+    label: str
+    phase: str
+    started_at: float
+    started_event: ChatStreamEvent
+
+
+class _StreamTrace:
+    def __init__(self) -> None:
+        self.started_at = perf_counter()
+        self._sequence = 0
+
+    def elapsed_ms(self) -> int:
+        return _duration_ms(self.started_at)
+
+    def started_payload(self) -> dict[str, Any]:
+        return {
+            "label": "Processed",
+            "elapsed_ms": 0,
+        }
+
+    def complete_payload(self) -> dict[str, Any]:
+        return {
+            "label": "Processed",
+            "elapsed_ms": self.elapsed_ms(),
+        }
+
+    def start_step(
+        self,
+        *,
+        step: str,
+        label: str,
+        phase: str,
+        metadata: dict[str, Any] | None = None,
+    ) -> _TraceStep:
+        self._sequence += 1
+        started_at = perf_counter()
+        started_event = (
+            "trace_step_started",
+            {
+                "sequence": self._sequence,
+                "step": step,
+                "label": label,
+                "phase": phase,
+                "status": "running",
+                "elapsed_ms": self.elapsed_ms(),
+                "metadata": metadata or {},
+            },
+        )
+        return _TraceStep(
+            sequence=self._sequence,
+            step=step,
+            label=label,
+            phase=phase,
+            started_at=started_at,
+            started_event=started_event,
+        )
+
+    def complete_step(
+        self,
+        trace_step: _TraceStep,
+        *,
+        metadata: dict[str, Any] | None = None,
+    ) -> ChatStreamEvent:
+        return (
+            "trace_step_completed",
+            {
+                "sequence": trace_step.sequence,
+                "step": trace_step.step,
+                "label": trace_step.label,
+                "phase": trace_step.phase,
+                "status": "completed",
+                "elapsed_ms": self.elapsed_ms(),
+                "duration_ms": _duration_ms(trace_step.started_at),
+                "metadata": metadata or {},
+            },
+        )
+
+
+def _duration_ms(started_at: float) -> int:
+    return max(round((perf_counter() - started_at) * 1000), 0)
+
+
+def _filters_to_dict(filters: RetrievalFilters | None) -> dict[str, str]:
+    if filters is None:
+        return {}
+    return {
+        key: value
+        for key, value in {
+            "doc_type": filters.doc_type,
+            "source_path": filters.source_path,
+            "section_path": filters.section_path,
+        }.items()
+        if value
     }
 
 

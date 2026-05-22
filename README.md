@@ -148,11 +148,12 @@ Routes:
 - `POST /api/chat/stream`
 
 `/api/chat` returns one validated JSON answer. `/api/chat/stream` returns
-server-sent events for retrieval progress, answer deltas, and the final
-validated answer payload. The browser UI uses the streaming route and displays
-retrieved evidence, rerank scores, citations, validation warnings, confidence,
-and the assembled context in its debug panel. Both chat routes and the UI
-perform paid OpenAI calls for query embedding and final answer generation.
+server-sent events for simple runtime status, detailed answer trace steps,
+answer deltas, and the final validated answer payload. The browser UI uses the
+streaming route and displays retrieved evidence, rerank scores, citations,
+validation warnings, confidence, and the assembled context in its debug panel.
+Both chat routes and the UI perform paid OpenAI calls for query embedding and
+final answer generation.
 
 ## Script Numbering
 
