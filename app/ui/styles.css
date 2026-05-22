@@ -399,7 +399,7 @@ h3 {
   border-top: 1.5px solid currentColor;
   border-right: 1.5px solid currentColor;
   color: var(--line-strong);
-  transform: rotate(45deg) translateY(-1px);
+  transform: rotate(45deg);
   transform-origin: center;
   transition: transform 140ms ease;
 }
@@ -409,7 +409,7 @@ h3 {
 }
 
 .answer-trace.is-expanded .answer-trace-arrow {
-  transform: rotate(135deg) translateY(-1px);
+  transform: rotate(135deg);
 }
 
 .answer-trace-details {
