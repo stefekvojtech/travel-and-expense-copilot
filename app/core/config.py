@@ -39,6 +39,10 @@ DEFAULT_RERANK_MODEL = "ms-marco-MiniLM-L-12-v2"
 DEFAULT_CHUNK_SIZE = 600
 DEFAULT_CHUNK_OVERLAP = 120
 DEFAULT_MAX_CHUNK_TOKENS = 1200
+DEFAULT_ANSWER_MAX_TOKENS = 500
+DEFAULT_PUBLIC_DEMO_MODE = False
+DEFAULT_PUBLIC_DEMO_RATE_LIMIT_REQUESTS = 10
+DEFAULT_PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS = 600
 DEFAULT_AUTHOR_NAME = "Vojtech Stefek"
 DEFAULT_AUTHOR_LINKEDIN_URL = "https://www.linkedin.com/in/vojtech-stefek/"
 DEFAULT_AUTHOR_GITHUB_URL = "https://github.com/stefekvojtech"
@@ -47,6 +51,13 @@ DEFAULT_AUTHOR_GITHUB_URL = "https://github.com/stefekvojtech"
 def _get_int(name: str, default: int) -> int:
     value = os.getenv(name)
     return int(value) if value is not None else default
+
+
+def _get_bool(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _get_str(name: str, default: str = "") -> str:
@@ -79,6 +90,12 @@ class Settings:
     chunk_size: int
     chunk_overlap: int
     max_chunk_tokens: int
+    answer_max_tokens: int = DEFAULT_ANSWER_MAX_TOKENS
+    public_demo_mode: bool = DEFAULT_PUBLIC_DEMO_MODE
+    public_demo_rate_limit_requests: int = DEFAULT_PUBLIC_DEMO_RATE_LIMIT_REQUESTS
+    public_demo_rate_limit_window_seconds: int = (
+        DEFAULT_PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS
+    )
     author_name: str = ""
     author_linkedin_url: str = ""
     author_github_url: str = ""
@@ -113,6 +130,16 @@ def get_settings() -> Settings:
         chunk_size=_get_int("CHUNK_SIZE", DEFAULT_CHUNK_SIZE),
         chunk_overlap=_get_int("CHUNK_OVERLAP", DEFAULT_CHUNK_OVERLAP),
         max_chunk_tokens=_get_int("MAX_CHUNK_TOKENS", DEFAULT_MAX_CHUNK_TOKENS),
+        answer_max_tokens=_get_int("ANSWER_MAX_TOKENS", DEFAULT_ANSWER_MAX_TOKENS),
+        public_demo_mode=_get_bool("PUBLIC_DEMO_MODE", DEFAULT_PUBLIC_DEMO_MODE),
+        public_demo_rate_limit_requests=_get_int(
+            "PUBLIC_DEMO_RATE_LIMIT_REQUESTS",
+            DEFAULT_PUBLIC_DEMO_RATE_LIMIT_REQUESTS,
+        ),
+        public_demo_rate_limit_window_seconds=_get_int(
+            "PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS",
+            DEFAULT_PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS,
+        ),
         author_name=_get_str("AUTHOR_NAME", DEFAULT_AUTHOR_NAME),
         author_linkedin_url=_get_str(
             "AUTHOR_LINKEDIN_URL",

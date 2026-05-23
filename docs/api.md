@@ -74,6 +74,23 @@ The values come from `AUTHOR_NAME`, `AUTHOR_LINKEDIN_URL`, and
 `data/raw/`, excluding local `AGENTS.md` instruction files. The browser UI links
 to this route with a `Download source files` button in the debug panel header.
 
+## Public Demo Mode
+
+`PUBLIC_DEMO_MODE=false` is the local default. Hosted public demos should set
+`PUBLIC_DEMO_MODE=true` in the deployment environment. In demo mode, the chat
+routes apply a per-client-IP limit of `PUBLIC_DEMO_RATE_LIMIT_REQUESTS` requests
+per `PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS` seconds and return generic server
+errors instead of raw exception text. The default public limit is 10 requests
+per 10 minutes.
+
+The chat request schema rejects questions longer than 1000 characters. The
+browser input also caps entry at 1000 characters, but the API validation is the
+authoritative protection for programmatic callers.
+
+Caller-provided `search_k` values are accepted for request-shape compatibility
+but ignored by the route layer. Runtime chat always uses the configured
+`RETRIEVAL_TOP_K` default.
+
 ## Chat Route
 
 `POST /api/chat` runs the full grounded answer path:
@@ -103,7 +120,9 @@ Example request:
 ```
 
 `search_k` and `filters` are optional. Filters support exact matches for
-`doc_type`, `source_path`, and `section_path`.
+`doc_type`, `source_path`, and `section_path`. Current API route behavior
+ignores `search_k` and uses `RETRIEVAL_TOP_K` from settings so public callers
+cannot increase vector-search fanout.
 
 The response includes:
 
@@ -179,7 +198,8 @@ from:
 The answer path uses LangChain/OpenAI for the final model call. Normal chat
 execution performs paid OpenAI calls for the query embedding and final answer
 model. `ANSWER_MODEL` defaults to `gpt-4.1-mini` and can be overridden in the
-environment.
+environment. `ANSWER_MAX_TOKENS` defaults to 500 and is passed to the LangChain
+`ChatOpenAI` answer model in both streaming and non-streaming paths.
 
 The non-streaming path uses LangChain structured output with the
 `AnswerModelOutput` Pydantic schema. The streaming path streams normal chat

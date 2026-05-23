@@ -178,6 +178,7 @@ def _invoke_answer_model(
 
     model = ChatOpenAI(
         model=settings.answer_model,
+        max_tokens=settings.answer_max_tokens,
         http_client=build_openai_http_client(),
     )
     structured_model = model.with_structured_output(

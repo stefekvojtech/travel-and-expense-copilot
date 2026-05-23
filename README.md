@@ -155,6 +155,41 @@ confidence, and the assembled context in its debug panel.
 Both chat routes and the UI perform paid OpenAI calls for query embedding and
 final answer generation.
 
+For public demos, set `PUBLIC_DEMO_MODE=true` in the hosted environment. Demo
+mode keeps the OpenAI key backend-only, ignores caller-provided `search_k`, caps
+questions at 1000 characters, limits answer generation to `ANSWER_MAX_TOKENS`,
+uses public-demo rate limits, and returns generic server errors to browser
+clients. Keep local development at `PUBLIC_DEMO_MODE=false`.
+
+## Docker and Hugging Face Spaces
+
+The repository includes a Dockerfile for deployment to Hugging Face Spaces or
+another container host. It serves FastAPI and the static UI from one process and
+uses the existing Chroma artifacts under `data/processed/04_vectorstore/`.
+Ingestion does not run at container startup.
+
+For Hugging Face Spaces:
+
+1. Create a Docker Space.
+2. Set `OPENAI_API_KEY` as a private Space Secret.
+3. Set `PUBLIC_DEMO_MODE=true` in the Space environment.
+4. Keep the app port at `7860`.
+
+Container startup command:
+
+```text
+python -m uvicorn app.main:app --host 0.0.0.0 --port 7860
+```
+
+If configuring the Space through README metadata, use:
+
+```yaml
+---
+sdk: docker
+app_port: 7860
+---
+```
+
 ## Script Numbering
 
 Script numbers indicate the order and role of local workflow entrypoints:

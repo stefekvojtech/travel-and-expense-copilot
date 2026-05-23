@@ -32,6 +32,7 @@ const authorName = document.querySelector("#authorName");
 const authorLinkedin = document.querySelector("#authorLinkedin");
 const authorGithub = document.querySelector("#authorGithub");
 
+const MAX_QUESTION_CHARACTERS = 1000;
 const EMPTY_CONTEXT_TEXT = "No context assembled yet.";
 const TRACE_DEFAULT_LABEL = "Processed";
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
@@ -66,6 +67,7 @@ let traceState = createEmptyTraceState();
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  clampQuestionInputLength();
   const question = questionInput.value.trim();
   if (!question) {
     return;
@@ -76,7 +78,8 @@ form.addEventListener("submit", (event) => {
   void streamQuestion(question);
 });
 
-questionInput.addEventListener("input", resizeQuestionInput);
+questionInput.maxLength = MAX_QUESTION_CHARACTERS;
+questionInput.addEventListener("input", normalizeQuestionInput);
 renderMarkdownToggle?.addEventListener("click", toggleEvidenceMarkdownRendering);
 copyContextButton?.addEventListener("click", copyAssembledContext);
 answerTraceToggle?.addEventListener("click", toggleAnswerTrace);
@@ -112,11 +115,41 @@ function insertQuestion(question) {
     suffix && !suffix.startsWith("\n") ? "\n" : ""
   }`;
 
-  questionInput.value = `${prefix}${insertion}${suffix}`;
-  const cursorPosition = prefix.length + insertion.length;
+  questionInput.value = limitQuestionText(`${prefix}${insertion}${suffix}`);
+  const cursorPosition = Math.min(
+    prefix.length + insertion.length,
+    MAX_QUESTION_CHARACTERS,
+  );
   questionInput.selectionStart = cursorPosition;
   questionInput.selectionEnd = cursorPosition;
   resizeQuestionInput();
+}
+
+function normalizeQuestionInput() {
+  clampQuestionInputLength();
+  resizeQuestionInput();
+}
+
+function clampQuestionInputLength() {
+  if (questionInput.value.length <= MAX_QUESTION_CHARACTERS) {
+    return;
+  }
+
+  const selectionStart = Math.min(
+    questionInput.selectionStart ?? MAX_QUESTION_CHARACTERS,
+    MAX_QUESTION_CHARACTERS,
+  );
+  const selectionEnd = Math.min(
+    questionInput.selectionEnd ?? selectionStart,
+    MAX_QUESTION_CHARACTERS,
+  );
+  questionInput.value = limitQuestionText(questionInput.value);
+  questionInput.selectionStart = selectionStart;
+  questionInput.selectionEnd = selectionEnd;
+}
+
+function limitQuestionText(value) {
+  return String(value).slice(0, MAX_QUESTION_CHARACTERS);
 }
 
 function resizeQuestionInput() {
@@ -138,6 +171,11 @@ function revealConversationUi() {
 }
 
 async function streamQuestion(question) {
+  if (question.length > MAX_QUESTION_CHARACTERS) {
+    showError(`Questions are limited to ${MAX_QUESTION_CHARACTERS} characters.`);
+    return;
+  }
+
   if (activeController) {
     activeController.abort();
   }
@@ -162,7 +200,7 @@ async function streamQuestion(question) {
     });
 
     if (!response.ok || !response.body) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(await responseErrorMessage(response));
     }
 
     await readSseStream(response.body, handleStreamEvent);
@@ -175,6 +213,39 @@ async function streamQuestion(question) {
     setBusy(false);
     activeController = null;
   }
+}
+
+async function responseErrorMessage(response) {
+  const fallback = `Request failed with status ${response.status}`;
+  const contentType = response.headers.get("content-type") || "";
+
+  try {
+    if (contentType.includes("application/json")) {
+      const payload = await response.json();
+      return formatErrorDetail(payload.detail) || fallback;
+    }
+
+    const text = await response.text();
+    return text.trim() || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function formatErrorDetail(detail) {
+  if (typeof detail === "string") {
+    return detail;
+  }
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => item?.msg || item?.message || "")
+      .filter(Boolean)
+      .join(" ");
+  }
+  if (detail && typeof detail === "object") {
+    return JSON.stringify(detail);
+  }
+  return "";
 }
 
 async function readSseStream(body, onEvent) {

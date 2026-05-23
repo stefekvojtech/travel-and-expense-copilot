@@ -68,6 +68,8 @@ data/eval/golden_eval_set.jsonl
 `app/core/config.py` owns configuration loading. It loads `.env` from the project
 root when present, supplies non-secret local defaults when values are omitted,
 and resolves relative configured paths from the project root.
+It also carries public-demo deployment settings such as `PUBLIC_DEMO_MODE`,
+the public-demo rate-limit window, and `ANSWER_MAX_TOKENS`.
 
 `app/core/openai_clients.py` builds OpenAI HTTP clients for LangChain/OpenAI
 calls with environment proxy inheritance disabled. This keeps local shell proxy
@@ -189,7 +191,9 @@ answer.
 `app/api/chat.py` exposes the implemented HTTP runtime routes. `GET /health`
 returns liveness only. `POST /api/chat` returns one validated grounded answer.
 `POST /api/chat/stream` returns server-sent events for retrieval progress,
-answer deltas, and the final validated answer payload.
+answer deltas, and the final validated answer payload. The route layer enforces
+the public-demo request budget when `PUBLIC_DEMO_MODE=true` and ignores
+caller-provided `search_k` so hosted callers use the configured retrieval fanout.
 
 `app/api/schemas.py` defines the Pydantic request and response models used by
 the API routes.

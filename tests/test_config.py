@@ -11,6 +11,7 @@ CONFIG_ENV_KEYS = (
     "EMBEDDING_MODEL",
     "VISION_MODEL",
     "ANSWER_MODEL",
+    "ANSWER_MAX_TOKENS",
     "RAW_DATA_DIR",
     "PROCESSED_DATA_DIR",
     "VECTOR_COLLECTION_NAME",
@@ -23,6 +24,9 @@ CONFIG_ENV_KEYS = (
     "CHUNK_SIZE",
     "CHUNK_OVERLAP",
     "MAX_CHUNK_TOKENS",
+    "PUBLIC_DEMO_MODE",
+    "PUBLIC_DEMO_RATE_LIMIT_REQUESTS",
+    "PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS",
     "AUTHOR_NAME",
     "AUTHOR_LINKEDIN_URL",
     "AUTHOR_GITHUB_URL",
@@ -40,6 +44,7 @@ def test_get_settings_has_defaults_without_env_file_values(monkeypatch: Any) -> 
     assert settings.embedding_model == "text-embedding-3-large"
     assert settings.vision_model == "gpt-5.4"
     assert settings.answer_model == "gpt-4.1-mini"
+    assert settings.answer_max_tokens == 500
     assert settings.raw_data_dir == ROOT_DIR / "data" / "raw"
     assert settings.processed_data_dir == ROOT_DIR / "data" / "processed"
     assert settings.vector_store_dir == ROOT_DIR / "data" / "processed" / "04_vectorstore"
@@ -53,6 +58,9 @@ def test_get_settings_has_defaults_without_env_file_values(monkeypatch: Any) -> 
     assert settings.chunk_size == 600
     assert settings.chunk_overlap == 120
     assert settings.max_chunk_tokens == 1200
+    assert settings.public_demo_mode is False
+    assert settings.public_demo_rate_limit_requests == 10
+    assert settings.public_demo_rate_limit_window_seconds == 600
     assert settings.author_name == "Vojtech Stefek"
     assert settings.author_linkedin_url == "https://www.linkedin.com/in/vojtech-stefek/"
     assert settings.author_github_url == "https://github.com/stefekvojtech"

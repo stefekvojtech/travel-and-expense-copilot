@@ -103,6 +103,7 @@ def _settings() -> SimpleNamespace:
         retrieval_context_max_tokens=1800,
         retrieval_context_max_block_tokens=700,
         answer_model="gpt-5.5",
+        answer_max_tokens=500,
     )
 
 

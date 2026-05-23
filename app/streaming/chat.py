@@ -111,6 +111,7 @@ def stream_grounded_answer_events(
     emitted_answer = ""
     model = ChatOpenAI(
         model=settings.answer_model,
+        max_tokens=settings.answer_max_tokens,
         http_client=build_openai_http_client(),
     )
     for chunk in model.stream(

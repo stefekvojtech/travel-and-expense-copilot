@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+
+.git
+.venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.cache
+.uv-cache*
+tmp
+travel_and_expense_copilot.egg-info
