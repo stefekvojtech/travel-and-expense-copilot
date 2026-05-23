@@ -1,3 +1,9 @@
+---
+title: Travel & Expense Policy Copilot
+sdk: docker
+app_port: 7860
+---
+
 # Travel & Expense Policy Copilot
 
 Local-first, grounded Travel & Expense Policy Copilot built in Python.
@@ -49,6 +55,7 @@ Start here, then go deeper as needed:
 - [Retrieval](docs/retrieval.md)
 - [Evaluation](docs/evaluation.md)
 - [API and UI Status](docs/api.md)
+- [Deployment](docs/deployment.md)
 - [Deterministic Tools](docs/tools.md)
 - [Future Improvements](docs/future_improvements.md)
 
