@@ -1,5 +1,5 @@
 ---
-title: Travel & Expense Policy Copilot
+title: "Travel & Expense Policy Copilot"
 sdk: docker
 app_port: 7860
 ---

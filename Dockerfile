@@ -16,8 +16,7 @@ COPY --chown=user:user . .
 USER user
 ENV PATH="/home/user/.local/bin:${PATH}"
 
-RUN python -m pip install --upgrade pip \
-    && python -m pip install -e .
+RUN python -m pip install --user --no-cache-dir .
 
 EXPOSE 7860
 
