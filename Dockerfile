@@ -12,6 +12,7 @@ RUN useradd -m -u 1000 user
 WORKDIR /home/user/app
 
 COPY --chown=user:user . .
+RUN chown -R user:user /home/user/app
 
 USER user
 ENV PATH="/home/user/.local/bin:${PATH}"
