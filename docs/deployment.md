@@ -47,6 +47,10 @@ safe error messages are active.
 
 ## Publish Flow
 
+GitHub is the routine source-control and backup remote. Hugging Face Spaces is
+the public demo/production environment, so publishing there is a separate
+explicit step and should not happen automatically after every commit.
+
 Deploy the current committed repository snapshot with:
 
 ```powershell

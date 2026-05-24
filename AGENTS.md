@@ -44,6 +44,14 @@ When finishing a requested change:
 - Commit the completed change with a concise, descriptive message.
 - If the repository has a configured remote and upstream branch, push the commit
   after committing unless the user asks not to.
+- Treat GitHub as the routine git remote for backup/source control. Do not treat
+  Hugging Face Spaces as another automatic git push target.
+- Treat Hugging Face Spaces as the public production/demo environment. After a
+  GitHub push, ask for explicit permission before publishing there, using wording
+  like: "Do you want to also publish the package to Hugging Face Space? This
+  might take a while."
+- It is normal and expected for the user to decline Hugging Face publishing.
+  When declined, move on without treating that as a blocker or failed task.
 - Leave unrelated dirty files unstaged and mention them briefly in the final
   response.
 
