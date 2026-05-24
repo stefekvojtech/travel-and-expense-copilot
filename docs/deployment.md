@@ -2,7 +2,12 @@
 
 This project can run as a Docker-based Hugging Face Space. The deployed app uses
 the committed FastAPI backend, static browser UI, and existing Chroma vector
-store artifacts. It does not run ingestion at container startup.
+store artifacts.
+
+The hosted Space is for the public retrieval and answering demo. It does not run
+ingestion, rebuild embeddings, run evals, or accept new source documents from
+visitors. Those workflows stay in the local repository and are handled by
+scripts.
 
 ## Hugging Face Space
 
@@ -48,8 +53,8 @@ safe error messages are active.
 ## Publish Flow
 
 GitHub is the routine source-control and backup remote. Hugging Face Spaces is
-the public demo/production environment, so publishing there is a separate
-explicit step and should not happen automatically after every commit.
+the public hosted demo environment, so publishing there is a separate explicit
+step and should not happen automatically after every commit.
 Ask for publish permission through the command approval flow, not as a casual
 text question. Use this exact approval question: "Do you want to publish this
 version to Hugging Face Space? This might take a while." Declining a publish

@@ -1,9 +1,15 @@
 # Architecture
 
-This project is a local-first RAG demo for a Travel & Expense policy assistant.
-The current code builds a searchable policy corpus, assembles citation-ready
+This project is a compact RAG demo for a Travel & Expense policy assistant. The
+current code builds a searchable policy corpus, assembles citation-ready
 retrieval context, and can generate a first-pass grounded natural-language
 answer from that evidence.
+
+The repository intentionally keeps ingestion, retrieval, API, UI, evaluation,
+and deployment helpers together so the full demo lifecycle is easy to inspect.
+The hosted Hugging Face Space uses the retrieval and answering runtime with a
+prebuilt vector store; corpus rebuilds and evals are local repository workflows,
+not hosted visitor workflows.
 
 ## Implemented Flow
 
