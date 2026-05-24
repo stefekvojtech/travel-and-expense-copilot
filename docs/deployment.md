@@ -51,9 +51,9 @@ GitHub is the routine source-control and backup remote. Hugging Face Spaces is
 the public demo/production environment, so publishing there is a separate
 explicit step and should not happen automatically after every commit.
 Ask for publish permission through the command approval flow, not as a casual
-text question. Use this exact approval question: "Do you want to also publish to
-Hugging Face Space? This might take a while." Declining a publish request is
-expected and is not a failed deployment.
+text question. Use this exact approval question: "Do you want to publish this
+version to Hugging Face Space? This might take a while." Declining a publish
+request is expected and is not a failed deployment.
 
 Deploy the current committed repository snapshot with:
 
