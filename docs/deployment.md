@@ -47,20 +47,24 @@ safe error messages are active.
 
 ## Publish Flow
 
-Add the Space repository as a Git remote once:
+Deploy the current committed repository snapshot with:
 
 ```powershell
-git remote add hf https://huggingface.co/spaces/stefekvojtech/travel-and-expense-copilot
+python scripts/deploy_hf_space.py
 ```
 
-Push the current branch to the Space:
+The script uploads `HEAD` through the Hugging Face Hub API, waits for the Space
+build/runtime status, streams new build logs while waiting, and exits
+successfully only after the Space reports `RUNNING`. It uses temporary export
+files internally and removes them automatically, including on failures.
 
-```powershell
-git push hf main
-```
+The script does not read `.env` and does not store Hugging Face credentials in
+the repo. It uses an existing Hugging Face login token or the Git credential
+stored for `https://huggingface.co`.
 
-Hugging Face may ask for credentials. Use a Hugging Face access token with write
-permission as the Git password.
+Plain `git push hf main` is not the preferred publish path for this project
+because the committed Chroma vector store includes binary files that Hugging Face
+handles more reliably through its upload API.
 
 ## Deployment Notes
 

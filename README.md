@@ -181,6 +181,7 @@ For Hugging Face Spaces:
 2. Set `OPENAI_API_KEY` as a private Space Secret.
 3. Set `PUBLIC_DEMO_MODE=true` in the Space environment.
 4. Keep the app port at `7860`.
+5. Deploy the committed snapshot with `python scripts/deploy_hf_space.py`.
 
 Container startup command:
 
@@ -196,6 +197,9 @@ sdk: docker
 app_port: 7860
 ---
 ```
+
+The deploy script uses the Hugging Face login or Git credential already stored
+on the machine. Do not put Hugging Face tokens in `.env` or tracked files.
 
 ## Script Numbering
 
