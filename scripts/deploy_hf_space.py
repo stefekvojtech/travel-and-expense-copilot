@@ -24,6 +24,8 @@ SUCCESS_STAGE = "RUNNING"
 
 
 def main() -> int:
+    configure_output()
+
     parser = argparse.ArgumentParser(
         description="Upload HEAD to the Hugging Face Space and wait for the build."
     )
@@ -195,6 +197,13 @@ def run(
         capture_output=capture_output,
         check=True,
     )
+
+
+def configure_output() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure:
+            reconfigure(encoding="utf-8", errors="replace")
 
 
 if __name__ == "__main__":
