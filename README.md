@@ -197,3 +197,5 @@ The current project does not use `uv`; use `python -m pip install -e .` unless
 The project is a living demo. I expect to keep improving retrieval quality,
 evaluation coverage, guardrails, tool use, UX, and deployment ergonomics over
 time.
+
+Code review notes PR.
