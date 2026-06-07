@@ -36,19 +36,60 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 7860
 
 ## Secrets And Variables
 
-Set these in the Hugging Face Space settings:
+The hosted Space does not receive or use the local `.env` file. The file is
+ignored by Git and excluded by `.dockerignore`, so it is not uploaded to the
+Space repository or copied into the Docker image.
+
+Configure these values manually in the Hugging Face Space settings:
 
 ```text
 OPENAI_API_KEY=<private Space Secret>
-PUBLIC_DEMO_MODE=true
+PUBLIC_DEMO_MODE=true <public Space Variable>
 ```
 
-Keep `OPENAI_API_KEY` as a Secret, not a public variable. The API key is read by
-the backend process through the environment and is not sent to browser code.
+Hugging Face stores these settings separately from the repository. They are not
+added when `scripts/deploy_hf_space.py` uploads the committed repository, and
+they are not copied into the Docker image during its build.
 
-The repo defaults and `.env.example` keep `PUBLIC_DEMO_MODE=false` for local
-development. Set it to `true` in the hosted Space so public rate limiting and
-safe error messages are active.
+Instead, when Hugging Face starts or restarts the built Space container, it
+injects the Secrets and Variables currently configured in the Space settings
+into that running container as environment variables. The FastAPI backend then
+reads them with `os.getenv(...)`.
+
+For example, the deployment upload contains neither the local `.env` file nor
+the OpenAI key. At container startup, Hugging Face supplies the separately
+stored `OPENAI_API_KEY` Secret to the running backend process.
+
+Keep `OPENAI_API_KEY` as a Secret, not a public Variable. It has no application
+default and must be configured for hosted OpenAI-backed retrieval and answer
+generation. The key is available to the backend process but is not sent to
+browser code.
+
+`PUBLIC_DEMO_MODE` has an application default of `false`, which is appropriate
+for local development. It must be manually configured as `true` in the hosted
+Space so public rate limiting and safe error messages are active.
+
+Other non-secret settings do not need to be configured in Hugging Face unless
+the hosted demo should override their application defaults. For example,
+`QUESTION_MAX_CHARACTERS` defaults to `1000`; add it as a public Space Variable
+only when the hosted limit should be different.
+
+Configuration precedence for the hosted app is:
+
+1. At container startup, a Secret or Variable manually configured in the
+   Hugging Face Space settings is injected and used.
+2. If no Space setting was configured for that key, the built-in default in
+   `app/core/config.py` is used when one exists.
+3. If no Space setting and no application default exist, the value is
+   unavailable. This is why `OPENAI_API_KEY` must be manually configured.
+
+`.env.example` documents available configuration keys but is not loaded as
+runtime configuration. The real local `.env` is used only for local development.
+
+See the official Hugging Face documentation for
+[Spaces secrets and variables](https://huggingface.co/docs/hub/main/spaces-overview#managing-secrets-and-environment-variables)
+and
+[Docker Spaces runtime environment management](https://huggingface.co/docs/hub/main/spaces-sdks-docker#secrets-and-variables-management).
 
 ## Publish Flow
 
