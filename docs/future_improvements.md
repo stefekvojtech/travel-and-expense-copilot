@@ -14,6 +14,32 @@ without moving the underlying business logic out of `app/tools/`.
 The server is not implemented yet. Create `mcp_server/` only when implementation
 starts; an empty placeholder directory is unnecessary.
 
+## Ingestion
+
+### Evaluate Granite Docling for Structured PDF Conversion
+
+The current PDF normalization path uses `pypdf` for page text and `pdfplumber`
+for tables. A future ingestion improvement should evaluate IBM Granite Docling
+as an alternative parser for converting PDFs, including scanned or
+layout-heavy documents, into a structured representation that can be exported
+to Markdown.
+
+Granite Docling may preserve reading order, tables, lists, headings, forms, and
+other document structure more accurately than the current extraction path for
+some PDFs. It should not be adopted solely on that assumption. Benchmark it
+against the existing policy corpus and representative difficult PDFs before
+choosing whether it should:
+
+- replace the current PDF normalization path
+- act as a fallback when extraction-quality checks fail
+- be an optional high-fidelity ingestion mode
+
+The evaluation should compare extracted text and table accuracy, heading and
+reading-order preservation, runtime, memory and hardware requirements, and the
+quality of resulting retrieval chunks. Any implementation must preserve source
+page metadata and citation lineage when converting Docling output into the
+project's block artifacts.
+
 ## Retrieval
 
 ### Query Planning for Long Prompts
