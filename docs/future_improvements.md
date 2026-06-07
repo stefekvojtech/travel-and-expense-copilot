@@ -4,6 +4,16 @@ This file collects planned and speculative improvements that are useful to keep
 visible, but are not implemented yet. The goal is to preserve design thinking
 without mixing future behavior into the current pipeline documentation.
 
+## MCP Server
+
+A local MCP server is planned as a possible future interface for selected
+deterministic travel and expense tools. It could expose capabilities such as
+policy-cap lookup or reimbursable-amount calculation to MCP-compatible clients
+without moving the underlying business logic out of `app/tools/`.
+
+The server is not implemented yet. Create `mcp_server/` only when implementation
+starts; an empty placeholder directory is unnecessary.
+
 ## Retrieval
 
 ### Query Planning for Long Prompts
