@@ -16,10 +16,11 @@ app/main.py
 Run it locally with:
 
 ```powershell
-python -m uvicorn app.main:app --reload
+python scripts/run_local_server.py
 ```
 
-Open the browser UI at:
+The launcher binds only to localhost, reloads after code changes, and opens the
+browser UI at:
 
 ```text
 http://127.0.0.1:8000/ui/

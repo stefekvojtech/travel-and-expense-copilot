@@ -16,6 +16,7 @@ Script numbers indicate workflow order and role:
 - `10_*` through `19_*`: retrieval and retrieval-debug entrypoints
 - `20_*` through `29_*`: evaluation entrypoints
 - `30_*` and above: runtime answer/demo commands
+- unnumbered scripts: local server and deployment helpers
 
 ## Corpus Build Scripts
 
@@ -58,17 +59,20 @@ python scripts/30_ask.py "Can I take a taxi from Prague airport after 21:00?"
 `scripts/30_ask.py` performs paid OpenAI calls for query embedding and final
 answer generation when `OPENAI_API_KEY` is configured.
 
-The same answer path is exposed through FastAPI:
+Run the same answer path through the local FastAPI server and browser UI:
 
 ```powershell
-python -m uvicorn app.main:app --reload
+python scripts/run_local_server.py
 ```
 
-Open the local UI at:
+The launcher binds only to localhost, reloads after code changes, and opens:
 
 ```text
 http://127.0.0.1:8000/ui/
 ```
+
+Use `--port` to select another localhost port, `--no-reload` to disable
+development reloads, or `--no-browser` for a headless terminal.
 
 Routes:
 

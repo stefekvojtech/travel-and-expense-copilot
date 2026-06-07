@@ -121,6 +121,12 @@ Install the project from the repository root with:
 python -m pip install -e .
 ```
 
+Run the local FastAPI server and browser UI with:
+
+```powershell
+python scripts/run_local_server.py
+```
+
 `uv` is not currently available in this environment. Do not assume `uv sync`
 works unless `uv` is installed.
 

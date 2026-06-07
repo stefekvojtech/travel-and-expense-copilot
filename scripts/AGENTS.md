@@ -13,8 +13,11 @@ Scripts are thin command-line entrypoints over application modules.
 - `03_chunk_blocks.py`: chunk normalized block JSONL artifacts and write chunk previews.
 - `04_embed_chunks.py`: embed chunk JSONL artifacts into local Chroma.
 - `00_run_ingestion.py`: run the complete numbered ingestion flow.
-- `search_chunks.py`: vector search, rerank, and context assembly.
-- `print_open_ai_models.py`: utility for listing OpenAI models.
+- `10_retrieve_context.py`: vector search, rerank, and context assembly.
+- `20_run_eval.py`: run retrieval evaluation against golden examples.
+- `30_ask.py`: generate a grounded answer from retrieved evidence.
+- `run_local_server.py`: run the localhost FastAPI server and open the UI.
+- `deploy_hf_space.py`: publish the committed snapshot to Hugging Face Spaces.
 
 ## Rules
 
@@ -26,4 +29,6 @@ Scripts are thin command-line entrypoints over application modules.
 - Do not assume a dry-run mode exists for embedding. `04_embed_chunks.py` calls
   paid OpenAI embeddings; stage 01 may call paid vision for image sources.
 - Search keeps `--dry-run` for inspecting Chroma without embedding a query.
+- Keep `run_local_server.py` bound to localhost. Deployment startup belongs in
+  `Dockerfile` and deployment documentation.
 - Update `README.md` and relevant docs when adding, removing, or changing scripts.

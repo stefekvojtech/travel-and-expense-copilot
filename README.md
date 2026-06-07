@@ -102,10 +102,10 @@ Use Python 3.11 or newer. From the repository root:
 
 ```powershell
 python -m pip install -e .
-python -m uvicorn app.main:app --reload
+python scripts/run_local_server.py
 ```
 
-Open:
+The launcher binds to localhost, reloads after code changes, and opens:
 
 ```text
 http://127.0.0.1:8000/ui/
@@ -130,6 +130,7 @@ python scripts/00_run_ingestion.py
 python scripts/10_retrieve_context.py "Can I take a taxi from Prague airport after 21:00?"
 python scripts/20_run_eval.py
 python scripts/30_ask.py "Can I take a taxi from Prague airport after 21:00?"
+python scripts/run_local_server.py
 ```
 
 High-level script groups:
@@ -139,6 +140,7 @@ High-level script groups:
 - `10_*` through `19_*`: retrieval and retrieval-debug commands.
 - `20_*` through `29_*`: evaluation commands.
 - `30_*` and above: runtime answer/demo commands.
+- `run_local_server.py`: start the localhost FastAPI server and browser UI.
 - `deploy_hf_space.py`: publish the committed snapshot to Hugging Face Spaces.
 
 See [Scripts](docs/scripts.md) for the full script map, paid-call notes, and

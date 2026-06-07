@@ -12,12 +12,12 @@ modules and keep future route/script layers thin.
 - `core/`: settings and project-root path resolution.
 - `ingest/`: ingestion pipelines, source loaders, chunking, and embedding.
 - `retrieval/`: Chroma retrieval, FlashRank reranking, and context assembly.
-- `api/`: empty scaffold for future API routes.
-- `agents/`: empty scaffold for future agent orchestration.
-- `prompts/`: empty scaffold for future prompt Markdown files.
-- `tools/`: empty scaffold for future deterministic Python tools.
-- `streaming/`: empty scaffold for future streaming helpers.
-- `ui/`: empty scaffold for future plain HTML/CSS/JS UI.
+- `api/`: FastAPI chat, download, and UI configuration routes.
+- `agents/`: grounded answer generation and validation.
+- `prompts/`: prompt Markdown files for answer generation.
+- `tools/`: deterministic claim, currency, and evidence tools.
+- `streaming/`: server-sent event helpers and chat streaming orchestration.
+- `ui/`: implemented plain HTML/CSS/JS browser UI.
 
 ## Rules
 

@@ -113,7 +113,8 @@ filters in the future while rendering server-sent events.
 build stages individually. `scripts/00_run_ingestion.py` runs the numbered
 ingestion flow from raw files through vector-store embedding. Search remains a
 separate retrieval script.
-The scripts should stay thin.
+`scripts/run_local_server.py` starts the localhost FastAPI development server
+and browser UI. The scripts should stay thin.
 
 Script numbering is grouped by workflow band:
 

@@ -7,6 +7,12 @@ Applies to `app/ui/`.
 This directory contains the implemented static browser UI served by FastAPI
 under `/ui/`.
 
+Run it locally from the repository root with:
+
+```powershell
+python scripts/run_local_server.py
+```
+
 ## Role
 
 The UI is minimal and implemented with plain HTML, CSS, and JavaScript.
