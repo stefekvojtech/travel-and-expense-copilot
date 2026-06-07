@@ -12,6 +12,7 @@ CONFIG_ENV_KEYS = (
     "VISION_MODEL",
     "ANSWER_MODEL",
     "ANSWER_MAX_TOKENS",
+    "QUESTION_MAX_CHARACTERS",
     "RAW_DATA_DIR",
     "PROCESSED_DATA_DIR",
     "VECTOR_COLLECTION_NAME",
@@ -45,6 +46,7 @@ def test_get_settings_has_defaults_without_env_file_values(monkeypatch: Any) -> 
     assert settings.vision_model == "gpt-5.4"
     assert settings.answer_model == "gpt-4.1-mini"
     assert settings.answer_max_tokens == 500
+    assert settings.question_max_characters == 1000
     assert settings.raw_data_dir == ROOT_DIR / "data" / "raw"
     assert settings.processed_data_dir == ROOT_DIR / "data" / "processed"
     assert settings.vector_store_dir == ROOT_DIR / "data" / "processed" / "04_vectorstore"
@@ -64,5 +66,15 @@ def test_get_settings_has_defaults_without_env_file_values(monkeypatch: Any) -> 
     assert settings.author_name == "Vojtech Stefek"
     assert settings.author_linkedin_url == "https://www.linkedin.com/in/vojtech-stefek/"
     assert settings.author_github_url == "https://github.com/stefekvojtech"
+
+    get_settings.cache_clear()
+
+
+def test_get_settings_reads_question_max_characters(monkeypatch: Any) -> None:
+    """The shared question limit should be configurable through the environment."""
+    get_settings.cache_clear()
+    monkeypatch.setenv("QUESTION_MAX_CHARACTERS", "750")
+
+    assert get_settings().question_max_characters == 750
 
     get_settings.cache_clear()

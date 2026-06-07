@@ -12,7 +12,6 @@ from app.retrieval.step03_assemble_context import EvidenceBlock
 
 
 Confidence = Literal["high", "medium", "low"]
-MAX_QUESTION_CHARACTERS = 1000
 
 
 class HealthResponse(BaseModel):
@@ -28,6 +27,7 @@ class UiConfigResponse(BaseModel):
     author_name: str
     author_linkedin_url: str
     author_github_url: str
+    question_max_characters: int
 
 
 class RetrievalFiltersRequest(BaseModel):
@@ -49,7 +49,7 @@ class RetrievalFiltersRequest(BaseModel):
 class ChatRequest(BaseModel):
     """Question payload for grounded answer generation."""
 
-    question: str = Field(min_length=1, max_length=MAX_QUESTION_CHARACTERS)
+    question: str = Field(min_length=1)
     search_k: int | None = Field(
         default=None,
         ge=1,

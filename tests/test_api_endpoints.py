@@ -98,6 +98,54 @@ def test_chat_endpoint_rejects_questions_over_public_limit() -> None:
     assert response.status_code == 422
 
 
+def test_chat_endpoint_uses_configured_question_limit(monkeypatch: Any) -> None:
+    """POST /api/chat should enforce the runtime-configured question limit."""
+    monkeypatch.setattr(
+        chat_routes,
+        "get_settings",
+        lambda: type(
+            "Settings",
+            (),
+            {
+                "question_max_characters": 5,
+                "public_demo_mode": False,
+                "public_demo_rate_limit_requests": 10,
+                "public_demo_rate_limit_window_seconds": 600,
+            },
+        )(),
+    )
+    client = TestClient(app)
+
+    response = client.post("/api/chat", json={"question": "123456"})
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Questions are limited to 5 characters."
+
+
+def test_streaming_chat_endpoint_uses_configured_question_limit(monkeypatch: Any) -> None:
+    """POST /api/chat/stream should enforce the runtime-configured question limit."""
+    monkeypatch.setattr(
+        chat_routes,
+        "get_settings",
+        lambda: type(
+            "Settings",
+            (),
+            {
+                "question_max_characters": 5,
+                "public_demo_mode": False,
+                "public_demo_rate_limit_requests": 10,
+                "public_demo_rate_limit_window_seconds": 600,
+            },
+        )(),
+    )
+    client = TestClient(app)
+
+    response = client.post("/api/chat/stream", json={"question": "123456"})
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Questions are limited to 5 characters."
+
+
 def test_public_demo_mode_rate_limits_by_client_ip(monkeypatch: Any) -> None:
     """Demo mode should cap callers at ten chat requests per ten minutes."""
     reset_public_demo_rate_limits()
@@ -135,6 +183,7 @@ def test_ui_config_endpoint_returns_author_links(monkeypatch: Any) -> None:
                 "author_name": "Vojtech Stefek",
                 "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
                 "author_github_url": "https://github.com/stefekvojtech",
+                "question_max_characters": 750,
             },
         )(),
     )
@@ -147,6 +196,37 @@ def test_ui_config_endpoint_returns_author_links(monkeypatch: Any) -> None:
         "author_name": "Vojtech Stefek",
         "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
         "author_github_url": "https://github.com/stefekvojtech",
+        "question_max_characters": 750,
+    }
+
+
+def test_ui_config_endpoint_cannot_request_environment_secrets(monkeypatch: Any) -> None:
+    """UI config query parameters must not select arbitrary environment values."""
+    monkeypatch.setattr(
+        ui_routes,
+        "get_settings",
+        lambda: type(
+            "Settings",
+            (),
+            {
+                "author_name": "Vojtech Stefek",
+                "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
+                "author_github_url": "https://github.com/stefekvojtech",
+                "question_max_characters": 750,
+                "openai_api_key": "must-not-be-returned",
+            },
+        )(),
+    )
+    client = TestClient(app)
+
+    response = client.get("/api/ui/config?key=OPENAI_API_KEY")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "author_name": "Vojtech Stefek",
+        "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
+        "author_github_url": "https://github.com/stefekvojtech",
+        "question_max_characters": 750,
     }
 
 
@@ -173,6 +253,7 @@ def _demo_settings() -> Any:
         (),
         {
             "public_demo_mode": False,
+            "question_max_characters": 1000,
             "public_demo_rate_limit_requests": 10,
             "public_demo_rate_limit_window_seconds": 600,
         },
@@ -185,6 +266,7 @@ def _public_demo_settings() -> Any:
         (),
         {
             "public_demo_mode": True,
+            "question_max_characters": 1000,
             "public_demo_rate_limit_requests": 10,
             "public_demo_rate_limit_window_seconds": 600,
         },

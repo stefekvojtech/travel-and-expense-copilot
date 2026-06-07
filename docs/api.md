@@ -55,19 +55,20 @@ It does not currently check Chroma, OpenAI credentials, or model availability.
 
 ## UI Config Route
 
-`GET /api/ui/config` returns non-sensitive author metadata used by the static
-browser UI footer:
+`GET /api/ui/config` returns non-sensitive runtime configuration used by the
+static browser UI:
 
 ```json
 {
   "author_name": "Vojtech Stefek",
   "author_linkedin_url": "https://www.linkedin.com/in/vojtech-stefek/",
-  "author_github_url": "https://github.com/stefekvojtech"
+  "author_github_url": "https://github.com/stefekvojtech",
+  "question_max_characters": 1000
 }
 ```
 
-The values come from `AUTHOR_NAME`, `AUTHOR_LINKEDIN_URL`, and
-`AUTHOR_GITHUB_URL`.
+The values come from `AUTHOR_NAME`, `AUTHOR_LINKEDIN_URL`,
+`AUTHOR_GITHUB_URL`, and `QUESTION_MAX_CHARACTERS`.
 
 ## Raw Data Download Route
 
@@ -84,8 +85,9 @@ per `PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS` seconds and return generic server
 errors instead of raw exception text. The default public limit is 10 requests
 per 10 minutes.
 
-The chat request schema rejects questions longer than 1000 characters. The
-browser input also caps entry at 1000 characters, but the API validation is the
+Both chat routes reject questions longer than `QUESTION_MAX_CHARACTERS`, which
+defaults to 1000. The browser reads the same value from `GET /api/ui/config` and
+applies it to the input field, while API route validation remains the
 authoritative protection for programmatic callers.
 
 Caller-provided `search_k` values are accepted for request-shape compatibility

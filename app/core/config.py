@@ -40,6 +40,7 @@ DEFAULT_CHUNK_SIZE = 600
 DEFAULT_CHUNK_OVERLAP = 120
 DEFAULT_MAX_CHUNK_TOKENS = 1200
 DEFAULT_ANSWER_MAX_TOKENS = 500
+DEFAULT_QUESTION_MAX_CHARACTERS = 1000
 DEFAULT_PUBLIC_DEMO_MODE = False
 DEFAULT_PUBLIC_DEMO_RATE_LIMIT_REQUESTS = 10
 DEFAULT_PUBLIC_DEMO_RATE_LIMIT_WINDOW_SECONDS = 600
@@ -91,6 +92,7 @@ class Settings:
     chunk_overlap: int
     max_chunk_tokens: int
     answer_max_tokens: int = DEFAULT_ANSWER_MAX_TOKENS
+    question_max_characters: int = DEFAULT_QUESTION_MAX_CHARACTERS
     public_demo_mode: bool = DEFAULT_PUBLIC_DEMO_MODE
     public_demo_rate_limit_requests: int = DEFAULT_PUBLIC_DEMO_RATE_LIMIT_REQUESTS
     public_demo_rate_limit_window_seconds: int = (
@@ -131,6 +133,10 @@ def get_settings() -> Settings:
         chunk_overlap=_get_int("CHUNK_OVERLAP", DEFAULT_CHUNK_OVERLAP),
         max_chunk_tokens=_get_int("MAX_CHUNK_TOKENS", DEFAULT_MAX_CHUNK_TOKENS),
         answer_max_tokens=_get_int("ANSWER_MAX_TOKENS", DEFAULT_ANSWER_MAX_TOKENS),
+        question_max_characters=_get_int(
+            "QUESTION_MAX_CHARACTERS",
+            DEFAULT_QUESTION_MAX_CHARACTERS,
+        ),
         public_demo_mode=_get_bool("PUBLIC_DEMO_MODE", DEFAULT_PUBLIC_DEMO_MODE),
         public_demo_rate_limit_requests=_get_int(
             "PUBLIC_DEMO_RATE_LIMIT_REQUESTS",

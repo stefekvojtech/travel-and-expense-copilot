@@ -85,6 +85,7 @@ handles more reliably through its upload API.
 - Do not run ingestion at startup; the app reads `data/processed/04_vectorstore/`.
 - Rebuild and commit a clean vector store deliberately when source documents or
   chunking/embedding behavior changes.
-- The public demo guardrails are intentionally simple: 1000-character questions,
-  default retrieval fanout, 500 answer tokens, and 10 requests per 10 minutes per
-  client IP when `PUBLIC_DEMO_MODE=true`.
+- The public demo guardrails are intentionally simple:
+  `QUESTION_MAX_CHARACTERS`-limited questions, default retrieval fanout, 500
+  answer tokens, and 10 requests per 10 minutes per client IP when
+  `PUBLIC_DEMO_MODE=true`.

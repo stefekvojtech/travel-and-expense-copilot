@@ -28,6 +28,7 @@ def health() -> HealthResponse:
 def chat(request: Request, body: ChatRequest) -> ChatResponse:
     """Generate a grounded answer with citations in one JSON response."""
     settings = get_settings()
+    _raise_if_question_too_long(settings, body.question)
     _raise_if_rate_limited(settings, request)
     try:
         result = answer_policy_question(
@@ -48,6 +49,7 @@ def chat(request: Request, body: ChatRequest) -> ChatResponse:
 def chat_stream(request: Request, body: ChatRequest) -> StreamingResponse:
     """Stream retrieval progress, answer deltas, and final grounded answer data."""
     settings = get_settings()
+    _raise_if_question_too_long(settings, body.question)
     _raise_if_rate_limited(settings, request)
     return StreamingResponse(
         _chat_sse_events(settings, body),
@@ -84,6 +86,17 @@ def _raise_if_rate_limited(settings: Settings, request: Request) -> None:
         status_code=429,
         detail=decision.message,
         headers={"Retry-After": str(decision.retry_after_seconds)},
+    )
+
+
+def _raise_if_question_too_long(settings: Settings, question: str) -> None:
+    if len(question) <= settings.question_max_characters:
+        return
+    raise HTTPException(
+        status_code=422,
+        detail=(
+            f"Questions are limited to {settings.question_max_characters} characters."
+        ),
     )
 
 

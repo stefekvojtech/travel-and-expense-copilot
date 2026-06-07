@@ -32,7 +32,6 @@ const authorName = document.querySelector("#authorName");
 const authorLinkedin = document.querySelector("#authorLinkedin");
 const authorGithub = document.querySelector("#authorGithub");
 
-const MAX_QUESTION_CHARACTERS = 1000;
 const EMPTY_CONTEXT_TEXT = "No context assembled yet.";
 const TRACE_DEFAULT_LABEL = "Processed";
 const EXAMPLE_AUTO_SCROLL_PIXELS_PER_MS = 0.018;
@@ -46,6 +45,7 @@ const PANEL_RESIZE_KEY_STEP = 24;
 const STACKED_LAYOUT_MAX_WIDTH = 700;
 
 let activeController = null;
+let questionMaxCharacters = null;
 let streamedAnswer = "";
 let currentEvidenceBlocks = [];
 let shouldRenderEvidenceMarkdown = false;
@@ -78,7 +78,6 @@ form.addEventListener("submit", (event) => {
   void streamQuestion(question);
 });
 
-questionInput.maxLength = MAX_QUESTION_CHARACTERS;
 questionInput.addEventListener("input", normalizeQuestionInput);
 renderMarkdownToggle?.addEventListener("click", toggleEvidenceMarkdownRendering);
 copyContextButton?.addEventListener("click", copyAssembledContext);
@@ -118,7 +117,7 @@ function insertQuestion(question) {
   questionInput.value = limitQuestionText(`${prefix}${insertion}${suffix}`);
   const cursorPosition = Math.min(
     prefix.length + insertion.length,
-    MAX_QUESTION_CHARACTERS,
+    questionMaxCharacters ?? Number.POSITIVE_INFINITY,
   );
   questionInput.selectionStart = cursorPosition;
   questionInput.selectionEnd = cursorPosition;
@@ -131,17 +130,17 @@ function normalizeQuestionInput() {
 }
 
 function clampQuestionInputLength() {
-  if (questionInput.value.length <= MAX_QUESTION_CHARACTERS) {
+  if (!questionMaxCharacters || questionInput.value.length <= questionMaxCharacters) {
     return;
   }
 
   const selectionStart = Math.min(
-    questionInput.selectionStart ?? MAX_QUESTION_CHARACTERS,
-    MAX_QUESTION_CHARACTERS,
+    questionInput.selectionStart ?? questionMaxCharacters,
+    questionMaxCharacters,
   );
   const selectionEnd = Math.min(
     questionInput.selectionEnd ?? selectionStart,
-    MAX_QUESTION_CHARACTERS,
+    questionMaxCharacters,
   );
   questionInput.value = limitQuestionText(questionInput.value);
   questionInput.selectionStart = selectionStart;
@@ -149,7 +148,10 @@ function clampQuestionInputLength() {
 }
 
 function limitQuestionText(value) {
-  return String(value).slice(0, MAX_QUESTION_CHARACTERS);
+  if (!questionMaxCharacters) {
+    return String(value);
+  }
+  return String(value).slice(0, questionMaxCharacters);
 }
 
 function resizeQuestionInput() {
@@ -171,8 +173,8 @@ function revealConversationUi() {
 }
 
 async function streamQuestion(question) {
-  if (question.length > MAX_QUESTION_CHARACTERS) {
-    showError(`Questions are limited to ${MAX_QUESTION_CHARACTERS} characters.`);
+  if (questionMaxCharacters && question.length > questionMaxCharacters) {
+    showError(`Questions are limited to ${questionMaxCharacters} characters.`);
     return;
   }
 
@@ -1565,10 +1567,6 @@ function pickRandomPlaceholderQuestion() {
 }
 
 async function loadUiConfig() {
-  if (!authorFooter || !authorName || !authorLinkedin || !authorGithub) {
-    return;
-  }
-
   try {
     const response = await fetch("/api/ui/config", { headers: { Accept: "application/json" } });
     if (!response.ok) {
@@ -1576,6 +1574,12 @@ async function loadUiConfig() {
     }
 
     const config = await response.json();
+    applyQuestionLimit(config.question_max_characters);
+
+    if (!authorFooter || !authorName || !authorLinkedin || !authorGithub) {
+      return;
+    }
+
     const name = String(config.author_name || "").trim();
     const linkedinUrl = String(config.author_linkedin_url || "").trim();
     const githubUrl = String(config.author_github_url || "").trim();
@@ -1598,4 +1602,15 @@ async function loadUiConfig() {
     authorFooter.hidden = true;
     syncAuthorFooterHeight();
   }
+}
+
+function applyQuestionLimit(value) {
+  const parsedValue = Number(value);
+  if (!Number.isSafeInteger(parsedValue) || parsedValue < 1) {
+    return;
+  }
+  questionMaxCharacters = parsedValue;
+  questionInput.maxLength = parsedValue;
+  clampQuestionInputLength();
+  resizeQuestionInput();
 }
