@@ -4,31 +4,34 @@
 
 Applies to `app/ui/`.
 
-This is an empty scaffold for the future browser UI.
+This directory contains the implemented static browser UI served by FastAPI
+under `/ui/`.
 
-## Planned Role
+## Role
 
-The UI should be minimal and implemented with plain HTML, CSS, and JavaScript.
+The UI is minimal and implemented with plain HTML, CSS, and JavaScript.
 
-Required elements:
+Current behavior includes:
 
 - chat input
-- send button
+- example questions
+- server-sent event streaming
+- runtime status and trace display
+- grounded answer rendering
+- citations and confidence display
+- raw policy data download
+
+Potential future behavior includes:
+
 - file upload
-- streaming answer panel
-
-Preferred debug fields:
-
-- retrieved chunks
-- rerank scores
-- citations
-- tool calls
-- confidence
-- judge result
+- richer retrieval and rerank debug details
+- tool-call display
+- judge-result display
 
 ## Rules
 
 - Do not add React, Vue, Next.js, or another frontend framework.
 - Keep the interface simple and operational, not a marketing landing page.
-- Preserve streaming behavior once it exists.
+- Preserve server-sent event streaming behavior.
+- Keep the UI compatible with FastAPI serving it under `/ui/`.
 - Update `docs/api.md` and `README.md` when UI usage changes.
